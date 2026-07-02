@@ -1,0 +1,51 @@
+# ──────────────────────────────────────────────
+# Personal / sensitive data
+# ──────────────────────────────────────────────
+settings.json           # berisi data profil pribadi (social media, monitor setup, dll)
+
+# ──────────────────────────────────────────────
+# Generated / runtime files
+# ──────────────────────────────────────────────
+colors.conf             # di-generate oleh matugen (dari wallpaper aktif)
+scripts/quickshell/.cache/
+scripts/quickshell/cache/
+**/.run/
+**/run/
+**/*.pid
+AGENT.md
+CLAUDE.md
+**/*.log
+
+# ──────────────────────────────────────────────
+# Backup files (dari refactor session)
+# ──────────────────────────────────────────────
+**/*.bak
+**/*.backup
+**/*.orig
+
+# ──────────────────────────────────────────────
+# Preview images yang bisa di-generate ulang
+# ──────────────────────────────────────────────
+# scripts/quickshell/guide/previews/
+
+# ──────────────────────────────────────────────
+# Matugen state files
+# ──────────────────────────────────────────────
+scripts/quickshell/**/*.png.bak
+scripts/quickshell/**/*.png.tmp
+
+# ──────────────────────────────────────────────
+# OS / Editor junk
+# ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# ──────────────────────────────────────────────
+# Secrets / Credentials
+# ──────────────────────────────────────────────
+**/.env
