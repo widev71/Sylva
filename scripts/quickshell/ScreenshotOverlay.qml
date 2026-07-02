@@ -186,7 +186,7 @@ PanelWindow {
             return 1;
         }
 
-        onPositionChanged: (mouse) => {
+        onPositionChanged: function(mouse) {
             if (root.isVideoMode) { cursorShape = Qt.ArrowCursor; return; }
             let mode = root.isSelecting ? root.interactionMode : getInteractionMode(mouse.x, mouse.y, mouse.modifiers)
             switch(mode) {
@@ -214,7 +214,7 @@ PanelWindow {
                 root.startX = nx; root.startY = ny; root.endX = nx + nw; root.endY = ny + nh;
             }
         }
-        onPressed: (mouse) => {
+        onPressed: function(mouse) {
             if (mouse.button === Qt.RightButton) { Qt.quit(); return; }
             if (root.isVideoMode) return;
             root.isScanningQr = false; root.showQrPopup = false; qrWaitTimer.stop();
@@ -283,20 +283,18 @@ PanelWindow {
         s:            root.s
 
         fitsOutsideBottom: (root.selY + root.selH + totalHeight + s(15)) <= root.height
-        x: Math.max(s(10), Math.min(root.width - width - s(10), root.selX + (root.selW / 2) - (width / 2)))
-        y: fitsOutsideBottom
-            ? (root.selY + root.selH + s(15))
-            : ((root.selY - height - s(15)) >= 0 ? (root.selY - height - s(15)) : (root.height - height - s(15)))
+        x: (root.width - width) / 2
+        y: root.height - height - s(40)
 
-        onCaptureClicked:        (edit, rec) => root.executeCapture(edit, rec)
+        onCaptureClicked:        function(openEditor, isRecord) { root.executeCapture(openEditor, isRecord) }
         onToggleMaximizeClicked: root.toggleMaximize()
         onQrScanClicked:         root.performQrScan()
         onEditCaptureClicked:    root.executeCapture(true, false)
-        onDeskVolChanged:        (v) => { root.deskVol   = v; root.saveAudioPrefs() }
-        onDeskMuteChanged:       (m) => { root.deskMute  = m; root.saveAudioPrefs() }
-        onMicVolChanged:         (v) => { root.micVol    = v; root.saveAudioPrefs() }
-        onMicMuteChanged:        (m) => { root.micMute   = m; root.saveAudioPrefs() }
-        onMicDeviceChanged:      (d) => { root.micDevice = d; root.saveAudioPrefs() }
+        onRequestDeskVolChange:  function(v) { root.deskVol   = v; root.saveAudioPrefs() }
+        onRequestDeskMuteChange: function(m) { root.deskMute  = m; root.saveAudioPrefs() }
+        onRequestMicVolChange:   function(v) { root.micVol    = v; root.saveAudioPrefs() }
+        onRequestMicMuteChange:  function(m) { root.micMute   = m; root.saveAudioPrefs() }
+        onRequestMicDeviceChange:function(d) { root.micDevice = d; root.saveAudioPrefs() }
     }
 
     QrResultPopup {
@@ -306,8 +304,8 @@ PanelWindow {
         showQrPopup: root.showQrPopup
         isSelecting: root.isSelecting
         s:           root.s
-        onCopyText:  (txt) => Quickshell.execDetached(["bash", "-c", `echo -n '${txt.replace(/'/g, "'\\''")}' | wl-copy`])
-        onOpenUrl:   (url) => { Quickshell.execDetached(["xdg-open", url]); Qt.quit() }
+        onCopyText:  function(txt) { Quickshell.execDetached(["bash", "-c", `echo -n '${txt.replace(/'/g, "'\\''")}' | wl-copy`]) }
+        onOpenUrl:   function(url) { Quickshell.execDetached(["xdg-open", url]); Qt.quit() }
         onDismiss:   root.showQrPopup = false
     }
 
@@ -316,9 +314,9 @@ PanelWindow {
         id: qrReaderProcess
         property string accumulated: ""
         command: ["cat", paths.getRunDir("screenshot") + "/qr_result"]
-        stdout: SplitParser { splitMarker: ""; onRead: data => qrReaderProcess.accumulated += data }
+        stdout: SplitParser { splitMarker: ""; onRead: function(data) { qrReaderProcess.accumulated += data } }
 
-        onExited: (exitCode) => {
+        onExited: function(exitCode) {
             let res = qrReaderProcess.accumulated.trim()
             qrReaderProcess.accumulated = ""
             root.isScanningQr = false

@@ -61,7 +61,7 @@ ShellRoot {
     PamContext {
         id: pam
         Component.onCompleted: pamActionTimer.start()
-        onCompleted: (result) => {
+        onCompleted: function(result) {
             lockUI.authenticating = false;
             if (result === PamResult.Success) {
                 lockUI.unlocking = true;
@@ -247,7 +247,7 @@ ShellRoot {
                             failed:         lockUI.failed
                             pwShapes:       screenRoot.pwShapes
                             weatherIcon: data.weatherIcon; weatherDesc: data.weatherDesc; weatherTemp: data.weatherTemp
-                            onAuthRequested: (password) => {
+                            onAuthRequested: function(password) {
                                 if (pam.responseRequired && !lockUI.authenticating) {
                                     lockUI.authenticating = true; lockUI.statusText = "Authenticating...";
                                     lockUI.failed = false; pam.respond(password);
@@ -275,7 +275,7 @@ ShellRoot {
                     isPlayingIntro: screenRoot.isPlayingIntro
                     powerMenuOpen:  screenRoot.powerMenuOpen
                     introState:     screenRoot.introState
-                    onOpenChanged: (open) => { screenRoot.powerMenuOpen = open; if (!open) centerPanel.inputField.forceActiveFocus(); }
+                    onOpenChanged: function(open) { screenRoot.powerMenuOpen = open; if (!open) centerPanel.inputField.forceActiveFocus(); }
                     onDoReboot:    reloadProcess.running   = true
                     onDoSuspend:   suspendProcess.running  = true
                     onDoPoweroff:  poweroffProcess.running = true

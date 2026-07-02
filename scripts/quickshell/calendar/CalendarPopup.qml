@@ -545,7 +545,7 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     acceptedButtons: Qt.NoButton
-                    onPositionChanged: (mouse) => {
+                    onPositionChanged: function(mouse) {
                         // Max tilt of 5 degrees
                         var rx = (mouse.y - height/2) / (height/2);
                         var ry = (mouse.x - width/2) / (width/2);
@@ -1003,12 +1003,16 @@ Item {
             // =======================================================
             // RIGHT WING: ORGANIC FLOATING WEATHER STATS
             // =======================================================
-            Item {
+            Rectangle {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.margins: Math.round(40 * window.sf)
                 width: Math.round(320 * window.sf)
                 height: Math.round(420 * window.sf)
+                color: Qt.alpha(window.surface0, 0.2) 
+                radius: Math.round(14 * window.sf)
+                border.color: Qt.alpha(window.surface1, 0.4)
+                border.width: 1
                 z: 10 
 
                 opacity: introWeather
@@ -1016,6 +1020,7 @@ Item {
 
                 ColumnLayout {
                     anchors.fill: parent
+                    anchors.margins: Math.round(20 * window.sf)
                     spacing: Math.round(20 * window.sf)
 
                     RowLayout {
@@ -1108,6 +1113,34 @@ Item {
                             opacity: window.weatherContentOpacity
                             transform: Translate { x: window.weatherContentOffset }
                         }
+
+                        Text {
+                            Layout.alignment: Qt.AlignRight
+                            Layout.maximumWidth: Math.round(320 * window.sf)
+                            horizontalAlignment: Text.AlignRight
+                            text: window.weatherData && window.weatherData.location ? " " + window.weatherData.location : ""
+                            font.family: "JetBrains Mono"
+                            font.weight: Font.DemiBold
+                            font.pixelSize: Math.round(13 * window.sf)
+                            color: window.subtext0
+                            opacity: window.weatherContentOpacity
+                            transform: Translate { x: window.weatherContentOffset }
+                            visible: text !== ""
+                        }
+
+                        Text {
+                            Layout.alignment: Qt.AlignRight
+                            Layout.maximumWidth: Math.round(320 * window.sf)
+                            horizontalAlignment: Text.AlignRight
+                            text: forecast && forecast.sunrise && forecast.sunset ? "🌅 " + forecast.sunrise + "  |  🌇 " + forecast.sunset : ""
+                            font.family: "JetBrains Mono"
+                            font.weight: Font.DemiBold
+                            font.pixelSize: Math.round(12 * window.sf)
+                            color: window.surface2
+                            opacity: window.weatherContentOpacity
+                            transform: Translate { x: window.weatherContentOffset }
+                            visible: text !== ""
+                        }
                     }
 
                     Item { Layout.fillHeight: true } 
@@ -1119,7 +1152,7 @@ Item {
                         spacing: Math.round(8 * window.sf)
 
                         Repeater {
-                            model: 4
+                            model: 5
 
                             Item {
                                 id: gaugeWrapper
@@ -1131,21 +1164,23 @@ Item {
 
                                 property var forecast: window.weatherData && window.weatherData.forecast[window.targetWeatherView] ? window.weatherData.forecast[window.targetWeatherView] : null
 
-                                property string gaugeIcon: index === 0 ? "" : index === 1 ? "" : index === 2 ? "" : ""
-                                property string gaugeLbl: index === 0 ? "WIND" : index === 1 ? "HUMID" : index === 2 ? "RAIN" : "FEELS"
+                                property string gaugeIcon: index === 0 ? "" : index === 1 ? "" : index === 2 ? "" : index === 3 ? "" : "☀"
+                                property string gaugeLbl: index === 0 ? "WIND" : index === 1 ? "HUMID" : index === 2 ? "RAIN" : index === 3 ? "FEELS" : "UV"
 
                                 property string gaugeVal: forecast ? (
                                     index === 0 ? forecast.wind + "m/s" :
                                     index === 1 ? forecast.humidity + "%" :
                                     index === 2 ? forecast.pop + "%" :
-                                    forecast.feels_like + "°"
+                                    index === 3 ? forecast.feels_like + "°" :
+                                    (forecast.uv !== undefined ? String(forecast.uv) : "N/A")
                                 ) : ""
 
                                 property real gaugeFill: forecast ? (
                                     index === 0 ? Math.min(1.0, forecast.wind / 25.0) :
                                     index === 1 ? forecast.humidity / 100.0 :
                                     index === 2 ? forecast.pop / 100.0 :
-                                    Math.max(0.0, Math.min(1.0, (forecast.feels_like + 15) / 55.0))
+                                    index === 3 ? Math.max(0.0, Math.min(1.0, (forecast.feels_like + 15) / 55.0)) :
+                                    (forecast.uv !== undefined ? Math.min(1.0, Number(forecast.uv) / 11.0) : 0.2)
                                 ) : 0.0
                                 
                                 // FIX: Use ColumnLayout to enforce perfect relative positioning instead of absolute anchors

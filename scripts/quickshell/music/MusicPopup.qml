@@ -224,7 +224,7 @@ Item {
             Process {
                 command: ["bash", "-c", \`${safeCmd}\`]
                 running: true
-                onExited: (exitCode) => destroy()
+                onExited: function(exitCode) { destroy() }
             }
         `, root);
     }

@@ -9,7 +9,6 @@ Item {
     property bool showHelpIcon: true
     property int workspaceCount: 8
 
-    signal workspaceCountChanged(int newCount)
 
     Process {
         id: settingsReader
@@ -30,7 +29,6 @@ Item {
                         if (parsed.workspaceCount !== undefined &&
                             root.workspaceCount !== parsed.workspaceCount) {
                             root.workspaceCount = parsed.workspaceCount;
-                            root.workspaceCountChanged(parsed.workspaceCount);
                         }
                     }
                 } catch (e) {}

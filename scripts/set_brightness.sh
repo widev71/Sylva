@@ -13,3 +13,6 @@ else
     # Use --noverify to speed it up slightly and avoid waiting for DDC/CI readback
     ddcutil setvcp 10 "$TARGET" --noverify
 fi
+
+# Trigger OSD
+qs -p ~/.config/hypr/scripts/quickshell/Main.qml ipc call main showOsd brightness $TARGET

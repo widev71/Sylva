@@ -782,8 +782,8 @@ Item {
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 cursorShape: Qt.PointingHandCursor
-                                                onPressed: (mouse) => { briSyncDelay.stop(); window.isDraggingBri = true; updateBri(mouse.x); }
-                                                onPositionChanged: (mouse) => { if (pressed) updateBri(mouse.x); }
+                                                onPressed: function(mouse) { briSyncDelay.stop(); window.isDraggingBri = true; updateBri(mouse.x); }
+                                                onPositionChanged: function(mouse) { if (pressed) updateBri(mouse.x); }
                                                 onReleased: { briSyncDelay.restart(); }
                                                 
                                                 function updateBri(mx) {
@@ -881,8 +881,8 @@ Item {
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 cursorShape: Qt.PointingHandCursor
-                                                onPressed: (mouse) => { volSyncDelay.stop(); window.isDraggingVol = true; updateVol(mouse.x); }
-                                                onPositionChanged: (mouse) => { if (pressed) updateVol(mouse.x); }
+                                                onPressed: function(mouse) { volSyncDelay.stop(); window.isDraggingVol = true; updateVol(mouse.x); }
+                                                onPositionChanged: function(mouse) { if (pressed) updateVol(mouse.x); }
                                                 onReleased: { volSyncDelay.restart(); }
                                                 
                                                 function updateVol(mx) {
@@ -957,8 +957,8 @@ Item {
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 cursorShape: Qt.PointingHandCursor
-                                                onPressed: (mouse) => { kbdSyncDelay.stop(); window.isDraggingKbd = true; updateKbd(mouse.x); }
-                                                onPositionChanged: (mouse) => { if (pressed) updateKbd(mouse.x); }
+                                                onPressed: function(mouse) { kbdSyncDelay.stop(); window.isDraggingKbd = true; updateKbd(mouse.x); }
+                                                onPositionChanged: function(mouse) { if (pressed) updateKbd(mouse.x); }
                                                 onReleased: { kbdSyncDelay.restart(); }
                                                 
                                                 function updateKbd(mx) {

@@ -649,7 +649,7 @@ Item {
                         hoverEnabled: !window.previewMode
                         enabled: !window.previewMode
                         acceptedButtons: Qt.LeftButton | Qt.RightButton
-                        onClicked: (mouse) => {
+                        onClicked: function(mouse) {
                             window.navDuration = 250;
                             clipList.currentIndex = index;
                             

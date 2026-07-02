@@ -94,7 +94,7 @@ Rectangle {
         onEntered: { fw.isPeekVisible = true; peekHideTimer.stop(); }
         onExited:  { if (!pressed) peekHideTimer.restart(); }
 
-        onPressed: mouse => {
+        onPressed: function(mouse) {
             let gp = mapToItem(root.mainHitArea, mouse.x, mouse.y);
             startGlobalX = gp.x;
             startGlobalY = gp.y;
@@ -102,7 +102,7 @@ Rectangle {
             fw.useGraceTimer = true;
         }
 
-        onPositionChanged: mouse => {
+        onPositionChanged: function(mouse) {
             if (!pressed) return;
             let gp = mapToItem(root.mainHitArea, mouse.x, mouse.y);
             let delta = 0;

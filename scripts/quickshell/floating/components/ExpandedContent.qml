@@ -68,7 +68,7 @@ Item {
             anchors.rightMargin:  s(15)
 
             visible: index === fw.activeIndex && fw.expandProgress > 0.01
-            source: modelData
+            source: "../../" + modelData
             asynchronous: false
 
             // Props forwarded to loaded modules
@@ -122,7 +122,7 @@ Item {
         hoverEnabled: true
         onEntered: hideTimer.stop()
         onExited:  { if (!sidebarDragArea.containsMouse) fw.kickTimer(); }
-        onWheel: wheel => {
+        onWheel: function(wheel) {
             let step = 0;
             if (wheel.angleDelta.y > 0) step = fw.activeEdge === "right" ? 1 : -1;
             else if (wheel.angleDelta.y < 0) step = fw.activeEdge === "right" ? -1 : 1;

@@ -1,7 +1,7 @@
 {
   "uiScale": 1,
-  "openGuideAtStartup": false,
-  "topbarHelpIcon": false,
+  "openGuideAtStartup": true,
+  "topbarHelpIcon": true,
   "workspaceCount": 5,
   "wallpaperDir": "/home/witya/Pictures/Wallpapers",
   "language": "us",

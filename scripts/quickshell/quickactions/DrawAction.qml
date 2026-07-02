@@ -353,7 +353,7 @@ Item {
                         enabled: root.isActiveTab // FIXED: Isolated Input
                         acceptedButtons: root.currentTool === "mouse" ? Qt.NoButton : Qt.LeftButton
                         
-                        onWheel: (wheel) => {
+                        onWheel: function(wheel) {
                             let deltaY = wheel.angleDelta.y !== 0 ? wheel.angleDelta.y : (wheel.pixelDelta ? wheel.pixelDelta.y : 0);
                             let deltaX = wheel.angleDelta.x !== 0 ? wheel.angleDelta.x : (wheel.pixelDelta ? wheel.pixelDelta.x : 0);
                             let delta = deltaY !== 0 ? deltaY : deltaX;
@@ -368,7 +368,7 @@ Item {
                             cameraRig.zoomBy(zoomFactor);
                         }
 
-                        onPressed: (mouse) => {
+                        onPressed: function(mouse) {
                             root.showSizeConfig = false;
                             root.showColorPicker = false;
 
@@ -409,7 +409,7 @@ Item {
                             drawCanvas.requestPaint();
                         }
 
-                        onPositionChanged: (mouse) => {
+                        onPositionChanged: function(mouse) {
                             if (pressed && root.currentTool !== "fill" && root.currentTool !== "mouse") {
                                 var segment = {
                                     x1: drawCanvas.lastX, y1: drawCanvas.lastY,
@@ -443,7 +443,7 @@ Item {
                             }
                         }
 
-                        onReleased: (mouse) => {
+                        onReleased: function(mouse) {
                             if (root.currentAction) {
                                 root.commitAction(root.currentAction);
                                 root.currentAction = null;
@@ -635,8 +635,8 @@ Item {
                             else root.penSizeRatio = val;
                         }
 
-                        onPositionChanged: (mouse) => { if (pressed) updateSize(mouse) }
-                        onPressed: (mouse) => updateSize(mouse)
+                        onPositionChanged: function(mouse) { if (pressed) updateSize(mouse) }
+                        onPressed: function(mouse) { updateSize(mouse) }
                     }
                 }
 
@@ -753,8 +753,8 @@ Item {
                                 root.pickSat = Math.max(0, Math.min(1, mouse.x / width));
                                 root.pickVal = 1.0 - Math.max(0, Math.min(1, mouse.y / height));
                             }
-                            onPressed: (mouse) => updateSV(mouse)
-                            onPositionChanged: (mouse) => { if (pressed) updateSV(mouse) }
+                            onPressed: function(mouse) { updateSV(mouse) }
+                            onPositionChanged: function(mouse) { if (pressed) updateSV(mouse) }
                         }
                     }
 
@@ -788,8 +788,8 @@ Item {
                             function updateH(mouse) {
                                 root.pickHue = Math.max(0, Math.min(1, mouse.y / height));
                             }
-                            onPressed: (mouse) => updateH(mouse)
-                            onPositionChanged: (mouse) => { if (pressed) updateH(mouse) }
+                            onPressed: function(mouse) { updateH(mouse) }
+                            onPositionChanged: function(mouse) { if (pressed) updateH(mouse) }
                         }
                     }
                 }

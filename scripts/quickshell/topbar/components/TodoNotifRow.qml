@@ -31,7 +31,7 @@ Row {
         opacity: _init ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
         transform: Translate {
-            y: parent._init ? 0 : s(15)
+            y: _init ? 0 : s(15)
             Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
         }
 
@@ -41,7 +41,7 @@ Row {
             spacing: s(8)
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: ""
+                text: ""
                 font.family: "Iosevka Nerd Font"; font.pixelSize: s(16)
                 color: Qt.tint(mocha.green, Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.4))
             }
@@ -72,7 +72,7 @@ Row {
         opacity: _init ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
         transform: Translate {
-            y: parent._init ? 0 : s(15)
+            y: _init ? 0 : s(15)
             Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
         }
 
@@ -82,7 +82,7 @@ Row {
             spacing: s(8)
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: ""
+                text: "󰂚"
                 font.family: "Iosevka Nerd Font"; font.pixelSize: s(16)
                 color: Qt.tint(mocha.yellow, Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.4))
             }

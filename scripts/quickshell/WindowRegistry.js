@@ -32,6 +32,7 @@ function getLayout(name, mx, my, mw, mh, userScale) {
 
     let base = {
         // --- Top Right Popups ---
+        "controlcenter": { w: s(400, scale), h: s(500, scale), rx: mw - s(404, scale), ry: s(60, scale), comp: "controlcenter/ControlCenter.qml" },
         "battery":   { w: s(481, scale), h: s(760, scale), rx: mw - s(485, scale), ry: s(60, scale), comp: "battery/BatteryPopup.qml" },
         "network":   { w: s(900, scale), h: s(700, scale), rx: mw - s(904, scale), ry: s(60, scale), comp: "network/NetworkPopup.qml" },
         "volume":    { w: s(450, scale), h: s(700, scale), rx: mw - s(455, scale), ry: s(60, scale), comp: "volume/VolumePopup.qml" },

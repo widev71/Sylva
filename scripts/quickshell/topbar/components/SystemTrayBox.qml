@@ -78,7 +78,9 @@ Rectangle {
                     id: trayMouse
                     anchors.fill: parent; hoverEnabled: true
                     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-                    onClicked: mouse => {
+                    onClicked: function(mouse) {
+                        let cx = mouse.x;
+                        let cy = mouse.y;
                         if (mouse.button === Qt.LeftButton) {
                             if (modelData.isMenuOnly || modelData.onlyMenu) {
                                 menuAnchor.open();
@@ -91,7 +93,7 @@ Rectangle {
                         } else if (mouse.button === Qt.RightButton) {
                             if (modelData.menu) menuAnchor.open();
                             else if (typeof modelData.contextMenu === "function")
-                                modelData.contextMenu(mouse.x, mouse.y);
+                                modelData.contextMenu(cx, cy);
                             else modelData.activate();
                         }
                     }

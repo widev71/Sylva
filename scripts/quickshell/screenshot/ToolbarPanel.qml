@@ -27,11 +27,11 @@ Item {
     signal toggleMaximizeClicked
     signal qrScanClicked
     signal editCaptureClicked
-    signal deskVolChanged(real v)
-    signal deskMuteChanged(bool m)
-    signal micVolChanged(real v)
-    signal micMuteChanged(bool m)
-    signal micDeviceChanged(string dev)
+    signal requestDeskVolChange(real v)
+    signal requestDeskMuteChange(bool m)
+    signal requestMicVolChange(real v)
+    signal requestMicMuteChange(bool m)
+    signal requestMicDeviceChange(string dev)
 
     property real totalHeight: s(120)
     property bool fitsOutsideBottom: false  // set by parent based on selY + selH
@@ -147,7 +147,7 @@ Item {
                 width: ListView.view.width; height: s(32); radius: s(6)
                 color: maList.containsMouse ? theme.surface0 : "transparent"
                 RowLayout { anchors.fill: parent; anchors.margins: s(6); Text { text: model.devDesc; color: root.micDevice === model.devName ? theme.mauve : theme.text; font.pixelSize: s(12); elide: Text.ElideRight; Layout.fillWidth: true } }
-                MouseArea { id: maList; anchors.fill: parent; hoverEnabled: true; onClicked: { root.micDeviceChanged(model.devName); micDropdown.visible = false } }
+                MouseArea { id: maList; anchors.fill: parent; hoverEnabled: true; onClicked: { root.requestMicDeviceChange(model.devName); micDropdown.visible = false } }
             }
         }
     }
@@ -179,8 +179,8 @@ Item {
                 width: parent.width; height: parent.height
                 iconOn: "󰓃"; iconOff: "󰓄"
                 volumeValue: root.deskVol; mutedValue: root.deskMute
-                onVolumeUpdate: (v) => root.deskVolChanged(v)
-                onMuteUpdate:   (m) => root.deskMuteChanged(m)
+                onVolumeUpdate: function(v) { root.requestDeskVolChange(v) }
+                onMuteUpdate:   function(m) { root.requestDeskMuteChange(m) }
             }
         }
         AnimWrap {
@@ -190,8 +190,8 @@ Item {
                 width: parent.width; height: parent.height
                 iconOn: "󰍬"; iconOff: "󰍭"; hasDropdown: true
                 volumeValue: root.micVol; mutedValue: root.micMute
-                onVolumeUpdate: (v) => root.micVolChanged(v)
-                onMuteUpdate:   (m) => root.micMuteChanged(m)
+                onVolumeUpdate: function(v) { root.requestMicVolChange(v) }
+                onMuteUpdate:   function(m) { root.requestMicMuteChange(m) }
                 onDropdownClicked: {
                     micDropdown.visible = !micDropdown.visible
                     micDropdown.x = mapToItem(root, 0, 0).x - s(120)
@@ -204,7 +204,7 @@ Item {
         AnimWrap { isShown: !root.isVideoMode; contentWidth: s(36); ToolbarBtn { iconTxt: "󰏫"; onClicked: root.editCaptureClicked() } }
         AnimWrap { isShown: !root.isVideoMode; contentWidth: s(36); ToolbarBtn { iconTxt: "⿻"; onClicked: root.qrScanClicked() } }
         AnimWrap { isShown: !root.isVideoMode; contentWidth: s(2); Rectangle { width: s(2); height: s(16); anchors.verticalCenter: parent.verticalCenter; color: theme.surface0; radius: s(1) } }
-        AnimWrap { isShown: !root.isVideoMode; contentWidth: s(36); ToolbarBtn { iconTxt: root.isMaximized ? "" : ""; onClicked: root.toggleMaximizeClicked() } }
+        AnimWrap { isShown: !root.isVideoMode; contentWidth: s(36); ToolbarBtn { iconTxt: root.isMaximized ? "󰍉" : "󰊓"; onClicked: root.toggleMaximizeClicked() } }
 
         // Close
         Item {
@@ -234,7 +234,7 @@ Item {
                 anchors.right: parent.right; anchors.top: parent.top; anchors.bottom: parent.bottom
                 width: actionArea.containsMouse ? parent.width : 0; radius: s(2)
                 Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.InOutExpo } }
-                gradient: Gradient { orientation: Gradient.Horizontal; GradientStop { position: 0.0; color: root.isVideoMode ? theme.red : theme.mauve }; GradientStop { position: 1.0; color: "transparent" } }
+                gradient: Gradient { orientation: Gradient.Horizontal; GradientStop { position: 0.0; color: root.isVideoMode ? theme.red : theme.mauve } GradientStop { position: 1.0; color: "transparent" } }
             }
         }
 
@@ -242,7 +242,7 @@ Item {
         Item {
             id: actionBtnContainer; width: s(56); height: width; anchors.centerIn: parent; z: 20
             Rectangle { anchors.fill: parent; radius: width/2; color: "transparent"; border.color: root.isVideoMode ? Qt.alpha(theme.red, 0.4) : Qt.alpha(theme.surface1, 0.8); border.width: s(2); Behavior on border.color { ColorAnimation { duration: 250 } } }
-            Rectangle { width: actionArea.pressed ? s(32) : (actionArea.containsMouse ? s(40) : s(36)); height: width; radius: width/2; anchors.centerIn: parent; color: root.isVideoMode ? theme.red : theme.mauve; Behavior on color { ColorAnimation { duration: 250 } }; Behavior on width { NumberAnimation { duration: 350; easing.type: Easing.OutBack } } }
+            Rectangle { width: actionArea.pressed ? s(32) : (actionArea.containsMouse ? s(40) : s(36)); height: width; radius: width/2; anchors.centerIn: parent; color: root.isVideoMode ? theme.red : theme.mauve; Behavior on color { ColorAnimation { duration: 250 } } Behavior on width { NumberAnimation { duration: 350; easing.type: Easing.OutBack } } }
             MouseArea { id: actionArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.captureClicked(false, root.isVideoMode) }
         }
 
@@ -257,7 +257,7 @@ Item {
                 anchors.left: parent.left; anchors.top: parent.top; anchors.bottom: parent.bottom
                 width: actionArea.containsMouse ? parent.width : 0; radius: s(2)
                 Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.InOutExpo } }
-                gradient: Gradient { orientation: Gradient.Horizontal; GradientStop { position: 0.0; color: "transparent" }; GradientStop { position: 1.0; color: root.isVideoMode ? theme.red : theme.mauve } }
+                gradient: Gradient { orientation: Gradient.Horizontal; GradientStop { position: 0.0; color: "transparent" } GradientStop { position: 1.0; color: root.isVideoMode ? theme.red : theme.mauve } }
             }
         }
     }

@@ -66,6 +66,25 @@ PanelWindow {
                 }
             }
         }
+        
+        function showOsd(type: string, value: string): void {
+            osdDaemon.showOsd(type, parseInt(value) || 0);
+        }
+
+        function toggleDnd(): void {
+            Quickshell.execDetached(["bash", "-c", `
+                dnd_dir="` + paths.getCacheDir("dnd") + `"
+                mkdir -p "$dnd_dir"
+                state_file="$dnd_dir/state"
+                if [ "$(cat "$state_file" 2>/dev/null)" = "1" ]; then
+                    echo "0" > "$state_file"
+                    notify-send -t 2000 "DND Disabled" "Notifications will now pop up."
+                else
+                    echo "1" > "$state_file"
+                    notify-send -t 2000 "DND Enabled" "Notifications are hidden."
+                fi
+            `]);
+        }
     }
 
     // ── Top bar mask hole ──────────────────────────────────────────────
@@ -95,7 +114,12 @@ PanelWindow {
         liveNotifs:   notifDaemon.liveNotifs
         windowWidth:  masterWindow.width
         windowHeight: masterWindow.height
-        onUiScaleChanged: (v) => { masterWindow.globalUiScale = v; handleNativeScreenChange(); }
+        onUiScaleChanged: function(v) { masterWindow.globalUiScale = v; handleNativeScreenChange(); }
+    }
+
+    OsdDaemon {
+        id: osdDaemon
+        uiScale: masterWindow.globalUiScale
     }
 
     // ── Core state ─────────────────────────────────────────────────────
@@ -225,7 +249,7 @@ PanelWindow {
                 masterWindow.morphDuration = masterWindow.morphDurationSwitch;
                 masterWindow.disableMorph  = false;
             }
-            Qt.callLater(() => executeSwitch(newWidget, arg, false));
+            Qt.callLater(executeSwitch, newWidget, arg, false);
         }
     }
 

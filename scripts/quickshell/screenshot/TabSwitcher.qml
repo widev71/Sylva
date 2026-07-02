@@ -61,7 +61,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     font.family: "Iosevka Nerd Font"
-                    text: ""
+                    text: "󰕧"
                     color: root.isVideoMode ? theme.crust : theme.text
                     font.pixelSize: 16
                 }

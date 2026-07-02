@@ -244,18 +244,18 @@ Item {
         }
     }
 
-    Keys.onTabPressed: (event) => {
+    Keys.onTabPressed: function(event) {
         if (root.isSearchMode) return;
         root.currentTab = (root.currentTab + 1) % 6;
         event.accepted = true;
     }
-    Keys.onBacktabPressed: (event) => {
+    Keys.onBacktabPressed: function(event) {
         if (root.isSearchMode) return;
         root.currentTab = (root.currentTab + 4) % 5;
         event.accepted = true;
     }
 
-    Keys.onPressed: (event) => {
+    Keys.onPressed: function(event) {
         if ((event.key === Qt.Key_F && (event.modifiers & Qt.ControlModifier)) || 
             (event.key === Qt.Key_Slash && !root.isSearchMode)) {
             root.isSearchMode = true;
@@ -350,8 +350,8 @@ Item {
         }
     }
 
-    Keys.onReturnPressed: (event) => root.handleRootEnter(event)
-    Keys.onEnterPressed: (event) => root.handleRootEnter(event)
+    Keys.onReturnPressed: function(event) { root.handleRootEnter(event); }
+    Keys.onEnterPressed: function(event) { root.handleRootEnter(event); }
 
     function handleRootEnter(event) {
         if (root.isSearchMode) {
@@ -443,6 +443,7 @@ Item {
     readonly property color green: _theme.green
     readonly property color peach: _theme.peach
     readonly property color yellow: _theme.yellow
+    readonly property color activeColor: _theme.mauve
     readonly property color red: _theme.red
 
     property var kbToggleModelArr: [
@@ -531,7 +532,7 @@ Item {
 
     function validateKeybind(index, mods, key, dispatcher, command) {
         let validMods = ["SHIFT", "SHIFT_L", "SHIFT_R", "CAPS", "CTRL", "CONTROL", "ALT", "MOD2", "MOD3", "SUPER", "WIN", "LOGO", "MOD4", "MOD5", "$mainMod"];
-        let modArray = mods ? mods.replace(/&/g, " ").split(" ").filter(x => x !== "") : [];
+        let modArray = mods ? mods.replace(/&/g, " ").split(" ").filter(function(x) { return x !== ""; }) : [];
         
         for (let i = 0; i < modArray.length; i++) {
             if (!validMods.includes(modArray[i])) {
@@ -548,7 +549,7 @@ Item {
             let item = dynamicKeybindsModel.get(i);
             if (!item.key) continue;
 
-            let itemModsNormalized = item.mods ? item.mods.replace(/&/g, " ").split(" ").filter(x => x !== "").sort().join(" ") : "";
+            let itemModsNormalized = item.mods ? item.mods.replace(/&/g, " ").split(" ").filter(function(x) { return x !== ""; }).sort().join(" ") : "";
             let itemKeyNormalized = item.key.trim().toLowerCase();
 
             if (itemModsNormalized === currentModsNormalized && itemKeyNormalized === currentKeyNormalized) {
@@ -970,7 +971,7 @@ Item {
                 let key = match[1] + "x" + match[2];
                 if (!seen[key]) { seen[key] = true; list.push({w: parseInt(match[1]), h: parseInt(match[2])}); }
             }
-            list.sort((a, b) => (b.w * b.h) - (a.w * a.h));
+            list.sort(function(a, b) { return (b.w * b.h) - (a.w * a.h); });
             return list;
         } catch(e) { return []; }
     }
@@ -988,7 +989,7 @@ Item {
                     if (!isNaN(r) && !seen[r]) { seen[r] = true; rates.push(r); }
                 }
             }
-            rates.sort((a,b) => a-b);
+            rates.sort(function(a, b) { return a - b; });
             return rates;
         } catch(e) { return []; }
     }
@@ -1398,7 +1399,7 @@ Item {
                                     Flow {
                                         Layout.fillWidth: true; spacing: root.s(6); Layout.topMargin: root.s(8)
                                         Repeater {
-                                            model: Config.language ? Config.language.split(",").filter(x => x.trim() !== "") : []
+                                            model: Config.language ? Config.language.split(",").filter(function(x) { return x.trim() !== ""; }) : []
                                             Rectangle {
                                                 width: langChipLayout.implicitWidth + root.s(20); height: root.s(26); radius: root.s(13)
                                                 color: box3.isActive ? Qt.alpha(root.base, 0.2) : root.surface1
@@ -1423,7 +1424,7 @@ Item {
                                                 MouseArea {
                                                     id: chipMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                                     onClicked: {
-                                                        let arr = Config.language.split(",").filter(x => x.trim() !== "");
+                                                        let arr = Config.language.split(",").filter(function(x) { return x.trim() !== ""; });
                                                         arr.splice(index, 1);
                                                         Config.language = arr.join(",");
                                                     }
@@ -1450,19 +1451,19 @@ Item {
                                     font.family: "JetBrains Mono"; font.pixelSize: root.s(11)
                                     color: box3.isActive ? root.base : root.text; clip: true; selectByMouse: true
                                     Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
-                                    Keys.onPressed: (event) => {
+                                    Keys.onPressed: function(event) {
                                         if (event.key === Qt.Key_Tab || event.key === Qt.Key_Down) {
                                             if (langSearchModel.count > 0) { langListView.incrementCurrentIndex(); event.accepted = true; }
                                         } else if (event.key === Qt.Key_Backtab || event.key === Qt.Key_Up) {
                                             if (langSearchModel.count > 0) { langListView.decrementCurrentIndex(); event.accepted = true; }
                                         }
                                     }
-                                    Keys.onReturnPressed: (event) => langInputAccept(event)
-                                    Keys.onEnterPressed: (event) => langInputAccept(event)
+                                    Keys.onReturnPressed: function(event) { langInputAccept(event); }
+                                    Keys.onEnterPressed: function(event) { langInputAccept(event); }
                                     function langInputAccept(event) {
                                         if (langSearchModel.count > 0 && langListView.currentIndex >= 0) {
                                             let item = langSearchModel.get(langListView.currentIndex);
-                                            let arr = Config.language ? Config.language.split(",").filter(x => x.trim() !== "") : [];
+                                            let arr = Config.language ? Config.language.split(",").filter(function(x) { return x.trim() !== ""; }) : [];
                                             if (!arr.includes(item.code)) { arr.push(item.code); Config.language = arr.join(","); }
                                         }
                                         text = ""; focus = false; event.accepted = true;
@@ -1510,7 +1511,7 @@ Item {
                                         MouseArea {
                                             id: sMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                let arr = Config.language ? Config.language.split(",").filter(x => x.trim() !== "") : [];
+                                                let arr = Config.language ? Config.language.split(",").filter(function(x) { return x.trim() !== ""; }) : [];
                                                 if (!arr.includes(model.code)) { arr.push(model.code); Config.language = arr.join(","); }
                                                 langInput.text = ""; langInput.focus = false;
                                             }
@@ -1592,7 +1593,7 @@ Item {
                                             onClicked: {
                                                 root.isLayoutDropdownOpen = !root.isLayoutDropdownOpen;
                                                 if (root.isLayoutDropdownOpen) {
-                                                    let idx = root.kbToggleModelArr.findIndex(x => x.val === Config.kbOptions);
+                                                    let idx = root.kbToggleModelArr.findIndex(function(x) { return x.val === Config.kbOptions; });
                                                     layoutListView.currentIndex = Math.max(0, idx);
                                                 }
                                                 root.forceActiveFocus();
@@ -1702,15 +1703,15 @@ Item {
                                             font.family: "JetBrains Mono"; font.pixelSize: root.s(11)
                                             color: box5.isActive ? root.base : root.text; clip: true; selectByMouse: true
                                             Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
-                                            Keys.onPressed: (event) => {
+                                            Keys.onPressed: function(event) {
                                                 if (event.key === Qt.Key_Tab || event.key === Qt.Key_Down) {
                                                     if (pathSuggestModel.count > 0) { wpSuggestListView.incrementCurrentIndex(); event.accepted = true; }
                                                 } else if (event.key === Qt.Key_Backtab || event.key === Qt.Key_Up) {
                                                     if (pathSuggestModel.count > 0) { wpSuggestListView.decrementCurrentIndex(); event.accepted = true; }
                                                 }
                                             }
-                                            Keys.onReturnPressed: (event) => wpDirInputAccept(event)
-                                            Keys.onEnterPressed: (event) => wpDirInputAccept(event)
+                                            Keys.onReturnPressed: function(event) { wpDirInputAccept(event); }
+                                            Keys.onEnterPressed: function(event) { wpDirInputAccept(event); }
                                             function wpDirInputAccept(event) {
                                                 if (pathSuggestModel.count > 0 && wpSuggestListView.currentIndex >= 0) {
                                                     let item = pathSuggestModel.get(wpSuggestListView.currentIndex);
@@ -2146,7 +2147,7 @@ Item {
                     spacing: root.s(10)
 
                     // ── Box 0: Instructions ──────────────────────────────────
-                    Rectangle {
+                                        Rectangle {
                         id: wBox0
                         Layout.fillWidth: true
                         Layout.preferredHeight: instructionLayout.implicitHeight + root.s(28)
@@ -2166,7 +2167,7 @@ Item {
                             anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(14)
                             spacing: root.s(10)
                             Text {
-                                text: "Weather Widget Setup"; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(15)
+                                text: "Weather Configuration (Open-Meteo)"; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(15)
                                 color: wBox0.isActive ? root.base : root.text; Layout.bottomMargin: root.s(2)
                                 Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                             }
@@ -2180,7 +2181,7 @@ Item {
                                     Text { anchors.centerIn: parent; text: "1"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(11); color: wBox0.isActive ? root.base : root.blue; Behavior on color { ColorAnimation { duration: 220 } } }
                                 }
                                 Text {
-                                    text: "Get an API Key"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(13)
+                                    text: "Automatic Location (Recommended)"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(13)
                                     color: wBox0.isActive ? root.base : root.text; Layout.fillWidth: true
                                     Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                                 }
@@ -2198,7 +2199,7 @@ Item {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: root.s(6); Layout.topMargin: root.s(2); Layout.bottomMargin: root.s(2)
                                     Repeater {
-                                        model: ["Go to openweathermap.org & create an account.", "Navigate to profile -> 'My API keys'.", "Generate a new key and paste it below."]
+                                        model: ["Quickshell uses IP-based auto-detection by default.", "Leave Latitude & Longitude empty to use auto-detection."]
                                         Rectangle {
                                             Layout.fillWidth: true; Layout.preferredHeight: root.s(30)
                                             radius: root.s(6)
@@ -2224,7 +2225,7 @@ Item {
                                     Text { anchors.centerIn: parent; text: "2"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(11); color: wBox0.isActive ? root.base : root.peach; Behavior on color { ColorAnimation { duration: 220 } } }
                                 }
                                 Text {
-                                    text: "Find your City ID"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(13)
+                                    text: "Manual Location (Optional)"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(13)
                                     color: wBox0.isActive ? root.base : root.text; Layout.fillWidth: true
                                     Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                                 }
@@ -2246,7 +2247,7 @@ Item {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: root.s(6); Layout.topMargin: root.s(2); Layout.bottomMargin: root.s(2)
                                     Repeater {
-                                        model: ["Search for your city on openweathermap.org.", "Look at the URL (e.g. .../city/2643743).", "Copy the number at the end and paste below."]
+                                        model: ["To override auto-detection, find your coords (e.g., Maps).", "Enter Latitude and Longitude below."]
                                         Rectangle {
                                             Layout.fillWidth: true; Layout.preferredHeight: root.s(30)
                                             radius: root.s(6)
@@ -2262,15 +2263,10 @@ Item {
                                     }
                                 }
                             }
-                            Text {
-                                text: "* Note: New API keys may take a few hours to activate."; font.family: "Inter"; font.pixelSize: root.s(10)
-                                color: wBox0.isActive ? Qt.alpha(root.base, 0.7) : root.yellow; font.italic: true; Layout.topMargin: root.s(2)
-                                Behavior on color { ColorAnimation { duration: 220 } }
-                            }
                         }
                     }
 
-                    // ── Box 1: API Key ───────────────────────────────────────
+                                        // ── Box 1: Latitude ───────────────────────────────────────
                     Rectangle {
                         id: wBox1
                         Layout.fillWidth: true
@@ -2302,12 +2298,12 @@ Item {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: root.s(3)
                                     Text {
-                                        text: "API Key"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                        text: "Latitude"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
                                         color: wBox1.isActive ? root.base : root.text; Layout.fillWidth: true
                                         Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                                     }
                                     Text {
-                                        text: "OpenWeather API key"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                        text: "E.g. -8.65"; font.family: "Inter"; font.pixelSize: root.s(11)
                                         color: wBox1.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
                                         Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                                     }
@@ -2336,33 +2332,21 @@ Item {
                                         verticalAlignment: TextInput.AlignVCenter
                                         font.family: "JetBrains Mono"; font.pixelSize: root.s(12)
                                         color: wBox1.isActive ? root.base : root.text; clip: true; selectByMouse: true
-                                        echoMode: weatherTabRoot.apiKeyVisible ? TextInput.Normal : TextInput.Password
-                                        passwordCharacter: "•"
-                                        onTextChanged: Config.weatherApiKey = text
+                                        text: Config.weatherLat
+                                        onTextChanged: Config.weatherLat = text
                                         Behavior on color { ColorAnimation { duration: 220 } }
                                         Text {
-                                            text: "Enter API Key..."; color: wBox1.isActive ? Qt.alpha(root.base, 0.5) : root.subtext0
+                                            text: "Leave empty for auto-detect..."; color: wBox1.isActive ? Qt.alpha(root.base, 0.5) : root.subtext0
                                             visible: !parent.text && !parent.activeFocus; font: parent.font; anchors.verticalCenter: parent.verticalCenter
                                             Behavior on color { ColorAnimation { duration: 220 } }
                                         }
-                                    }
-                                    Rectangle {
-                                        width: root.s(24); height: root.s(24); radius: root.s(4); color: "transparent"
-                                        Text {
-                                            anchors.centerIn: parent; text: weatherTabRoot.apiKeyVisible ? "󰈈" : "󰈉"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16)
-                                            color: eyeMa.containsMouse
-                                                ? (wBox1.isActive ? root.base : root.blue)
-                                                : (wBox1.isActive ? Qt.alpha(root.base, 0.6) : root.subtext0)
-                                            Behavior on color { ColorAnimation { duration: 150 } }
-                                        }
-                                        MouseArea { id: eyeMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: weatherTabRoot.apiKeyVisible = !weatherTabRoot.apiKeyVisible }
                                     }
                                 }
                             }
                         }
                     }
 
-                    // ── Box 2: City ID ───────────────────────────────────────
+                                        // ── Box 2: Longitude ───────────────────────────────────────
                     Rectangle {
                         id: wBox2
                         Layout.fillWidth: true
@@ -2394,12 +2378,12 @@ Item {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: root.s(3)
                                     Text {
-                                        text: "City ID"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                        text: "Longitude"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
                                         color: wBox2.isActive ? root.base : root.text; Layout.fillWidth: true
                                         Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                                     }
                                     Text {
-                                        text: "OpenWeather city ID"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                        text: "E.g. 115.21"; font.family: "Inter"; font.pixelSize: root.s(11)
                                         color: wBox2.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
                                         Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
                                     }
@@ -2421,10 +2405,83 @@ Item {
                                     verticalAlignment: TextInput.AlignVCenter
                                     font.family: "JetBrains Mono"; font.pixelSize: root.s(12)
                                     color: wBox2.isActive ? root.base : root.text; clip: true; selectByMouse: true
-                                    onTextChanged: Config.weatherCityId = text
+                                    text: Config.weatherLon
+                                    onTextChanged: Config.weatherLon = text
                                     Behavior on color { ColorAnimation { duration: 220 } }
                                     Text {
-                                        text: "City ID (e.g. 2624652)"; color: wBox2.isActive ? Qt.alpha(root.base, 0.5) : root.subtext0
+                                        text: "Leave empty for auto-detect..."; color: wBox2.isActive ? Qt.alpha(root.base, 0.5) : root.subtext0
+                                        visible: !parent.text && !parent.activeFocus; font: parent.font; anchors.verticalCenter: parent.verticalCenter
+                                        Behavior on color { ColorAnimation { duration: 220 } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Box 2.5: Location Name ─────────────────────────────────
+                    Rectangle {
+                        id: wBox25
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: locNameRow.implicitHeight + root.s(28)
+                        radius: root.s(12)
+
+                        property bool isActive: root.highlightedBox === 25
+                        color: isActive ? root.blue : root.surface0
+                        border.color: isActive ? root.blue : root.surface1
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+
+                        MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = 25; z: -1 }
+
+                        ColumnLayout {
+                            id: locNameRow
+                            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                            spacing: root.s(10)
+                            RowLayout {
+                                Layout.fillWidth: true; spacing: root.s(14)
+                                Item {
+                                    Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignVCenter
+                                    Text {
+                                        anchors.centerIn: parent; text: "󰍎"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                        color: wBox25.isActive ? root.base : root.blue
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                                ColumnLayout {
+                                    Layout.fillWidth: true; spacing: root.s(3)
+                                    Text {
+                                        text: "Location Name (Optional)"; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                        color: wBox25.isActive ? root.base : root.text; Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                    Text {
+                                        text: "E.g. Canggu, Bali"; font.family: "Inter"; font.pixelSize: root.s(11)
+                                        color: wBox25.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                        Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                Layout.fillWidth: true; Layout.preferredHeight: root.s(42)
+                                radius: root.s(7)
+                                color: wBox25.isActive ? Qt.alpha(root.base, 0.15) : root.surface0
+                                border.color: locNameInput.activeFocus
+                                    ? (wBox25.isActive ? root.base : root.blue)
+                                    : (wBox25.isActive ? Qt.alpha(root.base, 0.3) : root.surface2)
+                                border.width: 1
+                                Behavior on border.color { ColorAnimation { duration: 150 } }
+                                Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                TextInput {
+                                    id: locNameInput
+                                    anchors.fill: parent; anchors.margins: root.s(10)
+                                    verticalAlignment: TextInput.AlignVCenter
+                                    font.family: "JetBrains Mono"; font.pixelSize: root.s(12)
+                                    color: wBox25.isActive ? root.base : root.text; clip: true; selectByMouse: true
+                                    text: Config.weatherLocName
+                                    onTextChanged: Config.weatherLocName = text
+                                    Behavior on color { ColorAnimation { duration: 220 } }
+                                    Text {
+                                        text: "Leave empty for auto-detect..."; color: wBox25.isActive ? Qt.alpha(root.base, 0.5) : root.subtext0
                                         visible: !parent.text && !parent.activeFocus; font: parent.font; anchors.verticalCenter: parent.verticalCenter
                                         Behavior on color { ColorAnimation { duration: 220 } }
                                     }
@@ -2605,7 +2662,7 @@ Item {
                             property bool isJumpHighlighted: root.highlightedBox === outerIndex
                             
                             property bool layoutReady: false
-                            Component.onCompleted: Qt.callLater(() => layoutReady = true)
+                            Component.onCompleted: Qt.callLater(function() { layoutReady = true; })
 
                             width: kbListView.width
                             height: root.s(44) + (model.isEditing ? editPanel.implicitHeight + root.s(12) : 0)
@@ -2794,14 +2851,14 @@ Item {
                                             focus: false
                                             property var accumulatedMods: []
                                             property string accumulatedKey: ""
-                                            Keys.onTabPressed: (event) => { event.accepted = true; processKey(event); }
-                                            Keys.onBacktabPressed: (event) => { event.accepted = true; processKey(event); }
-                                            Keys.onReturnPressed: (event) => { event.accepted = true; processKey(event); }
-                                            Keys.onEnterPressed: (event) => { event.accepted = true; processKey(event); }
-                                            Keys.onEscapePressed: (event) => { captureTrap.focus = false; event.accepted = true; }
-                                            Keys.onShortcutOverride: (event) => { event.accepted = true; }
-                                            Keys.onReleased: (event) => { event.accepted = true; }
-                                            Keys.onPressed: (event) => { event.accepted = true; processKey(event); }
+                                            Keys.onTabPressed: function(event) { event.accepted = true; processKey(event); }
+                                            Keys.onBacktabPressed: function(event) { event.accepted = true; processKey(event); }
+                                            Keys.onReturnPressed: function(event) { event.accepted = true; processKey(event); }
+                                            Keys.onEnterPressed: function(event) { event.accepted = true; processKey(event); }
+                                            Keys.onEscapePressed: function(event) { captureTrap.focus = false; event.accepted = true; }
+                                            Keys.onShortcutOverride: function(event) { event.accepted = true; }
+                                            Keys.onReleased: function(event) { event.accepted = true; }
+                                            Keys.onPressed: function(event) { event.accepted = true; processKey(event); }
                                             function processKey(event) {
                                                 if (event.key === Qt.Key_Escape) return;
                                                 let newMods = [];
@@ -2833,7 +2890,7 @@ Item {
                                                 else if (event.text && event.text.length > 0) k = event.text.toUpperCase();
                                                 else k = event.key.toString();
                                                 if (captureTrap.accumulatedKey !== "") {
-                                                    let prevMods = model.mods ? model.mods.split(" ").filter(x => x !== "") : [];
+                                                    let prevMods = model.mods ? model.mods.split(" ").filter(function(x) { return x !== ""; }) : [];
                                                     if (!prevMods.includes(captureTrap.accumulatedKey)) prevMods.push(captureTrap.accumulatedKey);
                                                     for (let m of newMods) { if (!prevMods.includes(m)) prevMods.push(m); }
                                                     dynamicKeybindsModel.setProperty(outerIndex, "mods", prevMods.join(" "));
@@ -3255,7 +3312,7 @@ Item {
                             onActiveFocusChanged: { if (activeFocus && !root.isSearchMode) root.isSearchMode = true; }
                             onTextChanged: { root.globalSearchQuery = text; if (!root.isSearchMode && text.length > 0) root.isSearchMode = true; }
                             Keys.onEscapePressed: { root.isSearchMode = false; root.globalSearchQuery = ""; text = ""; root.searchHighlightIndex = -1; root.forceActiveFocus(); }
-                            Keys.onDownPressed: (event) => {
+                            Keys.onDownPressed: function(event) {
                                 root.forceActiveFocus();
                                 let total = root.searchResultItems.length;
                                 if (total === 0) { event.accepted = true; return; }
@@ -3263,7 +3320,7 @@ Item {
                                 root.scrollSearchHighlightIntoView(root.searchHighlightIndex);
                                 event.accepted = true;
                             }
-                            Keys.onUpPressed: (event) => {
+                            Keys.onUpPressed: function(event) {
                                 root.forceActiveFocus();
                                 let total = root.searchResultItems.length;
                                 if (total === 0) { event.accepted = true; return; }
@@ -3271,10 +3328,10 @@ Item {
                                 root.scrollSearchHighlightIntoView(root.searchHighlightIndex);
                                 event.accepted = true;
                             }
-                            Keys.onReturnPressed: (event) => {
+                            Keys.onReturnPressed: function(event) {
                                 if (root.searchHighlightIndex >= 0) { root.activateSearchHighlight(); event.accepted = true; }
                             }
-                            Keys.onEnterPressed: (event) => {
+                            Keys.onEnterPressed: function(event) {
                                 if (root.searchHighlightIndex >= 0) { root.activateSearchHighlight(); event.accepted = true; }
                             }
                         }
@@ -3337,7 +3394,7 @@ Item {
 
                         WheelHandler {
                             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-                            onWheel: (event) => {
+                            onWheel: function(event) {
                                 smoothScrollAnim.stop(); // Cancel auto-scroll if user takes control
                                 
                                 // UX Update: Support both vertical mice and horizontal trackpads seamlessly
@@ -3708,7 +3765,7 @@ Item {
                         id: generalLoader
                         anchors.fill: parent
                         active: root.tab0Loaded && Config.dataReady
-                        sourceComponent: SettingsGeneralTab {}
+                        sourceComponent: generalTabComponent
                         visible: root.currentTab === 0 && !root.isSearchMode
                         opacity: visible ? 1.0 : 0.0
                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
@@ -3725,7 +3782,7 @@ Item {
                         id: weatherLoader
                         anchors.fill: parent
                         active: root.tab1Loaded && Config.dataReady
-                        sourceComponent: SettingsWeatherTab {}
+                        sourceComponent: weatherTabComponent
                         visible: root.currentTab === 1 && !root.isSearchMode
                         opacity: visible ? 1.0 : 0.0
                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
@@ -3739,7 +3796,7 @@ Item {
                         id: keybindLoader
                         anchors.fill: parent
                         active: root.tab2Loaded && Config.dataReady
-                        sourceComponent: SettingsKeybindTab {}
+                        sourceComponent: keybindTabComponent
                         visible: root.currentTab === 2 && !root.isSearchMode
                         opacity: visible ? 1.0 : 0.0
                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
@@ -3752,7 +3809,7 @@ Item {
                         id: startupLoader
                         anchors.fill: parent
                         active: root.tab4Loaded && Config.dataReady
-                        sourceComponent: SettingsStartupTab {}
+                        sourceComponent: startupTabComponent
                         visible: root.currentTab === 4 && !root.isSearchMode
                         opacity: visible ? 1.0 : 0.0
                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
@@ -3765,7 +3822,7 @@ Item {
                         id: profileLoader
                         anchors.fill: parent
                         active: root.tab5Loaded && Config.dataReady
-                        sourceComponent: SettingsProfileTab {}
+                        sourceComponent: profileTabComponent
                         visible: root.currentTab === 5 && !root.isSearchMode
                         opacity: visible ? 1.0 : 0.0
                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
@@ -3778,7 +3835,7 @@ Item {
                         id: monitorsLoader
                         anchors.fill: parent
                         active: root.tab3Loaded
-                        sourceComponent: SettingsMonitorsTab {}
+                        sourceComponent: monitorsTabComponent
                         visible: root.currentTab === 3 && !root.isSearchMode
                         opacity: visible ? 1.0 : 0.0
                         Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
@@ -3788,4 +3845,998 @@ Item {
         }
     }
 
+    Component {
+        id: startupTabComponent
+        Item {
+            id: startupTabRoot
+
+            function scrollTo(y) {
+                let maxY = Math.max(0, startupFlickable.contentHeight - startupFlickable.height);
+                startupFlickable.contentY = Math.max(0, Math.min(y - root.s(40), maxY > 0 ? maxY : y));
+            }
+            function scrollToBottom() {
+                startupFlickable.contentY = Math.max(0, startupColLayout.implicitHeight - startupFlickable.height + root.s(100));
+            }
+            function scrollToBox(approxItemY) {
+                let viewH = startupFlickable.height;
+                let itemTop = approxItemY;
+                let itemBottom = approxItemY + root.s(56);
+                let curY = startupFlickable.contentY;
+                let maxY = Math.max(0, startupFlickable.contentHeight - viewH);
+                if (itemTop < curY + root.s(10)) {
+                    startupFlickable.contentY = Math.max(0, itemTop - root.s(20));
+                } else if (itemBottom > curY + viewH - root.s(10)) {
+                    startupFlickable.contentY = Math.min(maxY, itemBottom - viewH + root.s(20));
+                }
+            }
+
+            Flickable {
+                id: startupFlickable
+                anchors.fill: parent
+                contentWidth: width
+                contentHeight: startupColLayout.implicitHeight + root.s(100)
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
+
+                MouseArea { anchors.fill: parent; onClicked: root.clearHighlight(); z: -1 }
+
+                ColumnLayout {
+                    id: startupColLayout
+                    width: parent.width
+                    spacing: root.s(8)
+
+                    ListView {
+                        id: startupListView
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: implicitHeight
+                        implicitHeight: dynamicStartupModel.count * root.s(56) + root.s(20)
+                        model: dynamicStartupModel
+                        interactive: false
+                        cacheBuffer: root.s(2000)
+                        spacing: root.s(8)
+
+                        delegate: Rectangle {
+                            id: startupRowRect
+                            property int outerIndex: index
+                            property bool isJumpHighlighted: root.highlightedBox === outerIndex
+
+                            property bool layoutReady: false
+                            Component.onCompleted: Qt.callLater(function() { layoutReady = true; })
+
+                            width: startupListView.width
+                            height: root.s(44) + (model.isEditing ? editPanel.implicitHeight + root.s(12) : 0)
+                            radius: root.s(8)
+
+                            HoverHandler { id: startupRowHover }
+                            property bool isHovered: startupRowHover.hovered || model.isEditing || isJumpHighlighted
+                            color: isJumpHighlighted ? root.surface1 : (isHovered ? root.surface1 : root.surface0)
+                            border.color: isJumpHighlighted ? root.green : (isHovered ? Qt.alpha(root.green, 0.5) : root.surface1)
+                            border.width: isJumpHighlighted ? 2 : 1
+
+                            Behavior on height { NumberAnimation { duration: 250; easing.type: Easing.OutQuart } }
+                            Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutExpo } }
+                            Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutExpo } }
+                            Behavior on border.width { NumberAnimation { duration: 150 } }
+
+                            MouseArea { anchors.fill: parent; z: -2; onClicked: root.highlightedBox = outerIndex; }
+
+                            ColumnLayout {
+                                anchors.fill: parent; anchors.margins: root.s(10); spacing: root.s(10)
+
+                                Item {
+                                    Layout.fillWidth: true; Layout.preferredHeight: root.s(24); clip: true
+
+                                    Rectangle {
+                                        id: startupEditBtn
+                                        width: root.s(26); height: root.s(26); radius: root.s(6)
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        x: startupRowRect.isHovered ? parent.width - width : parent.width
+                                        color: model.isEditing
+                                            ? root.green
+                                            : (startupEditMa.containsMouse ? root.green : root.surface2)
+                                        Behavior on x {
+                                            enabled: startupRowRect.layoutReady
+                                            NumberAnimation { duration: 250; easing.type: Easing.OutQuart }
+                                        }
+                                        Behavior on color { ColorAnimation { duration: 180; easing.type: Easing.OutExpo } }
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: model.isEditing ? "▴" : "󰏫"
+                                            font.family: model.isEditing ? "Inter" : "Iosevka Nerd Font"
+                                            font.pixelSize: root.s(13)
+                                            color: model.isEditing
+                                                ? root.base
+                                                : (startupEditMa.containsMouse ? root.base : root.subtext0)
+                                            Behavior on color { ColorAnimation { duration: 180; easing.type: Easing.OutExpo } }
+                                        }
+                                        MouseArea {
+                                            id: startupEditMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor;
+                                            onClicked: {
+                                                dynamicStartupModel.setProperty(outerIndex, "isEditing", !model.isEditing);
+                                                if (!model.isEditing) root.forceActiveFocus();
+                                            }
+                                        }
+                                    }
+
+                                    Item {
+                                        anchors.left: parent.left
+                                        anchors.right: startupEditBtn.left; anchors.rightMargin: root.s(6)
+                                        anchors.verticalCenter: parent.verticalCenter; height: parent.height; clip: true
+
+                                        Text {
+                                            anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
+                                            text: model.command !== "" ? model.command : "(empty command)"
+                                            font.family: "JetBrains Mono"; font.pixelSize: root.s(10)
+                                            color: model.command !== "" ? root.text : root.overlay0
+                                            elide: Text.ElideRight; width: parent.width
+                                        }
+                                    }
+                                }
+
+                                Item {
+                                    id: editPanel
+                                    Layout.fillWidth: true
+                                    implicitHeight: editPanelCol.implicitHeight
+                                    visible: model.isEditing
+                                    opacity: model.isEditing ? 1.0 : 0.0
+                                    Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutExpo } }
+
+                                    ColumnLayout {
+                                        id: editPanelCol
+                                        anchors.left: parent.left; anchors.right: parent.right
+                                        spacing: root.s(8)
+
+                                        Rectangle {
+                                            Layout.fillWidth: true; Layout.preferredHeight: root.s(32); radius: root.s(6)
+                                            color: root.surface0; border.color: cmdInputFocus.activeFocus ? root.green : root.surface2; border.width: 1
+                                            Behavior on border.color { ColorAnimation { duration: 150 } }
+                                            RowLayout {
+                                                anchors.fill: parent; anchors.leftMargin: root.s(10); anchors.rightMargin: root.s(10); spacing: root.s(8)
+                                                TextInput {
+                                                    id: cmdInputFocus
+                                                    Layout.fillWidth: true; Layout.fillHeight: true; verticalAlignment: TextInput.AlignVCenter
+                                                    font.family: "JetBrains Mono"; font.pixelSize: root.s(10); color: root.text; clip: true; selectByMouse: true
+                                                    text: model.command
+                                                    onTextChanged: dynamicStartupModel.setProperty(outerIndex, "command", text)
+                                                    Keys.onEscapePressed: { dynamicStartupModel.setProperty(outerIndex, "isEditing", false); root.forceActiveFocus(); }
+                                                    Text {
+                                                        anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
+                                                        text: "e.g. waybar, dunst, nm-applet"
+                                                        color: Qt.alpha(root.subtext0, 0.45); visible: !parent.text && !parent.activeFocus
+                                                        font.family: "JetBrains Mono"; font.pixelSize: root.s(10)
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        RowLayout {
+                                            Layout.fillWidth: true; Layout.alignment: Qt.AlignRight; spacing: root.s(8)
+
+                                            Rectangle {
+                                                Layout.preferredHeight: root.s(28); Layout.preferredWidth: startupDelRow.implicitWidth + root.s(16)
+                                                radius: root.s(6)
+                                                color: startupDelMa.containsMouse ? root.red : root.surface1
+                                                border.color: startupDelMa.containsMouse ? root.red : root.surface2; border.width: 1
+                                                Behavior on color { ColorAnimation { duration: 150 } }
+                                                RowLayout {
+                                                    id: startupDelRow; anchors.centerIn: parent; spacing: root.s(5)
+                                                    Text { text: "󰆴"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(12); color: startupDelMa.containsMouse ? root.base : root.red; Behavior on color { ColorAnimation { duration: 150 } } }
+                                                    Text { text: "Delete"; font.family: "JetBrains Mono"; font.pixelSize: root.s(10); color: startupDelMa.containsMouse ? root.base : root.red; Behavior on color { ColorAnimation { duration: 150 } } }
+                                                }
+                                                MouseArea { id: startupDelMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { dynamicStartupModel.remove(outerIndex); root.saveAllStartup(); } }
+                                            }
+
+                                            Rectangle {
+                                                Layout.preferredHeight: root.s(28); Layout.preferredWidth: startupDoneRow.implicitWidth + root.s(16)
+                                                radius: root.s(6)
+                                                color: startupDoneMa.containsMouse ? root.green : root.surface1
+                                                border.color: startupDoneMa.containsMouse ? root.green : root.surface2; border.width: 1
+                                                Behavior on color { ColorAnimation { duration: 150 } }
+                                                RowLayout {
+                                                    id: startupDoneRow; anchors.centerIn: parent; spacing: root.s(5)
+                                                    Text { text: "󰸞"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(12); color: startupDoneMa.containsMouse ? root.base : root.green; Behavior on color { ColorAnimation { duration: 150 } } }
+                                                    Text { text: "Done"; font.family: "JetBrains Mono"; font.pixelSize: root.s(10); color: startupDoneMa.containsMouse ? root.base : root.green; Behavior on color { ColorAnimation { duration: 150 } } }
+                                                }
+                                                MouseArea {
+                                                    id: startupDoneMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                                    onClicked: {
+                                                        dynamicStartupModel.setProperty(outerIndex, "isEditing", false);
+                                                        root.forceActiveFocus();
+                                                        root.saveAllStartup();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    Component {
+    id: monitorsTabComponent
+    Item {
+        Flickable {
+            id: monFlickable
+            anchors.fill: parent
+            contentWidth: width
+            contentHeight: monCol.implicitHeight + root.s(40)
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            ColumnLayout {
+                id: monCol
+                width: parent.width
+                spacing: root.s(12)
+
+                // ── Single Monitor Preview ──────────────────────────────────
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: root.s(220)
+                    visible: Config.monitorsModel.count <= 1
+
+                    Item {
+                        id: singleMonPreview
+                        anchors.centerIn: parent
+                        width: root.s(270)
+                        height: root.s(200)
+
+                        property real baseScale: Math.min(1.0, Math.min(1800 / root.monCurrentSimW, 1100 / Math.max(1, root.monCurrentSimH)))
+                        scale: baseScale
+                        Behavior on baseScale { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
+
+                        Rectangle {
+                            width: parent.width * 0.88
+                            height: root.s(10)
+                            radius: root.s(5)
+                            anchors.top: monStandBase.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: root.mantle
+                            border.color: root.surface0
+                            border.width: 1
+                        }
+                        Rectangle {
+                            id: monStandBase
+                            width: root.s(100)
+                            height: root.s(7)
+                            radius: root.s(4)
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: root.s(12)
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: root.surface1
+                        }
+                        Rectangle {
+                            id: monStandNeck
+                            width: root.s(26)
+                            height: root.s(52)
+                            anchors.bottom: monStandBase.top
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: root.surface0
+                            Rectangle {
+                                width: root.s(8)
+                                height: root.s(20)
+                                radius: root.s(4)
+                                anchors.centerIn: parent
+                                color: root.base
+                            }
+                        }
+                        Rectangle {
+                            id: monScreenBezel
+                            width: root.s(270) * (root.monCurrentSimW / 1920.0)
+                            height: root.s(270) * (root.monCurrentSimH / 1920.0)
+                            anchors.bottom: monStandNeck.top
+                            anchors.bottomMargin: root.s(-8)
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            radius: root.s(10)
+                            color: root.crust
+                            border.color: root.surface2
+                            border.width: root.s(2)
+                            Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
+                            Behavior on height { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
+
+                            Rectangle {
+                                anchors.fill: parent
+                                anchors.margins: root.s(8)
+                                radius: root.s(5)
+                                color: root.surface0
+                                clip: true
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    color: "transparent"
+                                    gradient: Gradient {
+                                        orientation: Gradient.Vertical
+                                        GradientStop { position: 0.0; color: Qt.tint(root.surface0, Qt.alpha(root.monSelectedResAccent, 0.18)); Behavior on color { ColorAnimation { duration: 400 } } }
+                                        GradientStop { position: 1.0; color: Qt.tint(root.surface0, Qt.alpha(root.monSelectedRateAccent, 0.12)); Behavior on color { ColorAnimation { duration: 400 } } }
+                                    }
+                                    Grid {
+                                        anchors.centerIn: parent
+                                        rows: 7; columns: 11; spacing: root.s(18)
+                                        Repeater { model: 77; Rectangle { width: root.s(2); height: root.s(2); radius: root.s(1); color: Qt.alpha(root.text, 0.08) } }
+                                    }
+                                }
+
+                                Item {
+                                    anchors.centerIn: parent
+                                    width: root.s(140)
+                                    height: root.s(90)
+                                    property real counterScale: 1.0 / singleMonPreview.scale
+                                    property real maxPhysicalScale: root.monCurrentIsPortrait
+                                        ? Math.min((parent.width * 0.9) / height, (parent.height * 0.9) / width)
+                                        : Math.min((parent.width * 0.9) / width, (parent.height * 0.9) / height)
+                                    scale: Math.min(counterScale, maxPhysicalScale)
+
+                                    ColumnLayout {
+                                        anchors.centerIn: parent
+                                        spacing: root.s(4)
+                                        rotation: root.monCurrentTransform * 90
+                                        Behavior on rotation { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+                                        Text { Layout.alignment: Qt.AlignHCenter; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(32); color: root.monSelectedResAccent; text: "󰍹"; Behavior on color { ColorAnimation { duration: 400 } } }
+                                        Text { Layout.alignment: Qt.AlignHCenter; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(13); color: root.text; text: Config.monitorsModel.count > 0 ? Config.monitorsModel.get(0).name : "—" }
+                                        Text { Layout.alignment: Qt.AlignHCenter; font.family: "JetBrains Mono"; font.pixelSize: root.s(11); color: root.subtext0; text: root.monCurrentSimW + "\xd7" + root.monCurrentSimH + " @ " + (Config.monitorsModel.count > 0 ? Config.monitorsModel.get(0).rate : "60") + "Hz" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ── Multi-Monitor Drag Canvas ───────────────────────────────
+                Item {
+                    id: multiMonContainer
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: root.s(240)
+                    visible: Config.monitorsModel.count > 1
+                    clip: true
+
+                    // Background dot grid
+                    Grid {
+                        anchors.centerIn: parent
+                        rows: 11; columns: 19; spacing: root.s(18)
+                        Repeater { model: 209; Rectangle { width: root.s(2); height: root.s(2); radius: root.s(1); color: Qt.alpha(root.text, 0.07) } }
+                    }
+
+                    // Compute layout scale/offset to fit all monitors in the canvas
+                    property real targetScale: {
+                        let _ = root.monChangeTrigger;
+                        if (Config.monitorsModel.count < 2) return 1.0;
+                        let minX = 999999, minY = 999999, maxX = -999999, maxY = -999999;
+                        for (let i = 0; i < Config.monitorsModel.count; i++) {
+                            let m = Config.monitorsModel.get(i);
+                            let isP = m.transform === 1 || m.transform === 3;
+                            let w = ((isP ? m.resH : m.resW) / m.sysScale) * Config.monUiScale;
+                            let h = ((isP ? m.resW : m.resH) / m.sysScale) * Config.monUiScale;
+                            minX = Math.min(minX, m.uiX); minY = Math.min(minY, m.uiY);
+                            maxX = Math.max(maxX, m.uiX + w); maxY = Math.max(maxY, m.uiY + h);
+                        }
+                        let requiredW = (maxX - minX) + root.s(60);
+                        let requiredH = (maxY - minY) + root.s(60);
+                        return Math.min(root.s(multiMonContainer.width - root.s(20)) / requiredW,
+                                        root.s(200) / requiredH,
+                                        1.8);
+                    }
+                    property real offsetX: {
+                        let _ = root.monChangeTrigger;
+                        if (Config.monitorsModel.count < 2) return 0;
+                        let minX = 999999, maxX = -999999;
+                        for (let i = 0; i < Config.monitorsModel.count; i++) {
+                            let m = Config.monitorsModel.get(i);
+                            let isP = m.transform === 1 || m.transform === 3;
+                            let w = ((isP ? m.resH : m.resW) / m.sysScale) * Config.monUiScale;
+                            minX = Math.min(minX, m.uiX); maxX = Math.max(maxX, m.uiX + w);
+                        }
+                        return (multiMonContainer.width / 2) - ((minX + (maxX - minX) / 2) * targetScale);
+                    }
+                    property real offsetY: {
+                        let _ = root.monChangeTrigger;
+                        if (Config.monitorsModel.count < 2) return 0;
+                        let minY = 999999, maxY = -999999;
+                        for (let i = 0; i < Config.monitorsModel.count; i++) {
+                            let m = Config.monitorsModel.get(i);
+                            let isP = m.transform === 1 || m.transform === 3;
+                            let h = ((isP ? m.resW : m.resH) / m.sysScale) * Config.monUiScale;
+                            minY = Math.min(minY, m.uiY); maxY = Math.max(maxY, m.uiY + h);
+                        }
+                        return (multiMonContainer.height / 2) - ((minY + (maxY - minY) / 2) * targetScale);
+                    }
+
+                    Item {
+                        id: monTransformNode
+                        x: multiMonContainer.offsetX
+                        y: multiMonContainer.offsetY
+                        scale: multiMonContainer.targetScale
+                        transformOrigin: Item.TopLeft
+                        Behavior on x { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+                        Behavior on y { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+                        Behavior on scale { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+
+                        Repeater {
+                            model: Config.monitorsModel
+                            delegate: Item {
+                                id: monDelegateItem
+                                property bool isActive: Config.monActiveEditIndex === index
+                                property bool isPortrait: model.transform === 1 || model.transform === 3
+                                property real cardW: (isPortrait ? model.resH : model.resW) / model.sysScale * Config.monUiScale
+                                property real cardH: (isPortrait ? model.resW : model.resH) / model.sysScale * Config.monUiScale
+
+                                // Visible card
+                                Rectangle {
+                                    id: monCard
+                                    x: model.uiX
+                                    y: model.uiY
+                                    width: monDelegateItem.cardW
+                                    height: monDelegateItem.cardH
+                                    radius: root.s(8)
+                                    color: isActive ? root.surface1 : root.crust
+                                    border.color: isActive ? root.monSelectedResAccent : root.surface2
+                                    border.width: isActive ? root.s(2) : root.s(1)
+                                    z: isActive ? 5 : 0
+                                    Behavior on x { NumberAnimation { duration: 300; easing.type: Easing.OutQuint } }
+                                    Behavior on y { NumberAnimation { duration: 300; easing.type: Easing.OutQuint } }
+                                    Behavior on border.color { ColorAnimation { duration: 300 } }
+                                    Behavior on color { ColorAnimation { duration: 300 } }
+                                    Behavior on width { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+                                    Behavior on height { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+
+                                    Item {
+                                        anchors.centerIn: parent
+                                        width: root.s(110)
+                                        height: root.s(80)
+                                        property real idealScale: 1.2 / monTransformNode.scale
+                                        property real maxPhysicalScale: isPortrait
+                                            ? Math.min((parent.width * 0.9) / height, (parent.height * 0.9) / width)
+                                            : Math.min((parent.width * 0.9) / width, (parent.height * 0.9) / height)
+                                        scale: Math.min(idealScale, maxPhysicalScale)
+
+                                        ColumnLayout {
+                                            anchors.centerIn: parent
+                                            spacing: root.s(2)
+                                            rotation: model.transform * 90
+                                            Behavior on rotation { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+                                            Text { Layout.alignment: Qt.AlignHCenter; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(26); color: isActive ? root.monSelectedResAccent : root.text; text: "󰍹"; Behavior on color { ColorAnimation { duration: 300 } } }
+                                            Text { Layout.alignment: Qt.AlignHCenter; font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: root.s(10); color: root.text; text: model.name }
+                                            Text { Layout.alignment: Qt.AlignHCenter; font.family: "JetBrains Mono"; font.pixelSize: root.s(9); color: root.subtext0; text: model.resW + "\xd7" + model.resH + "@" + model.rate }
+                                        }
+                                    }
+                                }
+
+                                // Invisible ghost dragger — sits on top, handles drag
+                                Item {
+                                    id: ghostDrag
+                                    x: model.uiX
+                                    y: model.uiY
+                                    width: monDelegateItem.cardW
+                                    height: monDelegateItem.cardH
+                                    z: isActive ? 10 : 1
+
+                                    MouseArea {
+                                        id: ghostMa
+                                        anchors.fill: parent
+                                        drag.target: ghostDrag
+                                        drag.axis: Drag.XAndYAxis
+                                        cursorShape: Qt.SizeAllCursor
+
+                                        onPressed: {
+                                            Config.monActiveEditIndex = index;
+                                            ghostDrag.x = model.uiX;
+                                            ghostDrag.y = model.uiY;
+                                        }
+
+                                        onPositionChanged: {
+                                            if (!drag.active || Config.monitorsModel.count < 2) return;
+
+                                            let mW = monDelegateItem.cardW;
+                                            let mH = monDelegateItem.cardH;
+                                            let padding = root.s(40);
+
+                                            // Compute drag bounds from all other monitors
+                                            let boundMinX = 999999, boundMinY = 999999;
+                                            let boundMaxX = -999999, boundMaxY = -999999;
+                                            for (let j = 0; j < Config.monitorsModel.count; j++) {
+                                                if (j === index) continue;
+                                                let sModel = Config.monitorsModel.get(j);
+                                                let sIsP = sModel.transform === 1 || sModel.transform === 3;
+                                                let sW = ((sIsP ? sModel.resH : sModel.resW) / sModel.sysScale) * Config.monUiScale;
+                                                let sH = ((sIsP ? sModel.resW : sModel.resH) / sModel.sysScale) * Config.monUiScale;
+                                                boundMinX = Math.min(boundMinX, sModel.uiX - mW - padding);
+                                                boundMinY = Math.min(boundMinY, sModel.uiY - mH - padding);
+                                                boundMaxX = Math.max(boundMaxX, sModel.uiX + sW + padding);
+                                                boundMaxY = Math.max(boundMaxY, sModel.uiY + sH + padding);
+                                            }
+                                            ghostDrag.x = Math.max(boundMinX, Math.min(ghostDrag.x, boundMaxX));
+                                            ghostDrag.y = Math.max(boundMinY, Math.min(ghostDrag.y, boundMaxY));
+
+                                            // Perimeter snap against each other monitor
+                                            let bestX = ghostDrag.x, bestY = ghostDrag.y, bestDist = 999999;
+                                            for (let j = 0; j < Config.monitorsModel.count; j++) {
+                                                if (j === index) continue;
+                                                let sModel = Config.monitorsModel.get(j);
+                                                let sIsP = sModel.transform === 1 || sModel.transform === 3;
+                                                let sW = ((sIsP ? sModel.resH : sModel.resW) / sModel.sysScale) * Config.monUiScale;
+                                                let sH = ((sIsP ? sModel.resW : sModel.resH) / sModel.sysScale) * Config.monUiScale;
+                                                let snapped = Config.monGetPerimeterSnap(
+                                                    ghostDrag.x, ghostDrag.y,
+                                                    sModel.uiX, sModel.uiY, sW, sH, mW, mH, root.s(20)
+                                                );
+                                                let dist = Math.hypot(ghostDrag.x - snapped.x, ghostDrag.y - snapped.y);
+                                                if (dist < bestDist) { bestDist = dist; bestX = snapped.x; bestY = snapped.y; }
+                                            }
+
+                                            if (!Config.monIsOverlappingAny(bestX, bestY, mW, mH, index)) {
+                                                Config.monitorsModel.setProperty(index, "uiX", bestX);
+                                                Config.monitorsModel.setProperty(index, "uiY", bestY);
+                                            }
+                                        }
+
+                                        onReleased: {
+                                            // Snap ghost back to model position
+                                            ghostDrag.x = model.uiX;
+                                            ghostDrag.y = model.uiY;
+                                            root.monChangeTrigger++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ── Resolution Grid ─────────────────────────────────────────
+                GridLayout {
+                    id: resGrid
+                    Layout.fillWidth: true
+                    columns: 2
+                    columnSpacing: root.s(8)
+                    rowSpacing: root.s(8)
+
+                    Repeater {
+                        model: root.monAvailableResolutions
+                        delegate: Rectangle {
+                            property var md: root.monAvailableResolutions[index]
+                            property string resLabel: md ? root.getResLabel(md.w, md.h) : ""
+                            property color accent: root.monResAccentColors[index % root.monResAccentColors.length]
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: root.s(40)
+                            radius: root.s(10)
+                            property bool isSel: {
+                                let _ = root.monChangeTrigger;
+                                if (!md || Config.monitorsModel.count === 0) return false;
+                                let a = Config.monitorsModel.get(Config.monActiveEditIndex);
+                                return a.resW === md.w && a.resH === md.h;
+                            }
+                            color: isSel ? Qt.alpha(accent, 0.15) : (rMa.containsMouse ? root.surface0 : root.mantle)
+                            border.color: isSel ? accent : (rMa.containsMouse ? root.surface1 : "transparent")
+                            border.width: isSel ? root.s(2) : root.s(1)
+                            Behavior on color { ColorAnimation { duration: 200 } }
+                            Behavior on border.color { ColorAnimation { duration: 200 } }
+                            scale: rMa.pressed ? 0.96 : 1.0
+                            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutSine } }
+
+                            RowLayout {
+                                anchors.fill: parent; anchors.margins: root.s(10); spacing: root.s(6)
+                                Text {
+                                    font.family: "JetBrains Mono"; font.weight: isSel ? Font.Black : Font.Bold; font.pixelSize: root.s(13)
+                                    color: isSel ? accent : root.text; text: resLabel
+                                    Behavior on color { ColorAnimation { duration: 200 } }
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    font.family: "JetBrains Mono"; font.pixelSize: root.s(10)
+                                    color: isSel ? root.text : root.overlay0
+                                    text: md ? (md.w + "×" + md.h) : ""
+                                    Behavior on color { ColorAnimation { duration: 200 } }
+                                }
+                            }
+
+                            MouseArea {
+                                id: rMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (!md || Config.monitorsModel.count === 0) return;
+                                    root.monSelectedResAccent = accent;
+                                    Config.monitorsModel.setProperty(Config.monActiveEditIndex, "resW", md.w);
+                                    Config.monitorsModel.setProperty(Config.monActiveEditIndex, "resH", md.h);
+
+                                    // Auto-select highest compatible refresh rate
+                                    let mon = Config.monitorsModel.get(Config.monActiveEditIndex);
+                                    let modes = JSON.parse(mon.availableModes || "[]");
+                                    let prefix = md.w + "x" + md.h + "@";
+                                    let validRates = [];
+                                    for (let m of modes) {
+                                        if (m.startsWith(prefix)) {
+                                            let r = Math.round(parseFloat(m.slice(prefix.length).replace("Hz", "")));
+                                            if (!isNaN(r)) validRates.push(r);
+                                        }
+                                    }
+                                    if (validRates.length > 0) {
+                                        validRates.sort(function(a, b) { return b - a; });
+                                        let currentRate = Math.round(parseFloat(mon.rate));
+                                        let closest = validRates[0];
+                                        let minDiff = 99999;
+                                        for (let r of validRates) {
+                                            let diff = Math.abs(r - currentRate);
+                                            if (diff < minDiff) { minDiff = diff; closest = r; }
+                                        }
+                                        Config.monitorsModel.setProperty(Config.monActiveEditIndex, "rate", closest.toString());
+                                    }
+                                    root.monChangeTrigger++;
+                                    Config.monDelayedLayoutUpdate.restart();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ── Rotation Dial + Refresh Rate Slider ─────────────────────
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: root.s(16)
+
+                    // Rotation dial
+                    Rectangle {
+                        id: monDial
+                        Layout.preferredWidth: root.s(120)
+                        Layout.preferredHeight: root.s(120)
+                        Layout.alignment: Qt.AlignVCenter
+                        radius: width / 2
+                        color: root.surface0
+                        border.color: root.surface1
+                        border.width: root.s(2)
+
+                        Repeater {
+                            model: 12
+                            Item {
+                                anchors.fill: parent
+                                rotation: index * 30
+                                Rectangle {
+                                    width: index % 3 === 0 ? root.s(3) : root.s(2)
+                                    height: index % 3 === 0 ? root.s(8) : root.s(4)
+                                    radius: width / 2
+                                    color: index % 3 === 0 ? root.subtext0 : root.surface2
+                                    anchors.top: parent.top
+                                    anchors.topMargin: root.s(6)
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
+                            }
+                        }
+
+                        Item {
+                            anchors.fill: parent
+                            property int tf: {
+                                let _ = root.monChangeTrigger;
+                                return Config.monitorsModel.count > 0 ? Config.monitorsModel.get(Config.monActiveEditIndex).transform : 0;
+                            }
+                            rotation: tf * 90
+                            Behavior on rotation { NumberAnimation { duration: 400; easing.type: Easing.OutBack } }
+
+                            Rectangle {
+                                width: root.s(4)
+                                height: parent.height / 2 - root.s(22)
+                                radius: root.s(2)
+                                color: root.monSelectedResAccent
+                                anchors.bottom: parent.verticalCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                Behavior on color { ColorAnimation { duration: 300 } }
+                            }
+                            Rectangle {
+                                width: root.s(18); height: root.s(18); radius: root.s(9)
+                                color: root.base
+                                border.color: root.monSelectedResAccent
+                                border.width: root.s(4)
+                                anchors.centerIn: parent
+                                Behavior on border.color { ColorAnimation { duration: 300 } }
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            function updateAngle(mx, my) {
+                                if (Config.monitorsModel.count === 0) return;
+                                let cx = width / 2; let cy = height / 2;
+                                let dx = mx - cx; let dy = my - cy;
+                                if (Math.hypot(dx, dy) < root.s(18)) return;
+                                let tf = Config.monitorsModel.get(Config.monActiveEditIndex).transform;
+                                let angle = tf * Math.PI / 2;
+                                let rdx = dx * Math.cos(-angle) - dy * Math.sin(-angle);
+                                let rdy = dx * Math.sin(-angle) + dy * Math.cos(-angle);
+                                let rawSnap = Math.abs(rdx) > Math.abs(rdy) ? (rdx > 0 ? 1 : 3) : (rdy > 0 ? 2 : 0);
+                                let snap = (rawSnap + tf) % 4;
+                                Config.monitorsModel.setProperty(Config.monActiveEditIndex, "transform", snap);
+                                root.monChangeTrigger++;
+                                Config.monDelayedLayoutUpdate.restart();
+                            }
+                            onPressed: function(mouse) { updateAngle(mouse.x, mouse.y); }
+                            onPositionChanged: function(mouse) { if (pressed) updateAngle(mouse.x, mouse.y); }
+                        }
+                    }
+
+                    // Refresh rate slider
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        spacing: root.s(6)
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text {
+                                text: "Refresh Rate"
+                                font.family: "JetBrains Mono"; font.pixelSize: root.s(11)
+                                color: root.subtext0; Layout.fillWidth: true
+                            }
+                            Text {
+                                text: {
+                                    let _ = root.monChangeTrigger;
+                                    if (Config.monitorsModel.count === 0) return "—";
+                                    if (rateSlider.numRates > 0) return rateSlider.rates[rateSlider.curIdx] + " Hz";
+                                    return Math.round(parseFloat(Config.monitorsModel.get(Config.monActiveEditIndex).rate) || 60) + " Hz";
+                                }
+                                font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(13)
+                                color: root.monSelectedRateAccent
+                                Behavior on color { ColorAnimation { duration: 200 } }
+                            }
+                        }
+
+                        Item {
+                            id: rateSlider
+                            Layout.fillWidth: true
+                            property var rates: root.monAvailableRates
+                            property int numRates: rates ? rates.length : 0
+                            Layout.preferredHeight: numRates > 1 ? root.s(50) : 0
+                            opacity: numRates > 1 ? 1.0 : 0.0
+                            visible: Layout.preferredHeight > 0
+                            clip: true
+                            Behavior on Layout.preferredHeight { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
+                            Behavior on opacity { NumberAnimation { duration: 200 } }
+
+                            property int curIdx: {
+                                let _ = root.monChangeTrigger;
+                                if (Config.monitorsModel.count === 0 || numRates === 0) return 0;
+                                let rawRate = Config.monitorsModel.get(Config.monActiveEditIndex).rate;
+                                let val = Math.round(parseFloat(rawRate));
+                                if (isNaN(val)) val = rates[rates.length - 1];
+                                let best = 0, minDiff = 99999;
+                                for (let i = 0; i < numRates; i++) {
+                                    let diff = Math.abs(rates[i] - val);
+                                    if (diff < minDiff) { minDiff = diff; best = i; }
+                                }
+                                return best;
+                            }
+                            property real tLeft: root.s(8)
+                            property real tW: Math.max(1, width - root.s(16))
+                            property real knobX: numRates <= 1 ? tLeft : tLeft + (curIdx / (numRates - 1)) * tW
+
+                            Rectangle {
+                                id: rTrack
+                                x: rateSlider.tLeft; width: rateSlider.tW
+                                y: root.s(8); height: root.s(6); radius: root.s(3)
+                                color: root.mantle; border.color: root.surface1; border.width: 1
+
+                                Rectangle {
+                                    width: Math.max(0, rKnob.x - rateSlider.tLeft + rKnob.width / 2)
+                                    height: parent.height; radius: parent.radius
+                                    color: root.monSelectedRateAccent
+                                    Behavior on color { ColorAnimation { duration: 200 } }
+                                }
+                            }
+                            Rectangle {
+                                id: rKnob
+                                width: root.s(16); height: root.s(16); radius: root.s(8)
+                                color: rateMa.containsPress ? root.monSelectedRateAccent : root.text
+                                y: rTrack.y + rTrack.height / 2 - height / 2
+                                x: rateSlider.knobX - width / 2
+                                Behavior on x { enabled: !rateMa.pressed; NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                                Behavior on color { ColorAnimation { duration: 150 } }
+                            }
+                            Repeater {
+                                model: rateSlider.numRates
+                                Item {
+                                    x: rateSlider.numRates <= 1 ? rateSlider.tLeft : rateSlider.tLeft + (index / (rateSlider.numRates - 1)) * rateSlider.tW
+                                    y: rTrack.y + rTrack.height + root.s(3)
+                                    Rectangle { anchors.horizontalCenter: parent.horizontalCenter; width: root.s(1); height: root.s(3); color: rateSlider.curIdx === index ? root.monSelectedRateAccent : root.overlay0 }
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter; y: root.s(4)
+                                        text: rateSlider.rates[index]
+                                        font.family: "JetBrains Mono"; font.pixelSize: root.s(8)
+                                        font.weight: rateSlider.curIdx === index ? Font.Bold : Font.Normal
+                                        color: rateSlider.curIdx === index ? root.monSelectedRateAccent : root.overlay0
+                                        Behavior on color { ColorAnimation { duration: 200 } }
+                                    }
+                                }
+                            }
+                            MouseArea {
+                                id: rateMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                function doSnap(mx) {
+                                    if (Config.monitorsModel.count === 0 || rateSlider.numRates === 0) return;
+                                    let pct = (mx - rateSlider.tLeft) / rateSlider.tW;
+                                    pct = Math.max(0, Math.min(1, pct));
+                                    let idx = Math.round(pct * (rateSlider.numRates - 1));
+                                    Config.monitorsModel.setProperty(Config.monActiveEditIndex, "rate", rateSlider.rates[idx].toString());
+                                    root.monChangeTrigger++;
+                                }
+                                onPressed: function(mouse) { doSnap(mouse.x); }
+                                onPositionChanged: function(mouse) { if (pressed) doSnap(mouse.x); }
+                            }
+                        }
+                    }
+                }
+
+                Item { Layout.preferredHeight: root.s(16) }
+            }
+        }
+    }
+    }
+
+    Component {
+        id: profileTabComponent
+        Item {
+            id: profileTabRoot
+            
+            function scrollTo(y) {
+                let maxY = Math.max(0, profileFlickable.contentHeight - profileFlickable.height);
+                profileFlickable.contentY = Math.max(0, Math.min(y - root.s(40), maxY > 0 ? maxY : y));
+            }
+            function scrollToBox(y) {
+                let maxY = Math.max(0, profileFlickable.contentHeight - profileFlickable.height);
+                profileFlickable.contentY = Math.max(0, Math.min(y - root.s(40), maxY > 0 ? maxY : y));
+            }
+
+            Flickable {
+                id: profileFlickable
+                anchors.fill: parent
+                contentWidth: width
+                contentHeight: profileColLayout.implicitHeight + root.s(100)
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: root.clearHighlight()
+                    z: -1
+                }
+
+                ColumnLayout {
+                    id: profileColLayout
+                    width: parent.width
+                    spacing: root.s(10)
+
+                    // Helper to create input fields
+                    Component {
+                        id: profileInputBox
+                        Rectangle {
+                            id: profileBox
+                            property string title: ""
+                            property string subtitle: ""
+                            property string icon: ""
+                            property string colorName: "pink"
+                            property alias text: inputField.text
+                            property int boxIndex: 0
+                            
+                            width: parent ? parent.width : 0
+                            implicitHeight: col.implicitHeight + root.s(32)
+                            height: implicitHeight
+                            radius: root.s(12)
+                            
+                            property bool isActive: root.highlightedBox === boxIndex
+                            color: isActive ? root[colorName] : root.surface0
+                            border.color: isActive ? root[colorName] : root.surface1
+                            border.width: 1
+                            Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                            MouseArea { anchors.fill: parent; onClicked: root.highlightedBox = profileBox.boxIndex; z: -1 }
+
+                            ColumnLayout {
+                                id: col
+                                anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right; anchors.margins: root.s(16)
+                                spacing: root.s(16)
+                                RowLayout {
+                                    Layout.fillWidth: true; spacing: root.s(14)
+                                    Item {
+                                        Layout.preferredWidth: root.s(22); Layout.alignment: Qt.AlignTop; Layout.topMargin: root.s(2)
+                                        Text {
+                                            anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter
+                                            text: profileBox.icon; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18)
+                                            color: profileBox.isActive ? root.base : root[colorName]
+                                            Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                        }
+                                    }
+                                    ColumnLayout {
+                                        Layout.fillWidth: true; Layout.alignment: Qt.AlignTop; spacing: root.s(3)
+                                        Text {
+                                            text: profileBox.title; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(14)
+                                            color: profileBox.isActive ? root.base : root.text; Layout.fillWidth: true
+                                            Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                        }
+                                        Text {
+                                            text: profileBox.subtitle; font.family: "Inter"; font.pixelSize: root.s(11)
+                                            color: profileBox.isActive ? Qt.alpha(root.base, 0.75) : Qt.alpha(root.subtext0, 0.7); Layout.fillWidth: true
+                                            Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                        }
+                                    }
+                                }
+                                Rectangle {
+                                    Layout.fillWidth: true; Layout.preferredHeight: root.s(40)
+                                    radius: root.s(6); color: profileBox.isActive ? Qt.alpha(root.base, 0.15) : root.crust
+                                    border.color: profileBox.isActive ? Qt.alpha(root.base, 0.3) : root.surface1; border.width: 1
+                                    Behavior on color { ColorAnimation { duration: 220; easing.type: Easing.OutExpo } }
+                                    TextInput {
+                                        id: inputField
+                                        anchors.fill: parent; anchors.margins: root.s(12)
+                                        verticalAlignment: TextInput.AlignVCenter
+                                        font.family: "JetBrains Mono"; font.pixelSize: root.s(13)
+                                        color: profileBox.isActive ? root.base : root.text
+                                        selectionColor: profileBox.isActive ? Qt.alpha(root.base, 0.3) : root.surface2
+                                        selectedTextColor: color
+                                        clip: true
+                                        onFocusChanged: if (focus) root.highlightedBox = profileBox.boxIndex
+                                        onTextChanged: {
+                                            if (profileBox.boxIndex === 0) Config.profileGithub = text;
+                                            else if (profileBox.boxIndex === 1) Config.profileDiscord = text;
+                                            else if (profileBox.boxIndex === 2) Config.profileInstagram = text;
+                                            else if (profileBox.boxIndex === 3) Config.profileTikTok = text;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Loader {
+                        Layout.fillWidth: true
+                        sourceComponent: profileInputBox
+                        onLoaded: {
+                            item.boxIndex = 0;
+                            item.title = "GitHub Username";
+                            item.subtitle = "Your GitHub username for the profile widget";
+                            item.icon = "";
+                            item.colorName = "text";
+                            item.text = Config.profileGithub;
+                        }
+                    }
+                    Loader {
+                        Layout.fillWidth: true
+                        sourceComponent: profileInputBox
+                        onLoaded: {
+                            item.boxIndex = 1;
+                            item.title = "Discord Username";
+                            item.subtitle = "Your Discord username";
+                            item.icon = "󰙯";
+                            item.colorName = "blue";
+                            item.text = Config.profileDiscord;
+                        }
+                    }
+                    Loader {
+                        Layout.fillWidth: true
+                        sourceComponent: profileInputBox
+                        onLoaded: {
+                            item.boxIndex = 2;
+                            item.title = "Instagram Username";
+                            item.subtitle = "Your Instagram handle";
+                            item.icon = "";
+                            item.colorName = "pink";
+                            item.text = Config.profileInstagram;
+                        }
+                    }
+                    Loader {
+                        Layout.fillWidth: true
+                        sourceComponent: profileInputBox
+                        onLoaded: {
+                            item.boxIndex = 3;
+                            item.title = "TikTok Username";
+                            item.subtitle = "Your TikTok handle (without @)";
+                            item.icon = "";
+                            item.colorName = "red";
+                            item.text = Config.profileTikTok;
+                        }
+                    }
+
+                    Item { Layout.preferredHeight: root.s(16) }
+                }
+            }
+        }
+    }
 }
+

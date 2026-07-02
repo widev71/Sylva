@@ -80,11 +80,11 @@ Item {
                 onEntered: { fw.hoveredBars++; hideTimer.stop(); }
                 onExited:  { fw.hoveredBars = Math.max(0, fw.hoveredBars - 1); fw.kickTimer(); }
 
-                onPressed: mouse => {
+                onPressed: function(mouse) {
                     let gp = mapToItem(root.mainHitArea, mouse.x, mouse.y);
                     startGlobalX = gp.x; startGlobalY = gp.y; isDragging = false;
                 }
-                onPositionChanged: mouse => {
+                onPositionChanged: function(mouse) {
                     if (!pressed) return;
                     let gp = mapToItem(root.mainHitArea, mouse.x, mouse.y);
                     if (Math.abs(gp.x - startGlobalX) > 5 || Math.abs(gp.y - startGlobalY) > 5) isDragging = true;

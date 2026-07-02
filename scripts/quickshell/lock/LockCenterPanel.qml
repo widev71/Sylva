@@ -155,7 +155,7 @@ ColumnLayout {
             onActiveFocusChanged: {
                 if (!activeFocus && !root.locked && !root.isPlayingIntro) forceActiveFocus();
             }
-            Keys.onPressed: (event) => {
+            Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Escape) { text = ""; passModel.clear(); event.accepted = true; }
             }
             onAccepted: {

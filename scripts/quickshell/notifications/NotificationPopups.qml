@@ -111,33 +111,10 @@ PanelWindow {
             clip: false
 
             add: Transition {
-                SequentialAnimation {
-                    // Frame 1: Glitch jump
-                    ParallelAnimation {
-                        NumberAnimation { property: "opacity"; from: 0.0; to: 0.8; duration: 40 }
-                        NumberAnimation { property: "x"; from: popupWindow.width; to: -40; duration: 40 }
-                        NumberAnimation { property: "scale"; from: 1.2; to: 0.9; duration: 40 }
-                    }
-                    PauseAnimation { duration: 30 }
-                    // Frame 2: Cutout / Invisible
-                    ParallelAnimation {
-                        NumberAnimation { property: "opacity"; to: 0.2; duration: 20 }
-                        NumberAnimation { property: "x"; to: 50; duration: 20 }
-                        NumberAnimation { property: "scale"; to: 1.1; duration: 20 }
-                    }
-                    PauseAnimation { duration: 40 }
-                    // Frame 3: Another jump
-                    ParallelAnimation {
-                        NumberAnimation { property: "opacity"; to: 0.9; duration: 30 }
-                        NumberAnimation { property: "x"; to: -15; duration: 30 }
-                    }
-                    PauseAnimation { duration: 30 }
-                    // Settling in
-                    ParallelAnimation {
-                        NumberAnimation { property: "opacity"; to: 1.0; duration: 200 }
-                        NumberAnimation { property: "x"; to: 0; duration: 400; easing.type: Easing.OutElastic; easing.overshoot: 1.0 }
-                        NumberAnimation { property: "scale"; to: 1.0; duration: 400; easing.type: Easing.OutElastic; easing.overshoot: 1.0 }
-                    }
+                ParallelAnimation {
+                    NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 300; easing.type: Easing.OutQuint }
+                    NumberAnimation { property: "x"; from: popupWindow.width; to: 0; duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.1 }
+                    NumberAnimation { property: "scale"; from: 0.7; to: 1.0; duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.1 }
                 }
             }
 

@@ -28,7 +28,7 @@ Item {
                 peekShowTimer.restart();
             }
         }
-        onPositionChanged: mouse => {
+        onPositionChanged: function(mouse) {
             if (fw.isSidebarVisible || fw.pendingMode === "sidebar")
                 fw.showSidebar("left", mouse.y + y);
             else if (fw.isPeekVisible)
@@ -56,7 +56,7 @@ Item {
                 peekShowTimer.restart();
             }
         }
-        onPositionChanged: mouse => {
+        onPositionChanged: function(mouse) {
             if (fw.isSidebarVisible || fw.pendingMode === "sidebar")
                 fw.showSidebar("right", mouse.y + y);
             else if (fw.isPeekVisible)
@@ -84,7 +84,7 @@ Item {
                 peekShowTimer.restart();
             }
         }
-        onPositionChanged: mouse => {
+        onPositionChanged: function(mouse) {
             if (fw.isSidebarVisible || fw.pendingMode === "sidebar")
                 fw.showSidebar("bottom", mouse.x + x);
             else if (fw.isPeekVisible)

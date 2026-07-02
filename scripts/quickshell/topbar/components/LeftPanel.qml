@@ -102,7 +102,7 @@ Rectangle {
             radius: s(10); height: pillHeight; width: s(34)
             Behavior on color { ColorAnimation { duration: 200 } }
             Text {
-                anchors.centerIn: parent; text: ""
+                anchors.centerIn: parent; text: ""
                 font.family: "Iosevka Nerd Font"; font.pixelSize: s(22)
                 color: parent.isHovered ? mocha.blue : mocha.text
                 scale: parent.isHovered ? 1.15 : 1.0

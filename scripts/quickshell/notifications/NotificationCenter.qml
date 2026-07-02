@@ -461,7 +461,7 @@ Item {
                                             wrapMode: Text.Wrap
                                             visible: text !== ""
                                             textFormat: Text.StyledText 
-                                            onLinkActivated: (link) => Quickshell.execDetached(["xdg-open", link])
+                                            onLinkActivated: function(link) { Quickshell.execDetached(["xdg-open", link]) }
                                         }
 
                                         // Action Buttons Dock 

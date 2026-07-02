@@ -579,8 +579,8 @@ Item {
                                     MouseArea {
                                         id: masterSliderMa
                                         anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                        onPressed: (mouse) => { syncDelay.stop(); window.draggingMaster = true; updateVol(mouse.x); }
-                                        onPositionChanged: (mouse) => { if (pressed) updateVol(mouse.x); }
+                                        onPressed: function(mouse) { syncDelay.stop(); window.draggingMaster = true; updateVol(mouse.x); }
+                                        onPositionChanged: function(mouse) { if (pressed) updateVol(mouse.x); }
                                         onReleased: { syncDelay.restart(); audioPoller.running = true; }
                                         
                                         function updateVol(mx) {
@@ -937,8 +937,8 @@ Item {
                                         MouseArea {
                                             id: volSliderMa
                                             anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                            onPressed: (mouse) => { syncDelay.stop(); window.draggingNodes[model.id] = true; updateVol(mouse.x); }
-                                            onPositionChanged: (mouse) => { if (pressed) updateVol(mouse.x); }
+                                            onPressed: function(mouse) { syncDelay.stop(); window.draggingNodes[model.id] = true; updateVol(mouse.x); }
+                                            onPositionChanged: function(mouse) { if (pressed) updateVol(mouse.x); }
                                             onReleased: { syncDelay.restart(); audioPoller.running = true; }
                                             
                                             function updateVol(mx) {

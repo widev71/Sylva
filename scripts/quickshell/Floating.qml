@@ -451,12 +451,12 @@ Variants {
 
                             onEntered: hideTimer.stop()
                             onExited:  { if (!pressed && !gridMouseArea.containsMouse) floatingWidget.kickTimer(); }
-                            onPressed: mouse => {
+                            onPressed: function(mouse) {
                                 let gp = mapToItem(mainHitArea, mouse.x, mouse.y);
                                 startGlobalX = gp.x; startGlobalY = gp.y;
                                 floatingWidget.useGraceTimer = true;
                             }
-                            onPositionChanged: mouse => {
+                            onPositionChanged: function(mouse) {
                                 if (!pressed) return;
                                 let gp = mapToItem(mainHitArea, mouse.x, mouse.y);
                                 floatingWidget.evaluateDrag(startGlobalX, startGlobalY, gp.x, gp.y);

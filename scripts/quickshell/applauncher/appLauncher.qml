@@ -177,7 +177,7 @@ Item {
             if (window.outroPhase === 0) outroPhaseAnim.restart();
         }
         
-        onPressed: (mouse) => {
+        onPressed: function(mouse) {
             cursorShape = Qt.ClosedHandCursor
             lastX = mouse.x
             lastY = mouse.y
@@ -185,7 +185,7 @@ Item {
         onReleased: {
             cursorShape = Qt.OpenHandCursor
         }
-        onPositionChanged: (mouse) => {
+        onPositionChanged: function(mouse) {
             if (pressed) {
                 let dx = mouse.x - lastX
                 let dy = mouse.y - lastY
@@ -202,7 +202,7 @@ Item {
             }
         }
         
-        onWheel: (wheel) => {
+        onWheel: function(wheel) {
             if (wheel.angleDelta.y > 0) {
                 window.universeZoom += 0.1;
             } else {

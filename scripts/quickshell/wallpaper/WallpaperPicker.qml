@@ -1074,7 +1074,7 @@ Item {
             anchors.fill: parent
             acceptedButtons: Qt.NoButton
 
-            onWheel: (wheel) => {
+            onWheel: function(wheel) {
                 if (window.isScrollingBlocked || window.isApplying) {
                     wheel.accepted = true;
                     return;

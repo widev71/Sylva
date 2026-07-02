@@ -106,7 +106,7 @@ Variants {
                 id: widgetWatcherL
                 paths: paths
                 activeWidget: barWindow.activeWidget
-                onWidgetChanged: (w) => barWindow.activeWidget = w
+                onWidgetChanged: function(w) { barWindow.activeWidget = w }
             }
 
             RecordingWatcher {
@@ -121,7 +121,7 @@ Variants {
 
             SettingsWatcher {
                 id: settingsWatcher
-                onWorkspaceCountChanged: (n) => wsLogic.workspaceCount = n
+                onWorkspaceCountChanged: function() { wsLogic.workspaceCount = settingsWatcher.workspaceCount }
             }
 
             ChassisDetector { id: chassisDetect }
@@ -278,6 +278,39 @@ Variants {
                                 mocha: mocha; s: barWindow.s
                                 showLayout: rightRow.showLayout
                                 anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            // Control Center Toggle
+                            Item {
+                                width: s(28)
+                                height: s(28)
+                                anchors.verticalCenter: parent.verticalCenter
+                                opacity: rightRow.showLayout ? 1 : 0
+                                Behavior on opacity { NumberAnimation { duration: 300 } }
+                                
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: s(8)
+                                    color: ccMouseArea.containsMouse ? Qt.rgba(mocha.surface0.r, mocha.surface0.g, mocha.surface0.b, 0.5) : "transparent"
+                                    Behavior on color { ColorAnimation { duration: 150 } }
+                                    
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "󰒓"
+                                        font.pixelSize: s(16)
+                                        color: mocha.text
+                                    }
+                                    
+                                    MouseArea {
+                                        id: ccMouseArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            Quickshell.execDetached(["bash", "-c", "~/.config/hypr/scripts/qs_manager.sh toggle controlcenter"]);
+                                        }
+                                    }
+                                }
                             }
 
                             WifiPill {

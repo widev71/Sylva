@@ -63,17 +63,26 @@ Item {
                         if (c.yellow) root.yellow = c.yellow;
                         if (c.maroon) root.maroon = c.maroon;
                         if (c.teal) root.teal = c.teal;
-                    } catch(e) {}
+                    } catch(e) {
+                        console.log("Matugen JSON Parse Error: " + e + "\nText was: " + txt);
+                    }
                 }
             }
         }
     }
 
-    Timer {
-        interval: 15000 
+    // Triggers instantly when the file is modified
+    Process {
+        id: fileWatcher
+        command: ["inotifywait", "-e", "close_write", "-q", Quickshell.env("HOME") + "/.config/hypr/scripts/quickshell/qs_colors.json"]
+        onExited: {
+            themeReader.running = true;
+            fileWatcher.running = true;
+        }
         running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: themeReader.running = true
+    }
+
+    Component.onCompleted: {
+        themeReader.running = true;
     }
 }

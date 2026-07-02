@@ -39,7 +39,7 @@ Item {
         actionsSupported: true
         imageSupported:   true
 
-        onNotification: (n) => {
+        onNotification: function(n) {
             n.tracked = true;
 
             let extractedActions = [];
@@ -80,6 +80,6 @@ Item {
         id: osdPopups
         popupModel: activePopupsModel
         uiScale:    root.uiScale
-        onRemoveRequested: (uid) => root.removePopup(uid)
+        onRemoveRequested: function(uid) { root.removePopup(uid) }
     }
 }
