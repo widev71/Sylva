@@ -88,7 +88,7 @@ Rectangle {
                         : "transparent")
 
                 scale: isHovered && stateLabel !== "active" ? 1.08 : 1.0
-                Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                 Behavior on color { ColorAnimation { duration: 250 } }
 
                 // Cascade entry animation
@@ -97,7 +97,7 @@ Rectangle {
                 Behavior on opacity { NumberAnimation { duration: 500; easing.type: Easing.OutCubic } }
                 transform: Translate {
                     y: wsPill.initAnimTrigger ? 0 : s(15)
-                    Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
+                    Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                 }
                 Component.onCompleted: {
                     if (!root.startupCascadeFinished) {

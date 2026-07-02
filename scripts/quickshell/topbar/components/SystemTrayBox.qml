@@ -55,7 +55,7 @@ Rectangle {
                 opacity: initAnimTrigger ? (isHovered ? 1.0 : 0.8) : 0.0
                 scale:   initAnimTrigger ? (isHovered ? 1.15 : 1.0) : 0.0
                 Behavior on opacity { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
-                Behavior on scale   { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                Behavior on scale   { NumberAnimation { duration: 250; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
 
                 Component.onCompleted: {
                     if (!root.startupCascadeFinished) {

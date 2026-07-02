@@ -34,7 +34,7 @@ Item {
     // -------------------------------------------------------------------------
     // DYNAMIC MASTER WINDOW SCALING (Fixes Window Clipping)
     // -------------------------------------------------------------------------
-    property real targetMasterHeight: window.scheduleModuleExists ? Math.round(750 * window.sf) : Math.round(510 * window.sf)
+    property real targetMasterHeight: Math.round(480 * window.sf)
     property real targetMasterWidth: Math.round(1450 * window.sf)
     
     onTargetMasterHeightChanged: {
@@ -175,6 +175,11 @@ Item {
             SequentialAnimation {
                 PauseAnimation { duration: 400 }
                 NumberAnimation { target: window; property: "introWeather"; from: 0; to: 1.0; duration: 850; easing.type: Easing.OutQuint }
+            }
+            
+            // Bottom wing (Todo) slides in
+            SequentialAnimation {
+                PauseAnimation { duration: 450 }
             }
 
             // Bottom section (Schedule) flows up smoothly

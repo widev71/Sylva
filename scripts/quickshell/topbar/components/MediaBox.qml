@@ -69,7 +69,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: s(10)
                     scale: mediaInfoMouse.containsMouse ? 1.02 : 1.0
-                    Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
+                    Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
 
                     // Album art thumbnail
                     Rectangle {
@@ -123,7 +123,7 @@ Rectangle {
                         color: prevMouse.containsMouse ? mocha.text : mocha.overlay2
                         scale: prevMouse.containsMouse ? 1.1 : 1.0
                         Behavior on color { ColorAnimation { duration: 150 } }
-                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                     }
                     MouseArea {
                         id: prevMouse; hoverEnabled: true; anchors.fill: parent
@@ -141,7 +141,7 @@ Rectangle {
                         color: playMouse.containsMouse ? mocha.green : mocha.text
                         scale: playMouse.containsMouse ? 1.15 : 1.0
                         Behavior on color { ColorAnimation { duration: 150 } }
-                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                     }
                     MouseArea {
                         id: playMouse; hoverEnabled: true; anchors.fill: parent
@@ -158,7 +158,7 @@ Rectangle {
                         color: nextMouse.containsMouse ? mocha.text : mocha.overlay2
                         scale: nextMouse.containsMouse ? 1.1 : 1.0
                         Behavior on color { ColorAnimation { duration: 150 } }
-                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+                        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                     }
                     MouseArea {
                         id: nextMouse; hoverEnabled: true; anchors.fill: parent

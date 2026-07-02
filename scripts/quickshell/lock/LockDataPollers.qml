@@ -31,6 +31,10 @@ Item {
     property string musicArtPath: ""
     property bool   musicPlaying: false
     property bool   musicActive:  false
+    property real   musicProgress: 0.0
+    property string musicPositionStr: "00:00"
+    property string musicLengthStr: "00:00"
+    property real   musicLengthSecs: 0.0
 
     // ── Chassis ───────────────────────────────────────────────────────
     Process {
@@ -140,13 +144,8 @@ Item {
     Process {
         id: musicPoller
         command: ["bash", "-c", [
-            "STATUS=$(timeout 1 playerctl status 2>/dev/null);",
-            "if [ \"$STATUS\" = 'Playing' ] || [ \"$STATUS\" = 'Paused' ]; then",
-            "  TITLE=$(timeout 1 playerctl metadata xesam:title 2>/dev/null | head -c 40);",
-            "  ARTIST=$(timeout 1 playerctl metadata xesam:artist 2>/dev/null | head -c 30);",
-            "  ARTURL=$(timeout 1 playerctl metadata mpris:artUrl 2>/dev/null | head -c 200);",
-            "  echo \"$STATUS|$TITLE|$ARTIST|$ARTURL\";",
-            "else echo 'Stopped|||'; fi"
+            "DATA=$(timeout 1 playerctl metadata --format '{{status}}|{{title}}|{{artist}}|{{mpris:artUrl}}|{{position}}|{{mpris:length}}|{{duration(position)}}|{{duration(mpris:length)}}' 2>/dev/null);",
+            "if [ -n \"$DATA\" ]; then echo \"$DATA\"; else echo 'Stopped|||||||'; fi"
         ].join(" ")]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -154,9 +153,34 @@ Item {
                 let status = parts[0] || "Stopped";
                 root.musicActive  = (status === "Playing" || status === "Paused");
                 root.musicPlaying = (status === "Playing");
-                root.musicTitle   = parts[1] || "";
-                root.musicArtist  = parts[2] || "";
-                root.musicArtPath = parts[3] || "";
+                
+                let newTitle = parts[1] || "";
+                let newArtist = parts[2] || "";
+                let newArt = parts[3] || "";
+                
+                if (root.musicTitle !== newTitle || root.musicArtist !== newArtist) {
+                    root.musicTitle   = newTitle;
+                    root.musicArtist  = newArtist;
+                    if (newArt !== "") {
+                        root.musicArtPath = "file:///tmp/album_art.jpg?v=" + new Date().getTime();
+                    } else {
+                        root.musicArtPath = "";
+                    }
+                }
+
+                let pos = parseFloat(parts[4]) || 0;
+                let len = parseFloat(parts[5]) || 0;
+                root.musicLengthSecs = len / 1000000.0;
+                if (len > 0) {
+                    root.musicProgress = pos / len;
+                } else {
+                    root.musicProgress = 0;
+                }
+                
+                let pStr = parts[6] || "";
+                let lStr = parts[7] || "";
+                root.musicPositionStr = pStr !== "" ? pStr : "00:00";
+                root.musicLengthStr = lStr !== "" ? lStr : "00:00";
             }
         }
     }
@@ -169,4 +193,48 @@ Item {
     function playPause() { musicPlayCmd.running = true; }
     function next()      { musicNextCmd.running = true; }
     function prev()      { musicPrevCmd.running = true; }
+    Process {
+        id: musicSeekCmd
+        property real targetSec: 0
+        command: ["playerctl", "position", targetSec.toString()]
+    }
+    function seekMusic(percent) {
+        musicSeekCmd.targetSec = percent * root.musicLengthSecs;
+        musicSeekCmd.running = true;
+    }
+
+    // ── Synchronized Lyrics ───────────────────────────────────────────
+    property int currentLyricIndex: -1
+    property var lyricsList: []
+    
+    Process {
+        id: lyricsIndexPoller
+        command: ["bash", "-c", "cat /tmp/current_lyric_index.txt 2>/dev/null || echo -1"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let txt = this.text.trim();
+                if (txt !== "") root.currentLyricIndex = parseInt(txt);
+            }
+        }
+    }
+
+    Process {
+        id: lyricsJsonPoller
+        command: ["bash", "-c", "cat /tmp/lyrics_data.json 2>/dev/null || echo '[]'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let txt = this.text.trim();
+                if (txt !== "") {
+                    try {
+                        root.lyricsList = JSON.parse(txt);
+                    } catch(e) {
+                        root.lyricsList = [];
+                    }
+                }
+            }
+        }
+    }
+    
+    Timer { interval: 300; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsIndexPoller.running = true }
+    Timer { interval: 2000; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsJsonPoller.running = true }
 }

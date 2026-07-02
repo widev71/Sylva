@@ -607,5 +607,16 @@
   "tpSensitivity": 1,
   "tpScrollFactor": 1,
   "cursorTheme": "macOS-White",
-  "cursorSize": 16
+  "cursorSize": 20,
+  "showTopBattery": true,
+  "showTopBt": true,
+  "showTopWifi": true,
+  "showTopKb": true,
+  "showTopMenu": true,
+  "showTopVolume": true,
+  "showTopSettings": true,
+  "showTopSearch": true,
+  "showTopHelp": true,
+  "showTopTodo": true,
+  "showTopNotif": true
 }

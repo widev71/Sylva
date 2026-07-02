@@ -11,6 +11,8 @@ Rectangle {
     required property var s
 
     property bool isHovered: kbMouse.containsMouse
+    scale: isHovered ? 1.05 : 1.0
+    Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
 
     color: isHovered
         ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.6)
@@ -23,8 +25,6 @@ Rectangle {
     width: targetWidth
     Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
 
-    scale: isHovered ? 1.05 : 1.0
-    Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
     Behavior on color { ColorAnimation { duration: 200 } }
 
     property bool _init: false
@@ -33,7 +33,7 @@ Rectangle {
     Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
     transform: Translate {
         y: root._init ? 0 : s(15)
-        Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
+        Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
     }
 
     Row {

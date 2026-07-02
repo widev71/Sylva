@@ -17,6 +17,8 @@ Rectangle {
     required property var s
 
     property bool isHovered: wifiMouse.containsMouse
+    scale: isHovered ? 1.05 : 1.0
+    Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
     property bool isConnected: showEthernet
         ? (ethStatus === "Connected")
         : isWifiOn
@@ -43,8 +45,6 @@ Rectangle {
     width: targetWidth
     Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
 
-    scale: isHovered ? 1.05 : 1.0
-    Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
 
     property bool _init: false
     Timer { running: root.showLayout && !root._init; interval: root.initDelay; onTriggered: root._init = true }
@@ -52,7 +52,7 @@ Rectangle {
     Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
     transform: Translate {
         y: root._init ? 0 : s(15)
-        Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
+        Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
     }
 
     Row {

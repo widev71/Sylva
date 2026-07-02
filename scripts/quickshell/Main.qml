@@ -18,6 +18,12 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     focusable:     true
 
+    Process {
+        id: lyricsDaemonProcess
+        command: ["python3", "/home/witya/.config/hypr/scripts/lyrics_daemon.py"]
+        running: true
+    }
+
     implicitWidth:  masterWindow.screen.width
     implicitHeight: masterWindow.screen.height
 

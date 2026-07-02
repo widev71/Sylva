@@ -162,18 +162,26 @@ if [ -f "$CACHE_DIR/rec_pid" ]; then
     REC_PID=$(cat "$CACHE_DIR/rec_pid")
     FINAL_FILE=$(cat "$CACHE_DIR/final_file")
 
+    # Check if the process is actually alive
+    IS_ALIVE=false
+    if [ "$REC_PID" != "0" ] && kill -0 $REC_PID 2>/dev/null; then
+        IS_ALIVE=true
+    fi
+
     # 1. SEND STOP SIGNAL TO GPU-SCREEN-RECORDER
-    [ "$REC_PID" != "0" ] && kill -SIGINT $REC_PID 2>/dev/null
+    if [ "$IS_ALIVE" = true ]; then
+        kill -SIGINT $REC_PID 2>/dev/null
 
-    # 2. WAIT FOR GSR TO CLOSE GRACEFULLY AND FINALIZE MP4
-    timeout=30
-    while kill -0 $REC_PID 2>/dev/null && [ $timeout -gt 0 ]; do
-        sleep 0.1
-        timeout=$((timeout - 1))
-    done
+        # 2. WAIT FOR GSR TO CLOSE GRACEFULLY AND FINALIZE MP4
+        timeout=30
+        while kill -0 $REC_PID 2>/dev/null && [ $timeout -gt 0 ]; do
+            sleep 0.1
+            timeout=$((timeout - 1))
+        done
 
-    # FORCE KILL IF STUCK
-    [ "$REC_PID" != "0" ] && kill -9 $REC_PID 2>/dev/null
+        # FORCE KILL IF STUCK
+        kill -9 $REC_PID 2>/dev/null
+    fi
 
     # 3. DESTROY PIPEWIRE VIRTUAL AUDIO CABLES
     if [ -f "$CACHE_DIR/pw_modules" ]; then
@@ -183,26 +191,33 @@ if [ -f "$CACHE_DIR/rec_pid" ]; then
         rm -f "$CACHE_DIR/pw_modules"
     fi
 
-    # 4. SEND FINAL NOTIFICATION
-    if [ -f "$FINAL_FILE" ]; then
-        (
-            ACTION=$(notify-send -a "Screen Recorder" -i "$FINAL_FILE" -A "default=Open Folder" "⏺ Recording Saved" "File: $(basename "$FINAL_FILE")\nFolder: $RECORD_DIR")
-            if [ "$ACTION" = "default" ]; then
-                if command -v nautilus &> /dev/null; then
-                    nautilus "$RECORD_DIR"
-                else
-                    xdg-open "$RECORD_DIR"
+    # 4. SEND FINAL NOTIFICATION (only if we actually stopped a live recording)
+    if [ "$IS_ALIVE" = true ]; then
+        if [ -f "$FINAL_FILE" ]; then
+            (
+                ACTION=$(notify-send -a "Screen Recorder" -i "$FINAL_FILE" -A "default=Open Folder" "⏺ Recording Saved" "File: $(basename "$FINAL_FILE")\nFolder: $RECORD_DIR")
+                if [ "$ACTION" = "default" ]; then
+                    if command -v nautilus &> /dev/null; then
+                        nautilus "$RECORD_DIR"
+                    else
+                        xdg-open "$RECORD_DIR"
+                    fi
                 fi
-            fi
-        ) &
-    else
-        notify-send -a "Screen Recorder" "❌ Error" "Failed to save the video file."
+            ) &
+        else
+            notify-send -a "Screen Recorder" "❌ Error" "Failed to save the video file."
+        fi
     fi
 
     # 5. INSTANT UI CLEANUP
     rm -f "$CACHE_DIR/processing.lock"
     rm -f "$CACHE_DIR/rec_pid" "$CACHE_DIR/final_file"
-    exit 0
+    
+    # If it was alive, this was a legit STOP request, so we exit.
+    # If it was dead, this was a stale lockfile, so we continue and start the NEW recording.
+    if [ "$IS_ALIVE" = true ]; then
+        exit 0
+    fi
 fi
 
 time=$(date +'%Y-%m-%d-%H%M%S')
@@ -229,8 +244,16 @@ if [ "$FULL_MODE" = true ] || [ -n "$GEOMETRY" ]; then
         [ -n "$MIC_DEVICE" ] && [ "$MIC_DEVICE" != "null" ] && MIC_DEV="$MIC_DEVICE" || MIC_DEV=$(pactl get-default-source 2>/dev/null)
         MIC_DEV="${MIC_DEV:-default}"
 
-        # Reverted back to the portal method for reliable security clearance
-        GSR_ARGS=(-w "portal" -c "mp4" -f "60" -ac "aac")
+        # Parse GEOMETRY if present
+        if [ -n "$GEOMETRY" ]; then
+            # GEOMETRY is "X,Y WxH" -> Convert to "WxH+X+Y"
+            X=$(echo "$GEOMETRY" | cut -d',' -f1)
+            Y=$(echo "$GEOMETRY" | cut -d',' -f2 | cut -d' ' -f1)
+            W_H=$(echo "$GEOMETRY" | cut -d' ' -f2)
+            GSR_ARGS=(-w "${W_H}+${X}+${Y}" -c "mp4" -f "60" -ac "aac")
+        else
+            GSR_ARGS=(-w "screen" -c "mp4" -f "60" -ac "aac")
+        fi
 
         AUDIO_MIX=""
 
@@ -272,15 +295,21 @@ if [ "$FULL_MODE" = true ] || [ -n "$GEOMETRY" ]; then
             AUDIO_MIX="${AUDIO_MIX}qs_virt_mic.monitor|"
         fi
 
-        # Remove trailing pipe and add the single mix string to the recorder so everything stays on one track
         AUDIO_MIX=${AUDIO_MIX%|}
         if [ -n "$AUDIO_MIX" ]; then
+            sleep 0.2 # Wait for PipeWire to fully initialize the virtual sinks
             GSR_ARGS+=(-a "$AUDIO_MIX")
         fi
 
-        # Execute gpu-screen-recorder
-        gpu-screen-recorder "${GSR_ARGS[@]}" -o "$VID_FILENAME" > /dev/null 2>&1 &
-        REC_PID=$!
+        # 3-2-1 Countdown Animation (launches a temporary overlay window, then exits)
+        bash ~/.config/hypr/scripts/quickshell/screenshot/countdown.sh
+
+        # Execute gpu-screen-recorder (as a systemd service so it's completely detached from the shell's stdin/EOF)
+        systemctl --user stop qs-record 2>/dev/null
+        systemctl --user reset-failed qs-record.service 2>/dev/null
+        systemd-run --user --unit=qs-record gpu-screen-recorder "${GSR_ARGS[@]}" -o "$VID_FILENAME" > /dev/null 2>&1
+        sleep 0.5
+        REC_PID=$(systemctl --user show -p MainPID --value qs-record)
 
         echo "$REC_PID" > "$CACHE_DIR/rec_pid"
         echo "$VID_FILENAME" > "$CACHE_DIR/final_file"

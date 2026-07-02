@@ -53,6 +53,18 @@ Item {
     property string weatherLon: ""
     property string weatherLocName: ""
 
+    // Top Bar Widget Visibility Flags
+    property bool showTopHelp: getSetting("showTopHelp", true)
+    property bool showTopSearch: getSetting("showTopSearch", true)
+    property bool showTopSettings: getSetting("showTopSettings", true)
+    property bool showTopKb: getSetting("showTopKb", true)
+    property bool showTopTodo: getSetting("showTopTodo", true)
+    property bool showTopNotif: getSetting("showTopNotif", true)
+    property bool showTopWifi: getSetting("showTopWifi", true)
+    property bool showTopBt: getSetting("showTopBt", false)
+    property bool showTopVolume: getSetting("showTopVolume", true)
+    property bool showTopBattery: getSetting("showTopBattery", true)
+
     property string profileGithub: "witya"
     property string profileDiscord: "widev71"
     property string profileInstagram: "widev71"

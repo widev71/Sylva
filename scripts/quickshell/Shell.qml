@@ -1,6 +1,8 @@
 //@ pragma UseQApplication
 import QtQuick
 import Quickshell
+import "music"
+import "volume"
 
 ShellRoot {
     Connections {
@@ -12,5 +14,9 @@ ShellRoot {
     Main {}
     TopBar {}
     Floating {}
+    
+    // Custom Overlays
+    LyricsOverlay {}
+    Osd {}
 }
 

@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import "../../"
 
 // Left panel: Help, Search, Settings, and Update notification buttons
 Rectangle {
@@ -16,12 +17,12 @@ Rectangle {
 
     color: Qt.rgba(mocha.base.r, mocha.base.g, mocha.base.b, 0.40)
     radius: s(14)
-    border.width: 1
+    border.width: width > 0 ? 1 : 0
     border.color: Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.5)
     clip: true
 
     height: s(48)
-    width: innerRow.width + s(16)
+    width: innerRow.width > 0 ? innerRow.width + s(16) : 0
 
     property bool _showLayout: false
     property real targetX: (_showLayout && !isSettingsOpen) ? 0 : s(-200)
@@ -29,7 +30,7 @@ Rectangle {
     x: targetX
     Behavior on x { NumberAnimation { duration: 600; easing.type: Easing.OutExpo } }
 
-    opacity: (_showLayout && !isSettingsOpen) ? 1 : 0
+    opacity: (_showLayout && !isSettingsOpen && width > 0) ? 1 : 0
     Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
 
     enabled: !isSettingsOpen
@@ -52,11 +53,11 @@ Rectangle {
             property bool isHovered: helpMouse.containsMouse
             color: isHovered ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.6) : "transparent"
             radius: s(10)
-            property real targetWidth: root.showHelpIcon ? s(34) : 0
+            property real targetWidth: (root.showHelpIcon && Config.showTopHelp) ? s(34) : 0
             width: targetWidth
             height: pillHeight
             visible: targetWidth > 0 || opacity > 0
-            opacity: root.showHelpIcon ? 1.0 : 0.0
+            opacity: (root.showHelpIcon && Config.showTopHelp) ? 1.0 : 0.0
             clip: true
             Behavior on width   { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
             Behavior on opacity { NumberAnimation { duration: 300 } }
@@ -75,11 +76,20 @@ Rectangle {
             }
         }
 
-        // Search / App launcher button
+                // Search / App launcher button
         Rectangle {
             property bool isHovered: searchMouse.containsMouse
             color: isHovered ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.6) : "transparent"
-            radius: s(10); height: pillHeight; width: s(34)
+            radius: s(10); height: pillHeight;
+            
+            property real targetWidth: Config.showTopSearch ? s(34) : 0
+            width: targetWidth
+            visible: targetWidth > 0 || opacity > 0
+            opacity: Config.showTopSearch ? 1.0 : 0.0
+            clip: true
+            
+            Behavior on width   { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+            Behavior on opacity { NumberAnimation { duration: 300 } }
             Behavior on color { ColorAnimation { duration: 200 } }
             Text {
                 anchors.centerIn: parent; text: "󰍉"
@@ -95,11 +105,20 @@ Rectangle {
             }
         }
 
-        // Settings button
+                // Settings button
         Rectangle {
             property bool isHovered: settingsMouse.containsMouse
             color: isHovered ? Qt.rgba(mocha.surface1.r, mocha.surface1.g, mocha.surface1.b, 0.6) : "transparent"
-            radius: s(10); height: pillHeight; width: s(34)
+            radius: s(10); height: pillHeight;
+            
+            property real targetWidth: Config.showTopSettings ? s(34) : 0
+            width: targetWidth
+            visible: targetWidth > 0 || opacity > 0
+            opacity: Config.showTopSettings ? 1.0 : 0.0
+            clip: true
+            
+            Behavior on width   { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
+            Behavior on opacity { NumberAnimation { duration: 300 } }
             Behavior on color { ColorAnimation { duration: 200 } }
             Text {
                 anchors.centerIn: parent; text: ""
@@ -150,7 +169,7 @@ Rectangle {
                 rotation: parent.isHovered ? 360 : 0
                 scale: parent.isHovered ? 1.15 : 1.0
                 Behavior on color    { ColorAnimation  { duration: 200 } }
-                Behavior on rotation { NumberAnimation { duration: 600; easing.type: Easing.OutBack } }
+                Behavior on rotation { NumberAnimation { duration: 600; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                 Behavior on scale    { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
             }
             MouseArea {

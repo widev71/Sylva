@@ -271,6 +271,7 @@ Variants {
                                 mocha: mocha; s: barWindow.s
                                 kbLayout: audioWatcher.kbLayout
                                 showLayout: rightRow.showLayout
+                                visible: Config.showTopKb
                                 anchors.verticalCenter: parent.verticalCenter
                             }
 
@@ -322,6 +323,7 @@ Variants {
                                 showEthernet: barWindow.showEthernet
                                 isWifiOn:     barWindow.isWifiOn
                                 showLayout:   rightRow.showLayout
+                                visible: Config.showTopWifi
                                 initDelay:    50
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -333,6 +335,7 @@ Variants {
                                 isBtOn:    barWindow.isBtOn
                                 isDesktop: chassisDetect.isDesktop
                                 showLayout: rightRow.showLayout
+                                visible: Config.showTopBt
                                 initDelay:  100
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -343,6 +346,7 @@ Variants {
                                 volPercent:  audioWatcher.volPercent
                                 isSoundActive: barWindow.isSoundActive
                                 showLayout:  rightRow.showLayout
+                                visible: Config.showTopVolume
                                 initDelay:   150
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -354,6 +358,7 @@ Variants {
                                 isDesktop:       chassisDetect.isDesktop
                                 batDynamicColor: barWindow.batDynamicColor
                                 showLayout:      rightRow.showLayout
+                                visible: Config.showTopBattery
                                 initDelay:       200
                                 anchors.verticalCenter: parent.verticalCenter
                             }

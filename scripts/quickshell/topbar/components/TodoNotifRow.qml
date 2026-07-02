@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import "../../"
 
 // Todo and Notification icon pills (simple icon-only pills)
 Row {
@@ -20,7 +21,9 @@ Row {
         radius: s(10); height: s(34); clip: true
         Behavior on color { ColorAnimation { duration: 200 } }
 
-        width: todoRow.implicitWidth + s(24)
+        property real targetWidth: Config.showTopTodo ? (todoRow.implicitWidth + s(24)) : 0
+        width: targetWidth
+        visible: targetWidth > 0 || opacity > 0
         Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
 
         scale: isHovered ? 1.05 : 1.0
@@ -28,11 +31,11 @@ Row {
 
         property bool _init: false
         Timer { running: root.showLayout && !parent._init; interval: 25; onTriggered: parent._init = true }
-        opacity: _init ? 1 : 0
+        opacity: (_init && Config.showTopTodo) ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
         transform: Translate {
             y: _init ? 0 : s(15)
-            Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
+            Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
         }
 
         Row {
@@ -41,7 +44,7 @@ Row {
             spacing: s(8)
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                text: ""
+                text: "󰃶"
                 font.family: "Iosevka Nerd Font"; font.pixelSize: s(16)
                 color: Qt.tint(mocha.green, Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.4))
             }
@@ -61,7 +64,9 @@ Row {
         radius: s(10); height: s(34); clip: true
         Behavior on color { ColorAnimation { duration: 200 } }
 
-        width: notifRow.implicitWidth + s(24)
+        property real targetWidth: Config.showTopNotif ? (notifRow.implicitWidth + s(24)) : 0
+        width: targetWidth
+        visible: targetWidth > 0 || opacity > 0
         Behavior on width { NumberAnimation { duration: 500; easing.type: Easing.OutQuint } }
 
         scale: isHovered ? 1.05 : 1.0
@@ -69,11 +74,11 @@ Row {
 
         property bool _init: false
         Timer { running: root.showLayout && !parent._init; interval: 25; onTriggered: parent._init = true }
-        opacity: _init ? 1 : 0
+        opacity: (_init && Config.showTopNotif) ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
         transform: Translate {
             y: _init ? 0 : s(15)
-            Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack } }
+            Behavior on y { NumberAnimation { duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
         }
 
         Row {

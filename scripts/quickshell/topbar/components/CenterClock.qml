@@ -29,7 +29,7 @@ Rectangle {
     Behavior on color { ColorAnimation { duration: 250 } }
 
     scale: isHovered ? 1.03 : 1.0
-    Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
+    Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
 
     // Slide-down entry
     property bool _showLayout: false

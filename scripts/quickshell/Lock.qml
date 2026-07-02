@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 import QtCore
 import Quickshell
 import Quickshell.Io
@@ -121,17 +122,17 @@ ShellRoot {
                     from: 0; to: Math.PI * 2; duration: 90000; loops: Animation.Infinite; running: true
                 }
 
-                // ── Dashboard colors (HUD palette) ────────────────────────────
-                readonly property color cLime:       "#b4ff39"
-                readonly property color cLimeDim:    "#7fb32a"
-                readonly property color cCyan:       "#5ecfc9"
-                readonly property color cAmber:      "#f2b056"
-                readonly property color cText:       "#e8eae4"
-                readonly property color cTextDim:    "#8b948a"
-                readonly property color cTextFaint:  "#5a635a"
-                readonly property color cPanel:      Qt.rgba(14/255,  20/255,  15/255,  0.55)
-                readonly property color cPanelBorder: Qt.rgba(180/255, 255/255, 57/255,  0.14)
-                readonly property color cHairline:   Qt.rgba(232/255, 234/255, 229/255, 0.08)
+                // ── Dashboard colors (Matugen palette) ────────────────────────────
+                readonly property color cLime:       root.mauve
+                readonly property color cLimeDim:    root.blue
+                readonly property color cCyan:       root.sapphire
+                readonly property color cAmber:      root.peach
+                readonly property color cText:       root.text
+                readonly property color cTextDim:    root.subtext0
+                readonly property color cTextFaint:  root.overlay0
+                readonly property color cPanel:      Qt.rgba(root.surface0.r, root.surface0.g, root.surface0.b, 0.55)
+                readonly property color cPanelBorder: Qt.rgba(root.surface2.r, root.surface2.g, root.surface2.b, 0.50)
+                readonly property color cHairline:   Qt.rgba(root.surface1.r, root.surface1.g, root.surface1.b, 0.50)
 
                 // Convenience object forwarded to sub-components
                 QtObject {
@@ -164,12 +165,32 @@ ShellRoot {
                     globalOrbitAngle:  screenRoot.globalOrbitAngle
                 }
 
+                // ── Album Art Full-screen Blur ────────────────────────────────
+                Image {
+                    id: blurBg
+                    anchors.fill: parent
+                    source: data.musicArtPath !== "" ? data.musicArtPath : ""
+                    fillMode: Image.PreserveAspectCrop
+                    visible: source !== ""
+                    opacity: (data.musicActive && source !== "") ? 0.7 : 0.0
+                    Behavior on opacity { NumberAnimation { duration: 1000; easing.type: Easing.InOutQuad } }
+
+                    layer.enabled: true
+                    layer.effect: MultiEffect {
+                        blurEnabled: true
+                        blurMax: 80 * screenRoot.sc
+                        blur: 1.0
+                        colorizationColor: root.crust
+                        colorization: 0.4 // Darken it slightly to keep text readable
+                    }
+                }
+
                 // ── Click handler ─────────────────────────────────────────────
                 MouseArea {
                     anchors.fill: parent; enabled: !screenRoot.isPlayingIntro
                     onClicked: {
                         if (screenRoot.powerMenuOpen) { screenRoot.powerMenuOpen = false; return; }
-                        centerPanel.inputField.forceActiveFocus();
+                        mainPasswordField.forceActiveFocus();
                     }
                 }
 
@@ -199,7 +220,7 @@ ShellRoot {
                         spacing: 8 * screenRoot.sc
                         Rectangle {
                             width: 6 * screenRoot.sc; height: 6 * screenRoot.sc; radius: 3 * screenRoot.sc; color: screenRoot.cLime
-                            SequentialAnimation on opacity { loops: Animation.Infinite; NumberAnimation { to: 0.25; duration: 1000 }; NumberAnimation { to: 1.0; duration: 1000 } }
+                            SequentialAnimation on opacity { loops: Animation.Infinite; NumberAnimation { to: 0.25; duration: 1000 } NumberAnimation { to: 1.0; duration: 1000 } }
                         }
                         Text { text: "LOCKED"; font.family: "SF Pro Display"; font.pixelSize: 11 * screenRoot.sc; font.letterSpacing: 2; color: screenRoot.cLime; opacity: 0.8 }
                     }
@@ -219,50 +240,41 @@ ShellRoot {
                         font.family: "SF Pro Display"; font.pixelSize: 10 * screenRoot.sc; font.letterSpacing: 1.5; color: screenRoot.cTextFaint
                     }
 
-                    // 3-column grid
+                    // 2-column absolute layout
                     Item {
                         anchors.fill: parent
-                        anchors.leftMargin: 80 * screenRoot.sc; anchors.rightMargin: 80 * screenRoot.sc
+                        anchors.topMargin: 120 * screenRoot.sc; anchors.bottomMargin: 80 * screenRoot.sc; anchors.leftMargin: 80 * screenRoot.sc; anchors.rightMargin: 80 * screenRoot.sc
 
-                        LockLeftPanel {
-                            anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
+                        LockLeftColumn {
+                            id: leftColumn
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: parent.width * 0.35
+
                             sc: screenRoot.sc; d: d
-                            currentUser:  data.currentUser
-                            musicTitle:   data.musicTitle; musicArtist: data.musicArtist
+                            musicTitle:   data.musicTitle; musicArtist: data.musicArtist; musicArtPath: data.musicArtPath
                             musicActive:  data.musicActive; musicPlaying: data.musicPlaying
+                            musicProgress: data.musicProgress; musicPositionStr: data.musicPositionStr; musicLengthStr: data.musicLengthStr
                             onPlayPauseClicked: data.playPause()
+                            onSeekRequested: function(percent) { data.seekMusic(percent); }
                             onNextClicked:      data.next()
                             onPrevClicked:      data.prev()
+
+                            batPct:         data.batPct
+                            batStatus:      data.batStatus
                         }
 
-                        LockCenterPanel {
-                            id: centerPanel
-                            anchors.centerIn: parent
+                        LockRightColumn {
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: parent.width * 0.50 // Widened to give lyrics more space to the left
+
                             sc: screenRoot.sc; d: d
-                            currentUser:   data.currentUser
-                            faceIconPath:  data.faceIconPath
-                            isPlayingIntro: screenRoot.isPlayingIntro
-                            locked:         screenRoot.powerMenuOpen
-                            authenticating: lockUI.authenticating
-                            failed:         lockUI.failed
-                            pwShapes:       screenRoot.pwShapes
                             weatherIcon: data.weatherIcon; weatherDesc: data.weatherDesc; weatherTemp: data.weatherTemp
-                            onAuthRequested: function(password) {
-                                if (pam.responseRequired && !lockUI.authenticating) {
-                                    lockUI.authenticating = true; lockUI.statusText = "Authenticating...";
-                                    lockUI.failed = false; pam.respond(password);
-                                }
-                            }
-                            onFailCleared: lockUI.failed = false
-                            onDoSuspend:   suspendProcess.running = true
-                            onDoReboot:    reloadProcess.running  = true
-                            onDoPoweroff:  poweroffProcess.running = true
-                        }
-
-                        LockRightPanel {
-                            anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
-                            sc: screenRoot.sc; d: d
-                            cpuPct: data.cpuPct; ramPct: data.ramPct; diskPct: data.diskPct; tempVal: data.tempVal
+                            lyricsList: data.lyricsList
+                            currentLyricIndex: data.currentLyricIndex
                         }
                     }
                 }
@@ -275,10 +287,84 @@ ShellRoot {
                     isPlayingIntro: screenRoot.isPlayingIntro
                     powerMenuOpen:  screenRoot.powerMenuOpen
                     introState:     screenRoot.introState
-                    onOpenChanged: function(open) { screenRoot.powerMenuOpen = open; if (!open) centerPanel.inputField.forceActiveFocus(); }
+                    onOpenChanged: function(open) { screenRoot.powerMenuOpen = open; if (!open) mainPasswordField.forceActiveFocus(); }
                     onDoReboot:    reloadProcess.running   = true
                     onDoSuspend:   suspendProcess.running  = true
                     onDoPoweroff:  poweroffProcess.running = true
+                }
+                
+                // ── Login Form (Moved from Left Column) ───────────────────────
+                Rectangle {
+                    id: loginPill
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.rightMargin: 92 * screenRoot.sc // 28 (margin) + 48 (btn) + 16 (spacing)
+                    anchors.bottomMargin: 32 * screenRoot.sc // Align visually with the button
+                    width: 220 * screenRoot.sc
+                    height: 38 * screenRoot.sc
+                    radius: 19 * screenRoot.sc
+                    color: Qt.rgba(0, 0, 0, 0.4)
+                    opacity: screenRoot.introState
+                    
+                    TextInput {
+                        id: mainPasswordField
+                        anchors.fill: parent
+                        anchors.leftMargin: 20 * screenRoot.sc
+                        anchors.rightMargin: 20 * screenRoot.sc
+                        verticalAlignment: TextInput.AlignVCenter
+                        echoMode: TextInput.Password
+                        color: lockUI.authenticating ? d.cPanel : d.cText
+                        font.family: "Iosevka Nerd Font"
+                        font.pixelSize: 14 * screenRoot.sc
+                        focus: true
+                        enabled: !lockUI.authenticating
+                        
+                        onAccepted: {
+                            if (text !== "") {
+                                if (pam.responseRequired && !lockUI.authenticating) {
+                                    lockUI.authenticating = true; lockUI.statusText = "Authenticating...";
+                                    lockUI.failed = false; pam.respond(text);
+                                }
+                                text = ""; // clear after submit
+                            }
+                        }
+                    }
+                    
+                    Text {
+                        anchors.left: parent.left
+                        anchors.leftMargin: 20 * screenRoot.sc
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: lockUI.authenticating ? "Verifying..." : (lockUI.failed ? "Access Denied" : "password")
+                        color: lockUI.authenticating ? d.cPanel : (lockUI.failed ? d.red : d.cText)
+                        font.pixelSize: 14 * screenRoot.sc
+                        visible: mainPasswordField.text.length === 0
+                    }
+                }
+                
+                // ── Status Icons (Moved from Left Column) ──────────────────────
+                RowLayout {
+                    anchors.right: loginPill.left
+                    anchors.rightMargin: 24 * screenRoot.sc
+                    anchors.verticalCenter: loginPill.verticalCenter
+                    spacing: 16 * screenRoot.sc
+                    opacity: screenRoot.introState
+
+                    // Wifi
+                    Text { text: "󰖩"; font.family: "Iosevka Nerd Font"; font.pixelSize: 18 * screenRoot.sc; color: d.cText }
+                    // Notification
+                    Text { text: "󰂚"; font.family: "Iosevka Nerd Font"; font.pixelSize: 18 * screenRoot.sc; color: d.cText }
+                    // Battery
+                    RowLayout {
+                        spacing: 6 * screenRoot.sc
+                        Text { text: data.batStatus === "Charging" ? "󰂄" : "󰁹" ; font.family: "Iosevka Nerd Font"; font.pixelSize: 18 * screenRoot.sc; color: d.cText }
+                        Text {
+                            text: data.batPct + "%"
+                            color: d.cText
+                            font.family: "SF Pro Display"
+                            font.pixelSize: 12 * screenRoot.sc
+                            opacity: 0.8
+                        }
+                    }
                 }
 
                 // ── Intro animation ───────────────────────────────────────────
@@ -290,8 +376,8 @@ ShellRoot {
                     onFinished: {
                         screenRoot.isPlayingIntro = false;
                         screenRoot.introState = 1.0;
-                        centerPanel.inputField.text = "";
-                        centerPanel.inputField.forceActiveFocus();
+                        mainPasswordField.text = "";
+                        mainPasswordField.forceActiveFocus();
                     }
                 }
             }
