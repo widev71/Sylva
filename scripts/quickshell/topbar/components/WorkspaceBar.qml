@@ -30,41 +30,7 @@ Rectangle {
         shadowBlur: 1.0; shadowHorizontalOffset: 0; shadowVerticalOffset: 0
     }
 
-    // Sliding active workspace highlight
-    Rectangle {
-        id: activeHighlight
-        y: (root.height - s(32)) / 2
-        height: s(32)
-        radius: s(10)
-        color: mocha.mauve
-        z: 0
-
-        property int prevIdx: 0
-        property int curIdx: workspacesModel.activeIndex
-
-        onCurIdxChanged: {
-            if (curIdx > prevIdx) {
-                rightAnim.duration = 200; leftAnim.duration = 350;
-            } else if (curIdx < prevIdx) {
-                leftAnim.duration = 200; rightAnim.duration = 350;
-            }
-            prevIdx = curIdx;
-        }
-
-        property real stepSize:   s(32) + s(6)
-        property real targetLeft: wsRow.x + (curIdx * stepSize)
-        property real targetRight: targetLeft + s(32)
-
-        property real actualLeft:  targetLeft
-        property real actualRight: targetRight
-
-        Behavior on actualLeft  { NumberAnimation { id: leftAnim;  duration: 250; easing.type: Easing.OutExpo } }
-        Behavior on actualRight { NumberAnimation { id: rightAnim; duration: 250; easing.type: Easing.OutExpo } }
-
-        x: actualLeft
-        width: actualRight - actualLeft
-        opacity: workspacesModel.count > 0 ? 1 : 0
-    }
+    // Removed sliding active highlight (replaced by Pacman)
 
     // Workspace pills
     Row {
@@ -109,17 +75,20 @@ Rectangle {
                 }
                 Timer { id: animTimer; running: false; repeat: false; onTriggered: wsPill.initAnimTrigger = true }
 
-                Text {
+                Image {
                     anchors.centerIn: parent
-                    text: wsName
-                    font.family: "JetBrains Mono"; font.pixelSize: s(14)
-                    font.weight: stateLabel === "active" ? Font.Black
-                               : (stateLabel === "occupied" ? Font.Bold : Font.Medium)
-                    color: index === workspacesModel.activeIndex
-                        ? mocha.crust
-                        : (isHovered ? mocha.text
-                            : (stateLabel === "occupied" ? mocha.text : mocha.overlay0))
-                    Behavior on color { ColorAnimation { duration: 250 } }
+                    source: stateLabel === "active" 
+                            ? "file://" + Quickshell.env("HOME") + "/.config/hypr/scripts/quickshell/assets/workspace/pacman.png"
+                            : (stateLabel === "occupied" 
+                                ? "file://" + Quickshell.env("HOME") + "/.config/hypr/scripts/quickshell/assets/workspace/ghost.png"
+                                : "file://" + Quickshell.env("HOME") + "/.config/hypr/scripts/quickshell/assets/workspace/empty.png")
+                    width: stateLabel === "active" ? s(22) : (stateLabel === "occupied" ? s(20) : s(12))
+                    height: width
+                    fillMode: Image.PreserveAspectFit
+                    antialiasing: true
+                    
+                    // Simple rotation animation for pacman
+                    Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.OutBack; easing.overshoot: 1.5 } }
                 }
                 MouseArea {
                     id: wsPillMouse; hoverEnabled: true; anchors.fill: parent

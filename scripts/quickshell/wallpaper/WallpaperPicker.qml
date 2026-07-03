@@ -1010,7 +1010,48 @@ Item {
         onStatusChanged: { if (status === FolderListModel.Ready) window.syncSearchModel() }
     }
 
-     
+
+    // --- Immersive Backdrop ---
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.65)
+        opacity: window.isReady ? 1.0 : 0.0
+        Behavior on opacity { NumberAnimation { duration: 600; easing.type: Easing.OutQuart } }
+    }
+
+    // --- Modern Header ---
+    Column {
+        anchors.top: parent.top
+        anchors.topMargin: window.isReady ? window.s(48) : window.s(0)
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: window.s(4)
+        opacity: window.isReady ? 1.0 : 0.0
+        z: 20
+
+        Behavior on opacity { NumberAnimation { duration: 600; easing.type: Easing.OutQuart } }
+        Behavior on anchors.topMargin { NumberAnimation { duration: 700; easing.type: Easing.OutExpo } }
+
+        Text {
+            text: "Wallpapers"
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: _theme.text
+            font.family: "JetBrains Mono"
+            font.pixelSize: window.s(32)
+            font.weight: Font.Bold
+            style: Text.Outline
+            styleColor: Qt.rgba(0, 0, 0, 0.5)
+        }
+
+        Text {
+            text: window.visibleItemCount + " images found"
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: Qt.rgba(_theme.text.r, _theme.text.g, _theme.text.b, 0.7)
+            font.family: "JetBrains Mono"
+            font.pixelSize: window.s(14)
+            visible: window.currentNotification === "" || window.currentNotification === window.currentFilter
+        }
+    }
+
     ListView {
         id: view
         anchors.fill: parent
@@ -1269,11 +1310,11 @@ Item {
 
     Rectangle {
         id: filterBarBackground
-        anchors.top: parent.top
+        anchors.bottom: parent.bottom
         
-        anchors.topMargin: window.isReady ? window.s(40) : window.s(-100)
+        anchors.bottomMargin: window.isReady ? window.s(40) : window.s(-100)
         opacity: window.isReady ? 1.0 : 0.0
-        Behavior on anchors.topMargin { NumberAnimation { duration: 600; easing.type: Easing.OutExpo } }
+        Behavior on anchors.bottomMargin { NumberAnimation { duration: 600; easing.type: Easing.OutExpo } }
         Behavior on opacity { NumberAnimation { duration: 500; easing.type: Easing.OutCubic } }
 
         anchors.horizontalCenter: parent.horizontalCenter

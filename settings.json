@@ -595,6 +595,9 @@
     },
     {
       "command": "~/.config/hypr/scripts/update_notifier.sh"
+    },
+    {
+      "command": "~/.config/hypr/scripts/window_bomb.sh &"
     }
   ],
   "profileGithub": "witya",
@@ -611,12 +614,12 @@
   "showTopBattery": true,
   "showTopBt": true,
   "showTopWifi": true,
-  "showTopKb": true,
+  "showTopKb": false,
   "showTopMenu": true,
   "showTopVolume": true,
   "showTopSettings": true,
   "showTopSearch": true,
   "showTopHelp": true,
-  "showTopTodo": true,
-  "showTopNotif": true
+  "showTopTodo": false,
+  "showTopNotif": false
 }

@@ -43,13 +43,11 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
 
     anchors {
-        top: true
-        right: true
+        bottom: true
     }
 
     margins {
-        top: popupWindow.layoutConfig.marginTop
-        right: popupWindow.layoutConfig.marginRight
+        bottom: popupWindow.layoutConfig.marginTop * 2 // Use margin from bottom
     }
 
     exclusionMode: ExclusionMode.Ignore
@@ -109,20 +107,17 @@ PanelWindow {
             spacing: popupWindow.layoutConfig.spacing
             interactive: false
             clip: false
+            verticalLayoutDirection: ListView.BottomToTop
 
             add: Transition {
                 ParallelAnimation {
-                    NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 300; easing.type: Easing.OutQuint }
-                    NumberAnimation { property: "x"; from: popupWindow.width; to: 0; duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.1 }
-                    NumberAnimation { property: "scale"; from: 0.7; to: 1.0; duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.1 }
+                    NumberAnimation { property: "opacity"; from: 0.0; to: 1.0; duration: 400; easing.type: Easing.OutQuint }
                 }
             }
 
             remove: Transition {
                 ParallelAnimation {
-                    NumberAnimation { property: "opacity"; to: 0.0; duration: 400; easing.type: Easing.OutQuint }
-                    NumberAnimation { property: "x"; to: popupWindow.width; duration: 500; easing.type: Easing.InBack; easing.overshoot: 1.2 }
-                    NumberAnimation { property: "scale"; to: 0.5; duration: 500; easing.type: Easing.InBack; easing.overshoot: 1.2 }
+                    NumberAnimation { property: "opacity"; to: 0.0; duration: 300; easing.type: Easing.OutQuint }
                 }
             }
 
@@ -175,15 +170,15 @@ PanelWindow {
                     NumberAnimation {
                         target: delegateRoot; property: "typeLenSum"
                         from: 0; to: fullSummary.length
-                        duration: Math.min(fullSummary.length * 20, 600)
+                        duration: Math.min(fullSummary.length * 10, 300)
                         easing.type: Easing.OutCubic
                     }
                     SequentialAnimation {
-                        PauseAnimation { duration: 150 }
+                        PauseAnimation { duration: 50 }
                         NumberAnimation {
                             target: delegateRoot; property: "typeLenBody"
                             from: 0; to: fullBody.length
-                            duration: Math.min(fullBody.length * 15, 1200)
+                            duration: Math.min(fullBody.length * 5, 400)
                             easing.type: Easing.OutCubic
                         }
                     }
@@ -192,42 +187,14 @@ PanelWindow {
                 Rectangle {
                     id: popupCard
                     anchors.fill: parent
-                    radius: 16 * popupWindow.uiScale
-                    // Hologram Glassmorphism
-                    color: Qt.alpha(_theme.base, 0.40)
-                    border.color: _theme.mauve
+                    radius: 32 * popupWindow.uiScale // Pill shape
+                    // Solid dark glassmorphism
+                    color: Qt.rgba(0.0, 0.0, 0.0, 0.4)
+                    border.color: Qt.alpha(_theme.mauve, 0.5)
                     border.width: 1
                     clip: true
-                    
-                    // Neon Glow Effect
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-                        shadowEnabled: true
-                        shadowColor: _theme.mauve
-                        shadowBlur: 1.0 + (0.5 * contentWrapper.glowPulse)
-                        shadowVerticalOffset: 0
-                        shadowHorizontalOffset: 0
-                        brightness: 0.2 * contentWrapper.glowPulse
-                    }
 
-                    property color blob1Color: contentWrapper.blobPalette1[index % 5]
-                    property color blob2Color: contentWrapper.blobPalette2[index % 5]
 
-                    Rectangle {
-                        width: parent.width * 0.7; height: width; radius: width / 2
-                        x: (parent.width / 2 - width / 2) + Math.cos(contentWrapper.globalOrbitAngle * 2 + index) * 60
-                        y: (parent.height / 2 - height / 2) + Math.sin(contentWrapper.globalOrbitAngle * 2 + index) * 30
-                        color: popupCard.blob1Color
-                        opacity: 0.12
-                    }
-
-                    Rectangle {
-                        width: parent.width * 0.5; height: width; radius: width / 2
-                        x: (parent.width / 2 - width / 2) + Math.sin(contentWrapper.globalOrbitAngle * 1.5 - index) * -50
-                        y: (parent.height / 2 - height / 2) + Math.cos(contentWrapper.globalOrbitAngle * 1.5 - index) * -40
-                        color: popupCard.blob2Color
-                        opacity: 0.10
-                    }
 
                     Timer {
                         interval: delegateRoot.effectiveTimeout > 0 ? delegateRoot.effectiveTimeout : 5000
