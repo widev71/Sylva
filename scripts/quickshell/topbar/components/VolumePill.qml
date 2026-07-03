@@ -64,7 +64,7 @@ Rectangle {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: root.volPercent
-            font.family: "JetBrains Mono"; font.pixelSize: s(13); font.weight: Font.Black
+            font.family: "Inter"; font.pixelSize: s(13); font.weight: Font.Black
             color: root.isSoundActive ? mocha.base : mocha.text
         }
     }

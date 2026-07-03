@@ -81,7 +81,7 @@ Item {
         RowLayout {
             anchors.centerIn: parent; spacing: s(6)
             Text { font.family: "Iosevka Nerd Font"; text: tBtn.iconTxt; color: tBtn.isDanger ? theme.crust : theme.text; font.pixelSize: s(18) }
-            Text { id: txt; visible: tBtn.label !== ""; font.family: "JetBrains Mono"; font.weight: Font.DemiBold; text: tBtn.label; color: tBtn.isDanger ? theme.crust : theme.text; font.pixelSize: s(13) }
+            Text { id: txt; visible: tBtn.label !== ""; font.family: "Inter"; font.weight: Font.DemiBold; text: tBtn.label; color: tBtn.isDanger ? theme.crust : theme.text; font.pixelSize: s(13) }
         }
         MouseArea { id: maBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: tBtn.clicked() }
     }

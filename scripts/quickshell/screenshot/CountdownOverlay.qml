@@ -78,7 +78,7 @@ PanelWindow {
             color: theme.text
             font.pixelSize: 300
             font.weight: Font.Bold
-            font.family: "JetBrains Mono"
+            font.family: "Inter"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             

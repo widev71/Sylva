@@ -28,7 +28,7 @@ Rectangle {
     border.width: 0
 
     opacity: (fw.isPeekVisible && !fw.isSidebarVisible)
-             ? (peekMouse.containsMouse || peekMouse.pressed ? 1.0 : 0.6) : 0.0
+             ? (peekMouse.containsMouse || peekMouse.pressed ? 1.0 : 0.0) : 0.0
     scale: fw.isPeekVisible ? 1.0 : 0.6
     Behavior on opacity { NumberAnimation { duration: 250 } }
     Behavior on scale   { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }

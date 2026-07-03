@@ -78,7 +78,7 @@ Item {
 
                 Text {
                     text: "To-Do List"
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                     font.weight: Font.ExtraBold
                     font.pixelSize: s(16)
                     color: window.text

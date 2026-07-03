@@ -34,7 +34,7 @@ Rectangle {
 
     Text {
         anchors.centerIn: parent
-        text: ""
+        text: "⏹"
         font.family: "Iosevka Nerd Font"; font.pixelSize: s(20)
         color: mocha.red
 

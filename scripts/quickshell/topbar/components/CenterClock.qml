@@ -57,13 +57,13 @@ Rectangle {
             Text {
                 text: root.dateStr
                 Layout.alignment: Qt.AlignHCenter
-                font.family: "JetBrains Mono"; font.pixelSize: s(11); font.weight: Font.Bold
+                font.family: "Inter"; font.pixelSize: s(11); font.weight: Font.Bold
                 color: mocha.subtext0
             }
             Text {
                 text: root.timeStr
                 Layout.alignment: Qt.AlignHCenter
-                font.family: "JetBrains Mono"; font.pixelSize: s(16); font.weight: Font.Black
+                font.family: "Inter"; font.pixelSize: s(16); font.weight: Font.Black
                 color: mocha.blue
             }
         }
@@ -84,7 +84,7 @@ Rectangle {
             }
             Text {
                 text: root.weatherTemp
-                font.family: "JetBrains Mono"; font.pixelSize: s(14); font.weight: Font.Bold
+                font.family: "Inter"; font.pixelSize: s(14); font.weight: Font.Bold
                 color: mocha.text
             }
         }

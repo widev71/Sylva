@@ -27,11 +27,7 @@ Rectangle {
     opacity: targetWidth > 0 ? 1 : 0
     Behavior on opacity { NumberAnimation { duration: 300 } }
 
-    layer.enabled: true
-    layer.effect: MultiEffect {
-        shadowEnabled: true; shadowColor: mocha.mauve
-        shadowBlur: 1.0; shadowHorizontalOffset: 0; shadowVerticalOffset: 0
-    }
+
 
     Row {
         id: trayRow

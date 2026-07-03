@@ -73,7 +73,7 @@ Rectangle {
                 ? root.ethStatus
                 : (root.isWifiOn ? (root.wifiSsid !== "" ? root.wifiSsid : "On") : "Off")
             visible: text !== ""
-            font.family: "JetBrains Mono"; font.pixelSize: s(13); font.weight: Font.Black
+            font.family: "Inter"; font.pixelSize: s(13); font.weight: Font.Black
             color: isConnected ? mocha.base : mocha.text
             width: Math.min(implicitWidth, s(100)); elide: Text.ElideRight
         }

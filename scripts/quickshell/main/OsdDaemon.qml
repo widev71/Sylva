@@ -127,7 +127,7 @@ PanelWindow {
                 Text {
                     Layout.preferredWidth: 35 * uiScale // Fixed width to prevent jumping
                     horizontalAlignment: Text.AlignRight
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                     font.weight: Font.Bold
                     font.pixelSize: 13 * uiScale
                     color: _theme.subtext0

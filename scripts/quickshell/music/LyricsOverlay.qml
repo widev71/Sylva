@@ -61,7 +61,7 @@ PanelWindow {
         }
     }
     Timer {
-        interval: 200; running: true; repeat: true
+        interval: 100; running: true; repeat: true
         onTriggered: indexPoller.running = true
     }
 
@@ -123,7 +123,7 @@ PanelWindow {
             color: "white"
             font.pixelSize: 32
             font.weight: Font.Bold
-            font.family: "JetBrains Mono"
+            font.family: "Inter"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap

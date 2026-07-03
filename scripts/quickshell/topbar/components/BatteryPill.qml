@@ -72,7 +72,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: !root.isDesktop
             text: root.batPercent
-            font.family: "JetBrains Mono"; font.pixelSize: s(13); font.weight: Font.Black
+            font.family: "Inter"; font.pixelSize: s(13); font.weight: Font.Black
             color: mocha.base
             Behavior on color { ColorAnimation { duration: 300 } }
         }

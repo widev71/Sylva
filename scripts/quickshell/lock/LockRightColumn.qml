@@ -61,7 +61,7 @@ Item {
                     color: root.d.cText
                     font.pixelSize: 96 * root.sc
                     font.weight: Font.Light
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                 }
 
                 // Vertical Divider
@@ -79,7 +79,7 @@ Item {
                         text: "AM"
                         font.pixelSize: 32 * root.sc
                         font.weight: Font.Normal
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         color: root.ampm === "AM" ? root.d.cText : "transparent"
                         style: root.ampm === "AM" ? Text.Normal : Text.Outline
                         styleColor: root.d.cText
@@ -88,7 +88,7 @@ Item {
                         text: "PM"
                         font.pixelSize: 32 * root.sc
                         font.weight: Font.Normal
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         color: root.ampm === "PM" ? root.d.cText : "transparent"
                         style: root.ampm === "PM" ? Text.Normal : Text.Outline
                         styleColor: root.d.cText
@@ -109,7 +109,7 @@ Item {
                         text: root.weatherTemp
                         color: root.d.cText
                         font.pixelSize: 20 * root.sc
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                     }
                 }
                 
@@ -120,13 +120,13 @@ Item {
                         text: root.weatherDesc !== "" ? root.weatherDesc : "Weather unavailable"
                         color: root.d.cText
                         font.pixelSize: 14 * root.sc
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                     }
                     Text {
                         text: "H: 30° L:23°" // Static placeholder as per mockup
                         color: root.d.cText
                         font.pixelSize: 14 * root.sc
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                     }
                 }
             }
@@ -151,7 +151,7 @@ Item {
             preferredHighlightBegin: height / 2 - 80 * root.sc
             preferredHighlightEnd: height / 2 + 80 * root.sc
             highlightRangeMode: ListView.StrictlyEnforceRange
-            highlightMoveDuration: 400
+            highlightMoveDuration: 100
 
             add: Transition {
                 NumberAnimation { property: "opacity"; from: 0.0; duration: 400; easing.type: Easing.OutQuart }
@@ -170,7 +170,7 @@ Item {
                 color: root.d.cText
                 font.pixelSize: (index === ListView.view.currentIndex) ? 48 * root.sc : 28 * root.sc
                 font.weight: Font.Light
-                font.family: "JetBrains Mono"
+                font.family: "Inter"
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WordWrap
                 opacity: (index === ListView.view.currentIndex) ? 1.0 : 0.35
@@ -184,10 +184,7 @@ Item {
                     blur: lyricText.blurAmount
                 }
                 
-                // Spring/Bounce easing for font size, smooth fading for opacity and blur
-                Behavior on font.pixelSize { NumberAnimation { duration: 500; easing.type: Easing.OutBack; easing.overshoot: 1.3 } }
-                Behavior on opacity { NumberAnimation { duration: 500; easing.type: Easing.OutQuart } }
-                Behavior on blurAmount { NumberAnimation { duration: 500; easing.type: Easing.OutQuart } }
+                // Visuals update instantly without Behavior delays
             }
             
             onCountChanged: {

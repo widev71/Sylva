@@ -16,7 +16,6 @@ ShellRoot {
     Floating {}
     
     // Custom Overlays
-    LyricsOverlay {}
     Osd {}
 }
 

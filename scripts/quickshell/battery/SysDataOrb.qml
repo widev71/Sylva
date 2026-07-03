@@ -54,9 +54,9 @@ Item {
         RowLayout {
             Layout.alignment: Qt.AlignHCenter; spacing: window.s(4)
             Text { font.family: "Iosevka Nerd Font"; font.pixelSize: window.s(18); color: root.colorMain; text: root.iconText }
-            Text { font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: window.s(28); color: window.text; text: root.valueText }
+            Text { font.family: "Inter"; font.weight: Font.Black; font.pixelSize: window.s(28); color: window.text; text: root.valueText }
         }
-        Text { Layout.alignment: Qt.AlignHCenter; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(12); color: window.subtext0; text: root.labelText }
+        Text { Layout.alignment: Qt.AlignHCenter; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(12); color: window.subtext0; text: root.labelText }
     }
 
     MouseArea { id: orbMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor }

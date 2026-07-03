@@ -103,7 +103,7 @@ Item {
                 Text {
                     text: root.musicActive ? root.musicTitle : "No Media Playing"
                     color: root.d.cText
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                     font.pixelSize: 18 * root.sc
                     font.weight: Font.DemiBold
                     elide: Text.ElideRight
@@ -112,7 +112,7 @@ Item {
                 Text {
                     text: root.musicActive ? root.musicArtist : "Unknown Artist"
                     color: root.d.cTextDim
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                     font.pixelSize: 14 * root.sc
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -172,14 +172,14 @@ Item {
                     Text {
                         text: root.musicPositionStr
                         color: root.d.cTextDim
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         font.pixelSize: 12 * root.sc
                     }
                     Item { Layout.fillWidth: true }
                     Text {
                         text: root.musicLengthStr
                         color: root.d.cTextDim
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         font.pixelSize: 12 * root.sc
                     }
                 }

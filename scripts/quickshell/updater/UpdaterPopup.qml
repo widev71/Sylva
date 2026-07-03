@@ -361,7 +361,7 @@ except Exception as e:
                 Text { 
                     id: oldVer
                     text: window.localVersion
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                     font.pixelSize: window.s(22)
                     color: window.subtext0 
                     anchors.centerIn: parent
@@ -371,7 +371,7 @@ except Exception as e:
                 Text { 
                     id: newVer
                     text: window.remoteVersion
-                    font.family: "JetBrains Mono"
+                    font.family: "Inter"
                     font.weight: Font.Black
                     font.pixelSize: window.s(48) 
                     color: window.green 
@@ -541,7 +541,7 @@ except Exception as e:
                             anchors.leftMargin: window.s(16)
                             anchors.rightMargin: window.s(16)
                             text: model.lineText
-                            font.family: "JetBrains Mono"
+                            font.family: "Inter"
                             font.pixelSize: window.s(13)
                             color: window.text
                             wrapMode: Text.WordWrap
@@ -640,7 +640,7 @@ except Exception as e:
                     
                     Text { 
                         text: updateBtn.fillLevel > 0 ? "HOLDING..." : "UPDATE"
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         font.weight: Font.Black
                         font.pixelSize: window.s(14)
                         color: updateBtn.fillLevel > 0.5 ? window.crust : window.green 

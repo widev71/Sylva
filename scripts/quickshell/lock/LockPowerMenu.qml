@@ -80,7 +80,7 @@ Item {
 
             Text {
                 text: "SYSTEM"
-                font.family: "JetBrains Mono"; font.weight: Font.Black
+                font.family: "Inter"; font.weight: Font.Black
                 font.pixelSize: 11 * sc; font.letterSpacing: 1.5
                 color: theme.mauve
                 Layout.leftMargin: 16 * sc
@@ -104,7 +104,7 @@ Item {
                     anchors.fill: parent; anchors.leftMargin: 14 * sc; anchors.rightMargin: 14 * sc; spacing: 0
                     Text { text: icon; font.family: "Iosevka Nerd Font"; font.pixelSize: 16 * sc; color: pmItemMa.containsMouse ? accent : Qt.rgba(accent.r, accent.g, accent.b, 0.5); Behavior on color { ColorAnimation { duration: 150 } } }
                     Item { Layout.fillWidth: true }
-                    Text { text: label; font.family: "JetBrains Mono"; font.pixelSize: 14 * sc; font.weight: Font.Medium; color: pmItemMa.containsMouse ? accent : Qt.rgba(accent.r, accent.g, accent.b, 0.5); Behavior on color { ColorAnimation { duration: 150 } } }
+                    Text { text: label; font.family: "Inter"; font.pixelSize: 14 * sc; font.weight: Font.Medium; color: pmItemMa.containsMouse ? accent : Qt.rgba(accent.r, accent.g, accent.b, 0.5); Behavior on color { ColorAnimation { duration: 150 } } }
                 }
                 MouseArea { id: pmItemMa; anchors.fill: parent; hoverEnabled: true; onClicked: parent.clicked() }
             }

@@ -33,7 +33,7 @@ Item {
             text: root.isVideoMode
                 ? "Click Record (Portal handles area selection)"
                 : "Select region to capture"
-            font.family: "JetBrains Mono"
+            font.family: "Inter"
             font.weight: Font.DemiBold
             font.pixelSize: 24
             color: "white"

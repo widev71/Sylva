@@ -51,7 +51,7 @@ Rectangle {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: root.kbLayout
-            font.family: "JetBrains Mono"; font.pixelSize: s(13); font.weight: Font.Black
+            font.family: "Inter"; font.pixelSize: s(13); font.weight: Font.Black
             color: mocha.text
         }
     }

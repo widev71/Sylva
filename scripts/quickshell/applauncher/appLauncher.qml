@@ -412,7 +412,7 @@ Item {
                         Layout.alignment: Qt.AlignHCenter
                         text: model.name
                         color: window.text
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         font.pixelSize: window.s(12)
                         font.weight: Font.Bold
                         width: window.s(100)
@@ -470,7 +470,7 @@ Item {
                 Layout.fillHeight: true
                 verticalAlignment: TextInput.AlignVCenter
                 
-                font.family: "JetBrains Mono"
+                font.family: "Inter"
                 font.pixelSize: window.s(18)
                 color: window.text
                 

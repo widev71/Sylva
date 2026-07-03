@@ -241,7 +241,7 @@ PanelWindow {
 
                         Text {
                             text: model.appName || "System"
-                            font.family: "JetBrains Mono"
+                            font.family: "Inter"
                             font.weight: Font.Medium
                             font.pixelSize: 12 * popupWindow.uiScale
                             color: _theme.overlay1
@@ -256,7 +256,7 @@ PanelWindow {
                                 id: hiddenSummary
                                 text: delegateRoot.fullSummary
                                 width: parent.width
-                                font.family: "JetBrains Mono"
+                                font.family: "Inter"
                                 font.weight: Font.Bold
                                 font.pixelSize: 15 * popupWindow.uiScale
                                 wrapMode: Text.Wrap
@@ -281,7 +281,7 @@ PanelWindow {
                                 id: hiddenBody
                                 text: delegateRoot.fullBody
                                 width: parent.width
-                                font.family: "JetBrains Mono"
+                                font.family: "Inter"
                                 font.weight: Font.Medium
                                 font.pixelSize: 13 * popupWindow.uiScale
                                 wrapMode: Text.Wrap
@@ -332,7 +332,7 @@ PanelWindow {
                                     Text {
                                         anchors.centerIn: parent
                                         text: modelData.text || "Action"
-                                        font.family: "JetBrains Mono"
+                                        font.family: "Inter"
                                         font.weight: Font.Bold
                                         font.pixelSize: 12 * popupWindow.uiScale
                                         color: isPrimary ? _theme.crust : _theme.text

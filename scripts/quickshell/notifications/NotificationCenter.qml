@@ -117,7 +117,7 @@ Item {
 
                             Text {
                                 text: "Notifications"
-                                font.family: "JetBrains Mono"
+                                font.family: "Inter"
                                 font.weight: Font.Black
                                 font.pixelSize: window.s(18)
                                 color: window.text
@@ -148,7 +148,7 @@ Item {
                                     Text {
                                         id: dndText
                                         text: window.dndEnabled ? "Silent" : "Mute"
-                                        font.family: "JetBrains Mono"
+                                        font.family: "Inter"
                                         font.weight: Font.Bold
                                         font.pixelSize: window.s(13)
                                         color: window.dndEnabled ? window.red : window.text
@@ -184,7 +184,7 @@ Item {
                             Layout.fillHeight: true
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            font.family: "JetBrains Mono"
+                            font.family: "Inter"
                             font.weight: Font.Medium
                             font.pixelSize: window.s(14)
                             color: window.overlay0
@@ -274,7 +274,7 @@ Item {
 
                                                 Text {
                                                     text: section.toUpperCase()
-                                                    font.family: "JetBrains Mono"
+                                                    font.family: "Inter"
                                                     font.weight: Font.Black
                                                     font.pixelSize: window.s(11)
                                                     color: window.text
@@ -417,7 +417,7 @@ Item {
 
                                             Text {
                                                 text: model.summary || "Notification"
-                                                font.family: "JetBrains Mono"
+                                                font.family: "Inter"
                                                 font.weight: Font.Bold
                                                 font.pixelSize: window.s(13)
                                                 color: window.text
@@ -453,7 +453,7 @@ Item {
 
                                         Text {
                                             text: model.body || ""
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.weight: Font.Medium
                                             font.pixelSize: window.s(11)
                                             color: window.subtext0
@@ -496,7 +496,7 @@ Item {
                                                     Text {
                                                         anchors.centerIn: parent
                                                         text: modelData.text || "Action"
-                                                        font.family: "JetBrains Mono"
+                                                        font.family: "Inter"
                                                         font.weight: Font.Bold
                                                         font.pixelSize: window.s(11)
                                                         color: isPrimary ? window.crust : window.text

@@ -1384,7 +1384,7 @@ Item {
                                 opacity: visible ? 1.0 : 0.0
                                 Behavior on opacity { NumberAnimation { duration: 300 } }
                                 Text { Layout.alignment: Qt.AlignHCenter; font.family: "Iosevka Nerd Font"; font.pixelSize: window.s(48); color: window.overlay0; text: "󰈂" }
-                                Text { Layout.alignment: Qt.AlignHCenter; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(14); color: window.overlay0; text: window.currentPowerPending ? (window.expectedEthPower === "on" ? "Powering On..." : "Powering Off...") : "Disconnected" }
+                                Text { Layout.alignment: Qt.AlignHCenter; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(14); color: window.overlay0; text: window.currentPowerPending ? (window.expectedEthPower === "on" ? "Powering On..." : "Powering Off...") : "Disconnected" }
                             }
 
                             Item {
@@ -1404,7 +1404,7 @@ Item {
                                     
                                     Text { 
                                         Layout.alignment: Qt.AlignHCenter; Layout.maximumWidth: pwdLayer.width - window.s(40)
-                                        font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(13)
+                                        font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(13)
                                         color: window.crust; text: window.pendingWifiSsid; elide: Text.ElideRight 
                                     }
                                     
@@ -1422,7 +1422,7 @@ Item {
                                             anchors.fill: parent
                                             anchors.leftMargin: window.s(15); anchors.rightMargin: window.s(15)
                                             verticalAlignment: TextInput.AlignVCenter
-                                            font.family: "JetBrains Mono"; font.pixelSize: window.s(13); color: window.text
+                                            font.family: "Inter"; font.pixelSize: window.s(13); color: window.text
                                             echoMode: TextInput.Password; clip: true
                                             onAccepted: {
                                                 if (text.trim() !== "") {
@@ -1466,7 +1466,7 @@ Item {
                                         Layout.alignment: Qt.AlignHCenter
                                         Layout.maximumWidth: window.s(150) - (window.s(50) * coreContainer.multiShift)
                                         horizontalAlignment: Text.AlignHCenter
-                                        font.family: "JetBrains Mono"; font.weight: Font.Black
+                                        font.family: "Inter"; font.weight: Font.Black
                                         font.pixelSize: window.s(16) - (window.s(4) * coreContainer.multiShift)
                                         color: isMyDisconnecting ? window.overlay1 : window.crust
                                         text: coreContainer.myDevice ? (window.activeMode === "wifi" ? coreContainer.myDevice.ssid : coreContainer.myDevice.name) : ""
@@ -1475,7 +1475,7 @@ Item {
                                     }
                                     Text {
                                         Layout.alignment: Qt.AlignHCenter
-                                        font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(11)
+                                        font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(11)
                                         color: isMyDisconnecting ? window.overlay1 : (coreMa.containsMouse ? window.crust : "#99000000")
                                         text: isMyDisconnecting ? "Disconnecting..." : (centralCore.disconnectFill > 0.01 ? "Hold..." : "Connected")
                                         Behavior on color { ColorAnimation { duration: 200 } }
@@ -1508,7 +1508,7 @@ Item {
                                             Layout.alignment: Qt.AlignHCenter
                                             Layout.maximumWidth: window.s(150) - (window.s(50) * coreContainer.multiShift)
                                             horizontalAlignment: Text.AlignHCenter
-                                            font.family: "JetBrains Mono"; font.weight: Font.Black
+                                            font.family: "Inter"; font.weight: Font.Black
                                             font.pixelSize: window.s(16) - (window.s(4) * coreContainer.multiShift)
                                             color: window.text
                                             text: coreContainer.myDevice ? (window.activeMode === "wifi" ? coreContainer.myDevice.ssid : coreContainer.myDevice.name) : ""
@@ -1516,7 +1516,7 @@ Item {
                                         }
                                         Text {
                                             Layout.alignment: Qt.AlignHCenter
-                                            font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(11)
+                                            font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(11)
                                             color: window.text
                                             text: isMyDisconnecting ? "Disconnecting..." : (centralCore.disconnectFill > 0.01 ? "Hold..." : "Connected")
                                         }
@@ -1981,7 +1981,7 @@ Item {
                                                 anchors.leftMargin: floatCard.textOffset
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 text: floatCard.itemName
-                                                font.family: "JetBrains Mono"
+                                                font.family: "Inter"
                                                 font.weight: Font.Bold
                                                 font.pixelSize: window.s(13)
                                                 color: floatCard.isFailed ? window.red : (floatCard.isHighlighted ? window.activeColor : window.text)
@@ -1993,7 +1993,7 @@ Item {
                                                 anchors.verticalCenter: parent.verticalCenter
                                                 visible: floatCard.doMarquee
                                                 text: floatCard.itemName
-                                                font.family: "JetBrains Mono"
+                                                font.family: "Inter"
                                                 font.weight: Font.Bold
                                                 font.pixelSize: window.s(13)
                                                 color: floatCard.isFailed ? window.red : (floatCard.isHighlighted ? window.activeColor : window.text)
@@ -2001,7 +2001,7 @@ Item {
                                         }
                                         
                                         Text {
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.pixelSize: window.s(10)
                                             color: floatCard.isFailed ? window.maroon : (floatCard.isMyBusy ? window.activeColor : window.overlay0)
                                             text: floatCard.isFailed ? "Connection Failed" : (floatCard.isMyBusy ? "Connecting..." : (floatCard.renderFill > 0.1 && floatCard.renderFill < 1.0 ? floatCard.itemId === "ip_0" ? floatCard.triggered ? "Copied!" : "Hold to copy...": "Hold..." : action))
@@ -2039,7 +2039,7 @@ Item {
                                                     anchors.leftMargin: floatCard.textOffset
                                                     anchors.verticalCenter: parent.verticalCenter
                                                     text: floatCard.itemName
-                                                    font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(13); color: window.crust 
+                                                    font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(13); color: window.crust 
                                                 }
                                                 Text { 
                                                     anchors.left: filledNameText.right
@@ -2047,11 +2047,11 @@ Item {
                                                     anchors.verticalCenter: parent.verticalCenter
                                                     visible: floatCard.doMarquee
                                                     text: floatCard.itemName
-                                                    font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: window.s(13); color: window.crust 
+                                                    font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: window.s(13); color: window.crust 
                                                 }
                                             }
                                             Text {
-                                                font.family: "JetBrains Mono"; font.pixelSize: window.s(10); color: window.crust
+                                                font.family: "Inter"; font.pixelSize: window.s(10); color: window.crust
                                                 text: floatCard.isMyBusy ? "Connecting..." : (floatCard.renderFill > 0.1 && floatCard.renderFill < 1.0 ? floatCard.itemId === "ip_0" ? floatCard.triggered ? "Copied!" : "Hold to copy..." : "Hold..." : action)
                                             }
                                         }
@@ -2229,7 +2229,7 @@ Item {
                             anchors.centerIn: parent
                             spacing: window.s(8)
                             Text { font.family: "Iosevka Nerd Font"; font.pixelSize: window.s(18); color: window.activeMode === "eth" ? window.crust : window.text; text: "󰈀"; Behavior on color { ColorAnimation{duration:200} } }
-                            Text { font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: window.s(13); color: window.activeMode === "eth" ? window.crust : window.text; text: "Ethernet"; Behavior on color { ColorAnimation{duration:200} } }
+                            Text { font.family: "Inter"; font.weight: Font.Black; font.pixelSize: window.s(13); color: window.activeMode === "eth" ? window.crust : window.text; text: "Ethernet"; Behavior on color { ColorAnimation{duration:200} } }
                         }
                         MouseArea {
                             id: ethTabMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
@@ -2263,7 +2263,7 @@ Item {
                             anchors.centerIn: parent
                             spacing: window.s(8)
                             Text { font.family: "Iosevka Nerd Font"; font.pixelSize: window.s(18); color: window.activeMode === "wifi" ? window.crust : window.text; text: "󰤨"; Behavior on color { ColorAnimation{duration:200} } }
-                            Text { font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: window.s(13); color: window.activeMode === "wifi" ? window.crust : window.text; text: "Wi-Fi"; Behavior on color { ColorAnimation{duration:200} } }
+                            Text { font.family: "Inter"; font.weight: Font.Black; font.pixelSize: window.s(13); color: window.activeMode === "wifi" ? window.crust : window.text; text: "Wi-Fi"; Behavior on color { ColorAnimation{duration:200} } }
                         }
                         MouseArea {
                             id: wifiTabMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
@@ -2296,7 +2296,7 @@ Item {
                             anchors.centerIn: parent
                             spacing: window.s(8)
                             Text { font.family: "Iosevka Nerd Font"; font.pixelSize: window.s(18); color: window.activeMode === "bt" ? window.crust : window.text; text: "󰂯"; Behavior on color { ColorAnimation{duration:200} } }
-                            Text { font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: window.s(13); color: window.activeMode === "bt" ? window.crust : window.text; text: "Bluetooth"; Behavior on color { ColorAnimation{duration:200} } }
+                            Text { font.family: "Inter"; font.weight: Font.Black; font.pixelSize: window.s(13); color: window.activeMode === "bt" ? window.crust : window.text; text: "Bluetooth"; Behavior on color { ColorAnimation{duration:200} } }
                         }
                         MouseArea {
                             id: btTabMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
@@ -2351,7 +2351,7 @@ Item {
                             Text {
                                 Layout.fillWidth: true
                                 text: window.activeWifiInterface
-                                font.family: "JetBrains Mono"
+                                font.family: "Inter"
                                 font.pixelSize: window.s(12)
                                 color: window.activeColor
                                 elide: Text.ElideRight
@@ -2391,7 +2391,7 @@ Item {
                                     anchors.leftMargin: window.s(14)
                                     anchors.rightMargin: window.s(14)
                                     text: modelData
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.pixelSize: window.s(12)
                                     color: window.activeWifiInterface === modelData ? window.text : window.subtext0
                                     elide: Text.ElideRight

@@ -434,7 +434,7 @@ Item {
                             spacing: root.s(2)
                             Text { 
                                 text: "Imperative"
-                                font.family: "JetBrains Mono"
+                                font.family: "Inter"
                                 font.weight: Font.Black
                                 font.pixelSize: root.s(15)
                                 color: root.text
@@ -442,7 +442,7 @@ Item {
                             }
                             Text { 
                                 text: "v" + (root.dotsVersion !== "Loading..." ? root.dotsVersion : "...")
-                                font.family: "JetBrains Mono"
+                                font.family: "Inter"
                                 font.pixelSize: root.s(11)
                                 color: root.subtext0
                                 Layout.alignment: Qt.AlignLeft 
@@ -531,7 +531,7 @@ Item {
                                         
                                         Text { 
                                             text: root.tabNames[index]
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.weight: parent.parent.isActive ? Font.Bold : Font.Medium
                                             font.pixelSize: root.s(13)
                                             // Dynamic colors (crust vs subtext0) for contrast
@@ -604,12 +604,12 @@ Item {
                             Layout.alignment: Qt.AlignHCenter
                             spacing: root.s(6)
                             Text { text: "󰚰"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(14); color: root.green }
-                            Text { text: "Update Available"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.green }
+                            Text { text: "Update Available"; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.green }
                         }
                         
                         Text {
                             text: root.dotsVersion + "  " + root.remoteVersion
-                            font.family: "JetBrains Mono"
+                            font.family: "Inter"
                             font.pixelSize: root.s(10)
                             color: root.subtext0
                             Layout.alignment: Qt.AlignHCenter
@@ -834,7 +834,7 @@ Item {
                                 
                                 Text { 
                                     text: root.sysUser
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.weight: Font.Black
                                     font.pixelSize: root.s(24)
                                     color: root.text 
@@ -842,7 +842,7 @@ Item {
                                 
                                 Text { 
                                     text: "@" + root.sysHost
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.pixelSize: root.s(14)
                                     color: root.subtext0 
                                 }
@@ -860,12 +860,12 @@ Item {
                                     RowLayout { 
                                         spacing: root.s(6)
                                         Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.blue } 
-                                        Text { text: root.sysOS; font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
+                                        Text { text: root.sysOS; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
                                     }
                                     RowLayout { 
                                         spacing: root.s(6)
                                         Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.peach } 
-                                        Text { text: root.sysKernel; font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
+                                        Text { text: root.sysKernel; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
                                     }
                                 }
                                 
@@ -876,7 +876,7 @@ Item {
                                         Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.green } 
                                         Text { 
                                             text: root.sysCPU
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.weight: Font.Medium
                                             font.pixelSize: root.s(12)
                                             color: root.subtext0
@@ -889,7 +889,7 @@ Item {
                                         Text { text: "󰢮"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.yellow } 
                                         Text { 
                                             text: root.sysGPU
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.weight: Font.Medium
                                             font.pixelSize: root.s(12)
                                             color: root.subtext0
@@ -926,7 +926,7 @@ Item {
                                 Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18); color: root.ambientBlue }
                                 Text {
                                     text: "Social Media & Links"
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.weight: Font.Bold
                                     font.pixelSize: root.s(16)
                                     color: root.text
@@ -962,7 +962,7 @@ Item {
                                             anchors.centerIn: parent
                                             spacing: root.s(8)
                                             Text { text: modelData.icon; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root[modelData.color] } 
-                                            Text { text: modelData.name; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.text } 
+                                            Text { text: modelData.name; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.text } 
                                         }
                                         
                                         MouseArea { 
@@ -1023,7 +1023,7 @@ Item {
                                             }
                                             Text { 
                                                 text: modelData.l
-                                                font.family: "JetBrains Mono"
+                                                font.family: "Inter"
                                                 font.weight: Font.Black
                                                 font.pixelSize: root.s(14)
                                                 color: modelData.c
@@ -1120,7 +1120,7 @@ Item {
                                 Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(18); color: root.text }
                                 Text {
                                     text: "GitHub Activity"
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.weight: Font.Bold
                                     font.pixelSize: root.s(16)
                                     color: root.text
@@ -1348,7 +1348,7 @@ Item {
                                 
                                 Text { 
                                     text: root.sysUser
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.weight: Font.Black
                                     font.pixelSize: root.s(24)
                                     color: root.text 
@@ -1356,7 +1356,7 @@ Item {
                                 
                                 Text { 
                                     text: "@" + root.sysHost
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.pixelSize: root.s(14)
                                     color: root.subtext0 
                                 }
@@ -1374,12 +1374,12 @@ Item {
                                     RowLayout { 
                                         spacing: root.s(6)
                                         Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.blue } 
-                                        Text { text: root.sysOS; font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
+                                        Text { text: root.sysOS; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
                                     }
                                     RowLayout { 
                                         spacing: root.s(6)
                                         Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.peach } 
-                                        Text { text: root.sysKernel; font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
+                                        Text { text: root.sysKernel; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.subtext0 } 
                                     }
                                 }
                                 
@@ -1390,7 +1390,7 @@ Item {
                                         Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.green } 
                                         Text { 
                                             text: root.sysCPU
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.weight: Font.Medium
                                             font.pixelSize: root.s(12)
                                             color: root.subtext0
@@ -1403,7 +1403,7 @@ Item {
                                         Text { text: "󰢮"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root.yellow } 
                                         Text { 
                                             text: root.sysGPU
-                                            font.family: "JetBrains Mono"
+                                            font.family: "Inter"
                                             font.weight: Font.Medium
                                             font.pixelSize: root.s(12)
                                             color: root.subtext0
@@ -1447,7 +1447,7 @@ Item {
                                     anchors.centerIn: parent
                                     spacing: root.s(10)
                                     Text { text: modelData.icon; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root[modelData.color] } 
-                                    Text { text: modelData.name; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(13); color: root.text } 
+                                    Text { text: modelData.name; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(13); color: root.text } 
                                 }
                                 
                                 MouseArea { 
@@ -1469,7 +1469,7 @@ Item {
 
                     Text { 
                         text: "System Architecture"
-                        font.family: "JetBrains Mono"
+                        font.family: "Inter"
                         font.weight: Font.Black
                         font.pixelSize: root.s(24)
                         color: root.text
@@ -1517,8 +1517,8 @@ Item {
                                         anchors.right: parent.right
                                         anchors.verticalCenter: parent.verticalCenter
                                         spacing: root.s(2)
-                                        Text { text: model.pkg; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(14); color: root.text } 
-                                        Text { text: model.role; font.family: "JetBrains Mono"; font.pixelSize: root.s(11); color: root.subtext0 } 
+                                        Text { text: model.pkg; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(14); color: root.text } 
+                                        Text { text: model.role; font.family: "Inter"; font.pixelSize: root.s(11); color: root.subtext0 } 
                                     }
                                 }
                                 
@@ -1563,8 +1563,8 @@ Item {
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: root.s(4)
-                            Text { text: "Interactive Modules"; font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: root.s(28); color: root.text }
-                            Text { text: "Use arrow keys or select below to preview. Double-click or press Enter to toggle."; font.family: "JetBrains Mono"; font.pixelSize: root.s(13); color: root.subtext0 }
+                            Text { text: "Interactive Modules"; font.family: "Inter"; font.weight: Font.Black; font.pixelSize: root.s(28); color: root.text }
+                            Text { text: "Use arrow keys or select below to preview. Double-click or press Enter to toggle."; font.family: "Inter"; font.pixelSize: root.s(13); color: root.subtext0 }
                         }
                         
                         Item { Layout.fillWidth: true } 
@@ -1585,7 +1585,7 @@ Item {
                                 anchors.centerIn: parent
                                 spacing: root.s(8)
                                 Text { text: "󰐊"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(20); color: root.base } 
-                                Text { text: "PLAY"; font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: root.s(14); color: root.base } 
+                                Text { text: "PLAY"; font.family: "Inter"; font.weight: Font.Black; font.pixelSize: root.s(14); color: root.base } 
                             }
                             
                             MouseArea { 
@@ -1689,7 +1689,7 @@ Item {
                                     } 
                                     Text { 
                                         text: model.title
-                                        font.family: "JetBrains Mono"
+                                        font.family: "Inter"
                                         font.weight: Font.Bold
                                         font.pixelSize: root.s(12)
                                         color: root.text
@@ -1700,7 +1700,7 @@ Item {
                                 }
                                 Text { 
                                     text: model.desc
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.pixelSize: root.s(10)
                                     color: root.subtext0
                                     Layout.alignment: Qt.AlignLeft
@@ -1751,7 +1751,7 @@ Item {
                     anchors.bottomMargin: root.s(20)
                     spacing: root.s(20)
 
-                    Text { text: "Theming Engine"; font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: root.s(28); color: root.text; Layout.alignment: Qt.AlignVCenter }
+                    Text { text: "Theming Engine"; font.family: "Inter"; font.weight: Font.Black; font.pixelSize: root.s(28); color: root.text; Layout.alignment: Qt.AlignVCenter }
                     
                     Rectangle {
                         Layout.fillWidth: true
@@ -1779,7 +1779,7 @@ Item {
                                     color: root.surface1
                                     Text { anchors.centerIn: parent; text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(28); color: root.text } 
                                 } 
-                                Text { text: "Wallpaper"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.text; Layout.alignment: Qt.AlignHCenter } 
+                                Text { text: "Wallpaper"; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.text; Layout.alignment: Qt.AlignHCenter } 
                             }
                             
                             Item { 
@@ -1834,7 +1834,7 @@ Item {
                                 ColumnLayout { 
                                     anchors.centerIn: parent
                                     spacing: root.s(8)
-                                    Text { text: "Matugen Core"; font.family: "JetBrains Mono"; font.weight: Font.Black; font.pixelSize: root.s(15); color: root.ambientPurple; Layout.alignment: Qt.AlignHCenter } 
+                                    Text { text: "Matugen Core"; font.family: "Inter"; font.weight: Font.Black; font.pixelSize: root.s(15); color: root.ambientPurple; Layout.alignment: Qt.AlignHCenter } 
                                     RowLayout { 
                                         spacing: root.s(4)
                                         Layout.alignment: Qt.AlignHCenter
@@ -1905,13 +1905,13 @@ Item {
                                     color: root.surface1
                                     Text { anchors.centerIn: parent; text: "󰏘"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(28); color: root.text } 
                                 } 
-                                Text { text: "Templates"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.text; Layout.alignment: Qt.AlignHCenter } 
+                                Text { text: "Templates"; font.family: "Inter"; font.weight: Font.Bold; font.pixelSize: root.s(12); color: root.text; Layout.alignment: Qt.AlignHCenter } 
                             }
                             Item { Layout.fillWidth: true } 
                         }
                     }
 
-                    Text { text: "When you change wallpapers, Matugen extracts the dominant colors and injects them directly into these configuration files in real-time:"; font.family: "JetBrains Mono"; font.pixelSize: root.s(13); color: root.subtext0; Layout.fillWidth: true; wrapMode: Text.WordWrap; Layout.alignment: Qt.AlignVCenter }
+                    Text { text: "When you change wallpapers, Matugen extracts the dominant colors and injects them directly into these configuration files in real-time:"; font.family: "Inter"; font.pixelSize: root.s(13); color: root.subtext0; Layout.fillWidth: true; wrapMode: Text.WordWrap; Layout.alignment: Qt.AlignVCenter }
 
                     GridLayout {
                         Layout.fillWidth: true
@@ -1950,7 +1950,7 @@ Item {
                                         Layout.alignment: Qt.AlignVCenter
                                         Text { anchors.centerIn: parent; text: modelData.i; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(16); color: root[modelData.c] } 
                                     } 
-                                    Text { text: modelData.f; font.family: "JetBrains Mono"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.text; Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter } 
+                                    Text { text: modelData.f; font.family: "Inter"; font.weight: Font.Medium; font.pixelSize: root.s(12); color: root.text; Layout.fillWidth: true; Layout.alignment: Qt.AlignVCenter } 
                                 }
                                 MouseArea { id: tplMa; anchors.fill: parent; hoverEnabled: true }
                             }
@@ -2010,7 +2010,7 @@ Item {
 
                                 Text {
                                     text: modelData.name
-                                    font.family: "JetBrains Mono"
+                                    font.family: "Inter"
                                     font.weight: Font.Bold
                                     font.pixelSize: root.s(13)
                                     color: root.text

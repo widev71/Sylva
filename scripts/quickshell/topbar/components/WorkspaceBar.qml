@@ -24,11 +24,7 @@ Rectangle {
     opacity: workspacesModel.count > 0 ? 1 : 0
     Behavior on opacity { NumberAnimation { duration: 300 } }
 
-    layer.enabled: true
-    layer.effect: MultiEffect {
-        shadowEnabled: true; shadowColor: mocha.mauve
-        shadowBlur: 1.0; shadowHorizontalOffset: 0; shadowVerticalOffset: 0
-    }
+
 
     // Removed sliding active highlight (replaced by Pacman)
 

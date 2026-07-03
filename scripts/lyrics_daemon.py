@@ -27,17 +27,10 @@ def save_cache(cache):
 
 def get_player_meta():
     try:
-        output = subprocess.check_output(["playerctl", "metadata", "--format", "{{title}}|{{artist}}|{{mpris:artUrl}}"], stderr=subprocess.DEVNULL)
+        output = subprocess.check_output(["playerctl", "metadata", "--format", "{{title}}|{{artist}}|{{mpris:artUrl}}|{{status}}|{{position}}"], stderr=subprocess.DEVNULL)
         return output.decode('utf-8').strip()
     except:
         return ""
-
-def get_player_position():
-    try:
-        output = subprocess.check_output(["playerctl", "position"], stderr=subprocess.DEVNULL)
-        return float(output.decode('utf-8').strip())
-    except:
-        return 0.0
 
 def download_album_art(url):
     if not url: return
@@ -161,53 +154,71 @@ def _fetch_and_save(title, artist, art_url):
 def main():
     global _lyrics, _fetching
 
-    current_meta = ""
+    current_meta_key = ""
     last_printed_index = -2
+    
+    last_pos = 0.0
+    last_poll_time = time.time()
+    status = "Stopped"
+    last_full_poll = 0
 
     while True:
-        meta = get_player_meta()
-
-        if meta != current_meta:
-            current_meta = meta
-            last_printed_index = -2  # Force re-write on next index detection
-
-            # ⚠️ KEY FIX: Don't clear lyrics_data.json immediately!
-            # Keep old lyrics visible while new ones are loading.
-            # Only reset the index so the position starts fresh.
-            with open("/tmp/current_lyric_index.txt", "w") as f:
-                f.write("-1\n")
-
+        now = time.time()
+        
+        # Poll external process at most once per second to prevent massive jitter
+        if now - last_full_poll >= 1.0:
+            last_full_poll = now
+            meta = get_player_meta()
             title, artist, art_url = "", "", ""
             if "|" in meta:
                 parts = meta.split("|")
-                if len(parts) >= 2:
+                if len(parts) >= 5:
                     title = parts[0]
                     artist = parts[1]
-                    art_url = parts[2] if len(parts) >= 3 else ""
+                    art_url = parts[2]
+                    status = parts[3]
+                    try:
+                        last_pos = float(parts[4]) / 1000000.0  # MPRIS position is in microseconds
+                        last_poll_time = time.time()  # Reset interpolation clock
+                    except:
+                        pass
+            
+            meta_key = f"{title}|{artist}"
+            
+            if meta_key != current_meta_key:
+                current_meta_key = meta_key
+                last_printed_index = -2
 
-            if title and artist and not _fetching:
-                _fetching = True
-                threading.Thread(
-                    target=_fetch_and_save,
-                    args=(title, artist, art_url),
-                    daemon=True
-                ).start()
-            elif not title:
-                # No song playing — clear everything
-                with _lyrics_lock:
-                    _lyrics = []
-                with open("/tmp/lyrics_data.json", "w") as f:
-                    f.write("[]")
+                with open("/tmp/current_lyric_index.txt", "w") as f:
+                    f.write("-1\n")
 
-        # Update index using current lyrics snapshot (non-blocking)
+                if title and artist and not _fetching:
+                    _fetching = True
+                    threading.Thread(
+                        target=_fetch_and_save,
+                        args=(title, artist, art_url),
+                        daemon=True
+                    ).start()
+                elif not title:
+                    with _lyrics_lock:
+                        _lyrics = []
+                    with open("/tmp/lyrics_data.json", "w") as f:
+                        f.write("[]")
+
+        # Inner loop: Interpolate position and update UI
         with _lyrics_lock:
             current_lyrics = list(_lyrics)
 
         if current_lyrics:
-            pos = get_player_position()
+            # Predict the exact millisecond position without asking playerctl
+            if status == "Playing":
+                current_pos = last_pos + (time.time() - last_poll_time)
+            else:
+                current_pos = last_pos
+
             current_index = -1
             for i, (time_sec, text) in enumerate(reversed(current_lyrics)):
-                if pos >= time_sec:
+                if current_pos >= time_sec:
                     current_index = len(current_lyrics) - 1 - i
                     break
 
@@ -216,7 +227,7 @@ def main():
                     f.write(str(current_index) + "\n")
                 last_printed_index = current_index
 
-        time.sleep(0.25)
+        time.sleep(0.05)
 
 
 if __name__ == '__main__':

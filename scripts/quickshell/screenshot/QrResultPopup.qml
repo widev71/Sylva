@@ -63,7 +63,7 @@ Item {
                 Text {
                     text: model.qText
                     color: model.qSuccess ? theme.text : theme.red
-                    font.family: "JetBrains Mono"; font.pixelSize: s(13); font.weight: Font.DemiBold
+                    font.family: "Inter"; font.pixelSize: s(13); font.weight: Font.DemiBold
                     Layout.maximumWidth: s(400); Layout.leftMargin: s(8)
                     elide: Text.ElideRight; wrapMode: Text.NoWrap
                 }

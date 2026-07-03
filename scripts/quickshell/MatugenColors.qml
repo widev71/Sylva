@@ -76,7 +76,9 @@ Item {
         id: fileWatcher
         command: ["inotifywait", "-e", "close_write", "-q", Quickshell.env("HOME") + "/.config/hypr/scripts/quickshell/qs_colors.json"]
         onExited: {
+            themeReader.running = false;
             themeReader.running = true;
+            fileWatcher.running = false;
             fileWatcher.running = true;
         }
         running: true

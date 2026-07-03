@@ -138,7 +138,7 @@ Item {
             }
         }
     }
-    Timer { interval: 3000; running: true; repeat: true; triggeredOnStart: true; onTriggered: sysStatsPoller.running = true }
+    Timer { interval: 5000; running: true; repeat: true; triggeredOnStart: true; onTriggered: sysStatsPoller.running = true }
 
     // ── Music ─────────────────────────────────────────────────────────
     Process {
@@ -209,7 +209,7 @@ Item {
     
     Process {
         id: lyricsIndexPoller
-        command: ["bash", "-c", "cat /tmp/current_lyric_index.txt 2>/dev/null || echo -1"]
+        command: ["cat", "/tmp/current_lyric_index.txt"]
         stdout: StdioCollector {
             onStreamFinished: {
                 let txt = this.text.trim();
@@ -220,7 +220,7 @@ Item {
 
     Process {
         id: lyricsJsonPoller
-        command: ["bash", "-c", "cat /tmp/lyrics_data.json 2>/dev/null || echo '[]'"]
+        command: ["cat", "/tmp/lyrics_data.json"]
         stdout: StdioCollector {
             onStreamFinished: {
                 let txt = this.text.trim();
@@ -235,6 +235,6 @@ Item {
         }
     }
     
-    Timer { interval: 300; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsIndexPoller.running = true }
-    Timer { interval: 2000; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsJsonPoller.running = true }
+    Timer { interval: 350; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsIndexPoller.running = true }
+    Timer { interval: 5000; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsJsonPoller.running = true }
 }
