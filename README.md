@@ -1,72 +1,94 @@
-# 🍃 Sylva - Hyprland Dotfiles
+<div align="center">
+  <h1>🍃 Sylva</h1>
+  <p><strong>A Modern, Dynamic, and Glassmorphic Hyprland Configuration</strong></p>
+  <p>Built with <a href="https://github.com/outfoxxed/quickshell">Quickshell</a> for an unparalleled UI/UX experience on Wayland.</p>
+</div>
 
-Sylva adalah konfigurasi Hyprland dengan UI/UX yang modern dan dinamis, dibangun menggunakan **Quickshell**.
+---
 
-## 📦 Dependencies (Kebutuhan Sistem)
+## ✨ Features
 
-Sebelum menginstal, pastikan kamu menggunakan **Arch Linux** (atau distro turunannya). Berikut adalah package yang dibutuhkan:
+Sylva transforms your Hyprland setup into a premium desktop experience.
+
+- 🎨 **Dynamic Colors**: Powered by `matugen`, your entire system theme adapts instantly when you change your wallpaper.
+- 🪟 **Glassmorphism Design**: Beautiful frosted glass effects, subtle drop shadows, and customizable opacity rules for a truly modern aesthetic.
+- 🚀 **Quickshell UI**: Lightning-fast QML-based widgets including a TopBar, Control Center, App Launcher, and floating popups.
+- 🎵 **Integrated Media Player**: Rich music controls and lyrics support directly on your desktop.
+- 📸 **Advanced Screenshot Tool**: Built-in screenshot utility with selection overlays, countdowns, and instant QR code scanning.
+- 🍅 **Focus Mode**: Built-in Pomodoro timer to keep you productive.
+- 🔒 **Custom Lockscreen**: Secure and beautiful lockscreen powered by Quickshell.
+
+## 📦 Dependencies
+
+To get the full Sylva experience, you need the following packages installed. (Arch Linux is highly recommended).
 
 ### Core & UI
-- `hyprland` - Window Manager utama
-- `quickshell` - Framework untuk UI (TopBar, Popups, dll) - *Install dari AUR (`quickshell` / `quickshell-git`)*
-- `matugen` - Color scheme generator otomatis berbasis wallpaper - *Install dari AUR (`matugen` / `matugen-bin`)*
-- `swayosd` - OSD popups untuk indikator volume dan brightness - *Install dari AUR (`swayosd` / `swayosd-git`)*
+*   `hyprland` - The main Wayland compositor.
+*   `quickshell-git` (AUR) - The core UI framework powering Sylva.
+*   `matugen-bin` (AUR) - Automatic color scheme generation from wallpapers.
+*   `swayosd-git` (AUR) - On-screen display for volume and brightness.
 
-### Sistem & Utilities
-- `hypridle` & `hyprlock` - Untuk screen lock & idle daemon
-- `playerctl` - Mengontrol media playback
-- `cliphist` & `wl-clipboard` - Clipboard manager
-- `network-manager-applet` - Network applet (dibutuhkan untuk nmcli)
-- `grim` & `slurp` - Tools untuk mengambil screenshot
-- `imagemagick` - Image processing (untuk efek blur dan manipulasi gambar)
-- `zbar` - QR code reader (fitur scan dari screenshot)
-- `jq` - JSON parser di command line
-- `inotify-tools` - Digunakan untuk memantau perubahan file (script watchers)
-- `pipewire` - Audio server (membutuhkan `pw-play` untuk sound effects UI)
+### System Utilities
+*   `hypridle` & `hyprlock` - Idle daemon and secure lock screen fallback.
+*   `playerctl` - Media player control.
+*   `cliphist` & `wl-clipboard` - Advanced clipboard management.
+*   `network-manager-applet` - Network management tray (nmcli backend).
+*   `grim` & `slurp` - Wayland screenshot utilities.
+*   `imagemagick` - Image processing for dynamic UI blurs.
+*   `zbar` - QR code reader for the screenshot tool.
+*   `jq` & `inotify-tools` - JSON parsing and file watching scripts.
+*   `pipewire` & `pw-play` - Audio server and sound effects.
 
-Kamu bisa menginstal semua package di atas sekaligus menggunakan AUR helper seperti `paru` atau `yay`:
-
+**One-liner installation (using `paru` atau `yay`):**
 ```bash
 paru -S --needed hyprland quickshell-git matugen-bin swayosd-git playerctl cliphist wl-clipboard hypridle hyprlock network-manager-applet grim slurp imagemagick zbar jq inotify-tools pipewire
 ```
 
-## 🚀 Instalasi
+## 🚀 Installation
 
-1. **Clone Repository ini** tepat di folder config kamu:
+1. **Clone the Repository** directly into your config directory:
    ```bash
    git clone https://github.com/widev71/Sylva.git ~/.config/hypr
    ```
-
-2. **Masuk ke folder Hyprland**:
+2. **Navigate to the directory**:
    ```bash
    cd ~/.config/hypr
    ```
-
-3. **Jalankan Script Installer**:
+3. **Run the Setup Script**:
    ```bash
    bash install.sh
    ```
-   *Script ini akan membantu mengatur hak akses script, membuat template `settings.json` yang aman, mengecek sisa dependencies, dan memasang pengaman Git agar data pribadimu tidak bocor ke publik.*
+   *This script sets up script permissions, generates a safe `settings.json`, verifies dependencies, and configures Git to prevent accidental commits of personal data.*
+4. **Personalize (Optional)**:
+   Edit `~/.config/hypr/settings.json` to configure your monitors, touchpad sensitivity, and social links. *(This file is git-ignored automatically).*
+5. **Reload**: Restart Hyprland or log out and log back in to apply everything!
 
-4. **Edit Pengaturan Pribadi (Opsional)**:
-   Buka file `~/.config/hypr/settings.json` untuk memasukkan username sosial mediamu, mengatur monitor, sensitivitas touchpad, dll. *(Jangan khawatir, file ini otomatis di-ignore oleh Git).*
+## ⌨️ Keybindings
 
-5. **Selesai!** Restart Hyprland atau Logout/Login kembali.
+Most UI elements are bound to the `Super` (Windows/Command) key. 
 
-## ⌨️ Shortcut Dasar (Keybindings)
+| Shortcut | Action |
+| :--- | :--- |
+| <kbd>Super</kbd> + <kbd>H</kbd> | Open Interactive Guide / Help Panel |
+| <kbd>Super</kbd> + <kbd>D</kbd> | Open App Launcher |
+| <kbd>Super</kbd> + <kbd>W</kbd> | Wallpaper Picker |
+| <kbd>Super</kbd> + <kbd>Q</kbd> | Music Player / Lyrics |
+| <kbd>Super</kbd> + <kbd>C</kbd> | Clipboard Manager |
+| <kbd>Super</kbd> + <kbd>B</kbd> | Battery Status |
+| <kbd>Super</kbd> + <kbd>S</kbd> | Calendar |
+| <kbd>Super</kbd> + <kbd>N</kbd> | Network Manager |
+| <kbd>Super</kbd> + <kbd>V</kbd> | Volume Mixer |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> | Open Settings Panel |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd> | Start Focus Time / Pomodoro |
 
-Sebagian besar shortcut UI menggunakan tombol `Super` (Windows/Command):
+## 🛠️ Configuration & Tweaks
 
-- `Super + H` : Buka Guide / Shortcut Help
-- `Super + D` : Buka App Launcher
-- `Super + W` : Ganti Wallpaper
-- `Super + Q` : Buka Music Player
-- `Super + C` : Clipboard Manager
-- `Super + B` : Battery Status
-- `Super + S` : Calendar
-- `Super + N` : Network Manager
-- `Super + V` : Volume Mixer
-- `Super + Shift + S` : Buka Settings
-- `Super + Shift + T` : Buka Pomodoro / Focus Time
+Sylva is designed to be easily tweaked! Check the `config/` directory for split configuration files:
+*   `settings.conf`: Edit your gaps, rounding, opacity, and blur settings here.
+*   `rules.conf`: Define window rules, floating apps, and layer rules.
+*   `keybinds.conf`: Add or modify your custom shortcuts.
 
-*(Catatan: Untuk melihat daftar keybind dan kustomisasi penuh, tekan `Super + H` di desktop untuk membuka panel interaktif).*
+---
+<div align="center">
+  <p>Made with ❤️ by the Sylva community.</p>
+</div>
