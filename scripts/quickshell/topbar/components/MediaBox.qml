@@ -45,37 +45,28 @@ Rectangle {
     property int activeLyricIndex: -1
     property string currentLyricText: ""
 
-    Process {
-        id: indexPoller
-        command: ["cat", "/tmp/current_lyric_index.txt"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let txt = this.text.trim();
-                if (txt !== "") {
-                    let idx = parseInt(txt);
-                    if (!isNaN(idx) && idx !== activeLyricIndex) activeLyricIndex = idx;
-                }
-            }
-        }
-    }
-    Timer { interval: 350; running: root.isMediaActive; repeat: true; onTriggered: indexPoller.running = true }
+    property string currentSongKey: ""
 
-    Process {
-        id: lyricsPoller
-        command: ["cat", "/tmp/lyrics_data.json"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let txt = this.text.trim();
-                if (txt !== "" && txt.length > 2) {
-                    try {
-                        let parsed = JSON.parse(txt);
-                        if (Array.isArray(parsed)) root.lyrics = parsed;
-                    } catch(e) {}
+    FileView {
+        id: lyricsStateFile
+        path: "/tmp/lyrics_state.json"
+        watchChanges: true
+        onFileChanged: reload()
+        onLoaded: {
+            let txt = text().trim();
+            if (txt === "") return;
+            try {
+                let obj = JSON.parse(txt);
+                if (root.currentSongKey !== obj.song) {
+                    root.currentSongKey = obj.song || "";
+                    root.lyrics = obj.lines || [];
                 }
-            }
+                
+                let idx = obj.index ?? -1;
+                if (idx !== activeLyricIndex) activeLyricIndex = idx;
+            } catch(e) {}
         }
     }
-    Timer { interval: 5000; running: root.isMediaActive; repeat: true; triggeredOnStart: true; onTriggered: lyricsPoller.running = true }
 
     onActiveLyricIndexChanged: {
         if (activeLyricIndex >= 0 && activeLyricIndex < lyrics.length) {

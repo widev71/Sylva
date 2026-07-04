@@ -15,6 +15,8 @@ ShellRoot {
 
     Caching { id: paths }
 
+    property bool unlockOverlayActive: false
+
     // ── Theme ─────────────────────────────────────────────────────────
     MatugenColors { id: _theme }
     readonly property color base:     _theme.base
@@ -66,18 +68,13 @@ ShellRoot {
             lockUI.authenticating = false;
             if (result === PamResult.Success) {
                 lockUI.unlocking = true;
-                unlockQuitTimer.start();
+                root.unlockOverlayActive = true;
             } else {
                 lockUI.failed = true;
                 lockUI.statusText = "Access Denied";
                 pamActionTimer.start();
             }
         }
-    }
-
-    Timer {
-        id: unlockQuitTimer; interval: 350
-        onTriggered: { rootLock.locked = false; Qt.quit(); }
     }
 
     // ── Session processes ─────────────────────────────────────────────
@@ -93,9 +90,14 @@ ShellRoot {
         WlSessionLockSurface {
             id: surface
 
-            Item {
-                id: screenRoot
+            Rectangle {
+                id: screenWrapper
                 anchors.fill: parent
+                color: "black" // Prevent any white flash from compositor
+
+                Item {
+                    id: screenRoot
+                    anchors.fill: parent
 
                 Scaler { id: scaler; currentWidth: screenRoot.width > 0 ? screenRoot.width : Screen.width }
                 readonly property real sc: scaler.baseScale
@@ -108,11 +110,10 @@ ShellRoot {
                 property bool powerMenuOpen: false
                 property bool isPlayingIntro: true
 
-                // Unlock shrink + fade
-                Behavior on scale   { enabled: lockUI.unlocking; NumberAnimation { duration: 300; easing.type: Easing.InBack } }
-                Behavior on opacity { enabled: lockUI.unlocking; NumberAnimation { duration: 300; easing.type: Easing.InCubic } }
-                scale:   lockUI.unlocking ? 0.8 : 1.0
-                opacity: lockUI.unlocking ? 0.0 : 1.0
+                // We don't shrink or fade the screenRoot here anymore
+                // because the WelcomeOverlay needs to blur it cleanly!
+                // scale: lockUI.unlocking ? 0.8 : 1.0
+                // opacity: lockUI.unlocking ? 0.0 : 1.0
 
                 Component.onCompleted: introAnimation.start()
 
@@ -194,6 +195,15 @@ ShellRoot {
                     }
                 }
 
+                // ── UI Container (fades out on unlock) ────────────────────────
+                Item {
+                    id: uiContainer
+                    anchors.fill: parent
+                    opacity: lockUI.unlocking ? 0.0 : 1.0
+                    Behavior on opacity { enabled: lockUI.unlocking; NumberAnimation { duration: 300; easing.type: Easing.InCubic } }
+                    scale: lockUI.unlocking ? 0.9 : 1.0
+                    Behavior on scale { enabled: lockUI.unlocking; NumberAnimation { duration: 300; easing.type: Easing.InBack } }
+
                 // ── HUD dashboard ─────────────────────────────────────────────
                 Item {
                     anchors.fill: parent
@@ -273,8 +283,10 @@ ShellRoot {
 
                             sc: screenRoot.sc; d: d
                             weatherIcon: data.weatherIcon; weatherDesc: data.weatherDesc; weatherTemp: data.weatherTemp
+                            weatherHigh: data.weatherHigh; weatherLow: data.weatherLow; weatherHex: data.weatherHex
                             lyricsList: data.lyricsList
                             currentLyricIndex: data.currentLyricIndex
+                            musicProgress: data.musicProgress
                         }
                     }
                 }
@@ -367,6 +379,8 @@ ShellRoot {
                     }
                 }
 
+                } // end of uiContainer
+
                 // ── Intro animation ───────────────────────────────────────────
                 LockIntroAnimation {
                     id: introAnimation
@@ -380,7 +394,32 @@ ShellRoot {
                         mainPasswordField.forceActiveFocus();
                     }
                 }
+            } // end of screenRoot
+            
+            ShaderEffectSource {
+                id: lockscreenSource
+                sourceItem: screenRoot
+                live: true
+                hideSource: false
+                visible: false
             }
-        }
-    }
-}
+
+            Loader {
+                id: welcomeLoader
+                anchors.fill: parent
+                active: root.unlockOverlayActive
+                sourceComponent: WelcomeOverlay {
+                    userName: "Witya"
+                    crustColor: root.crust
+                    textColor: root.text
+                    backgroundSource: lockscreenSource
+                    onFinished: {
+                        rootLock.locked = false;
+                        Qt.quit();
+                    }
+                }
+            }
+        } // end of screenWrapper
+    } // end of WlSessionLockSurface
+    } // end of WlSessionLock
+} // end of ShellRoot

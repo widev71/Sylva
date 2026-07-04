@@ -18,6 +18,9 @@ Item {
     property string weatherIcon: ""
     property string weatherTemp: "--°C"
     property string weatherDesc: "Unknown"
+    property string weatherHigh: "--°C"
+    property string weatherLow:  "--°C"
+    property color  weatherHex:  "#cdd6f4"
     property string uptimeStr:   "--"
     property bool   isDesktop:   false
 
@@ -94,13 +97,16 @@ Item {
     Process {
         id: weatherPoller
         property string scriptPath: Qt.resolvedUrl("../calendar/weather.sh").toString().replace(/^file:\/\//, "")
-        command: ["bash", "-c", '"' + scriptPath + '" --current-icon; "' + scriptPath + '" --current-temp; "' + scriptPath + '" --current-description']
+        command: ["bash", "-c", '"' + scriptPath + '" --current-icon; "' + scriptPath + '" --current-temp; "' + scriptPath + '" --current-description; "' + scriptPath + '" --high; "' + scriptPath + '" --low; "' + scriptPath + '" --current-hex']
         stdout: StdioCollector {
             onStreamFinished: {
                 let lines = this.text.trim().split("\n");
                 if (lines.length >= 1) root.weatherIcon = lines[0] || "";
                 if (lines.length >= 2) root.weatherTemp = lines[1] || "--°C";
                 if (lines.length >= 3) root.weatherDesc = lines[2] || "Unknown";
+                if (lines.length >= 4) root.weatherHigh = lines[3] || "--°C";
+                if (lines.length >= 5) root.weatherLow  = lines[4] || "--°C";
+                if (lines.length >= 6) root.weatherHex  = lines[5] || "#cdd6f4";
             }
         }
     }
@@ -207,34 +213,27 @@ Item {
     property int currentLyricIndex: -1
     property var lyricsList: []
     
-    Process {
-        id: lyricsIndexPoller
-        command: ["cat", "/tmp/current_lyric_index.txt"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let txt = this.text.trim();
-                if (txt !== "") root.currentLyricIndex = parseInt(txt);
-            }
-        }
-    }
+    property string currentSongKey: ""
 
-    Process {
-        id: lyricsJsonPoller
-        command: ["cat", "/tmp/lyrics_data.json"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let txt = this.text.trim();
-                if (txt !== "") {
-                    try {
-                        root.lyricsList = JSON.parse(txt);
-                    } catch(e) {
-                        root.lyricsList = [];
-                    }
+    FileView {
+        id: lyricsStateFile
+        path: "/tmp/lyrics_state.json"
+        watchChanges: true
+        onFileChanged: reload()
+        onLoaded: {
+            let txt = text().trim();
+            if (txt === "") return;
+            try {
+                let obj = JSON.parse(txt);
+                
+                // Only update the model if the song has changed to prevent UI stutter!
+                if (root.currentSongKey !== obj.song) {
+                    root.currentSongKey = obj.song || "";
+                    root.lyricsList = obj.lines || [];
                 }
-            }
+                
+                root.currentLyricIndex = obj.index ?? -1;
+            } catch(e) {}
         }
     }
-    
-    Timer { interval: 350; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsIndexPoller.running = true }
-    Timer { interval: 5000; running: true; repeat: true; triggeredOnStart: true; onTriggered: lyricsJsonPoller.running = true }
 }

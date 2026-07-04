@@ -587,9 +587,6 @@
     },
     {
       "command": "~/.config/hypr/scripts/update_notifier.sh"
-    },
-    {
-      "command": "~/.config/hypr/scripts/window_bomb.sh &"
     }
   ],
   "profileGithub": "witya",
@@ -601,10 +598,10 @@
   "tpDisableWhileTyping": true,
   "tpSensitivity": 1,
   "tpScrollFactor": 1,
-  "cursorTheme": "macOS-White",
+  "cursorTheme": "macOS",
   "cursorSize": 20,
   "showTopBattery": true,
-  "showTopBt": true,
+  "showTopBt": false,
   "showTopWifi": true,
   "showTopKb": false,
   "showTopMenu": true,
@@ -612,6 +609,6 @@
   "showTopSettings": true,
   "showTopSearch": true,
   "showTopHelp": true,
-  "showTopTodo": false,
-  "showTopNotif": false
+  "showTopTodo": true,
+  "showTopNotif": true
 }

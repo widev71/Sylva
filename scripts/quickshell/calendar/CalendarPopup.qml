@@ -34,7 +34,7 @@ Item {
     // -------------------------------------------------------------------------
     // DYNAMIC MASTER WINDOW SCALING (Fixes Window Clipping)
     // -------------------------------------------------------------------------
-    property real targetMasterHeight: Math.round(480 * window.sf)
+    property real targetMasterHeight: Math.round((window.scheduleModuleExists ? 720 : 480) * window.sf)
     property real targetMasterWidth: Math.round(1450 * window.sf)
     
     onTargetMasterHeightChanged: {
@@ -1483,9 +1483,16 @@ Item {
                                 height: parent.height
                                 spacing: 0
                                 
-                                // Divide the actual rendered width of the scroll area by the 430 minutes in a standard school day 
-                                // to get the dynamic Pixels Per Minute ratio that stretches perfectly across the entire space.
-                                property real ppm: schedScroll.width / 430.0
+                                // Calculate total minutes of all lessons to stretch perfectly across the entire space
+                                property real totalMinutes: {
+                                    let total = 0;
+                                    let lessons = window.scheduleData ? window.scheduleData.lessons : [];
+                                    for(let i=0; i<lessons.length; i++) {
+                                        total += ((lessons[i].end || 0) - (lessons[i].start || 0)) / 60.0;
+                                    }
+                                    return Math.max(1, total);
+                                }
+                                property real ppm: schedScroll.width / totalMinutes
 
                                 Repeater {
                                     model: window.scheduleData ? window.scheduleData.lessons : []

@@ -47,45 +47,27 @@ PanelWindow {
         onTriggered: statusPoller.running = true
     }
 
-    // ── Poll lyric index every 200ms ──
-    Process {
-        id: indexPoller
-        command: ["cat", "/tmp/current_lyric_index.txt"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let idx = parseInt(this.text.trim());
-                if (!isNaN(idx) && idx !== lyricsWindow.activeLyricIndex) {
-                    lyricsWindow.activeLyricIndex = idx;
-                }
-            }
-        }
-    }
-    Timer {
-        interval: 100; running: true; repeat: true
-        onTriggered: indexPoller.running = true
-    }
+    property string currentSongKey: ""
 
-    // ── Poll full lyrics JSON every 2s ──
-    Process {
-        id: lyricsPoller
-        command: ["cat", "/tmp/lyrics_data.json"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let content = this.text.trim();
-                if (content && content.length > 2) {
-                    try {
-                        let parsed = JSON.parse(content);
-                        if (Array.isArray(parsed) && parsed.length > 0) {
-                            lyricsWindow.lyrics = parsed;
-                        }
-                    } catch (e) {}
+    FileView {
+        id: lyricsStateFile
+        path: "/tmp/lyrics_state.json"
+        watchChanges: true
+        onFileChanged: reload()
+        onLoaded: {
+            let txt = text().trim();
+            if (txt === "") return;
+            try {
+                let obj = JSON.parse(txt);
+                if (lyricsWindow.currentSongKey !== obj.song) {
+                    lyricsWindow.currentSongKey = obj.song || "";
+                    lyricsWindow.lyrics = obj.lines || [];
                 }
-            }
+                
+                let idx = obj.index ?? -1;
+                if (idx !== lyricsWindow.activeLyricIndex) lyricsWindow.activeLyricIndex = idx;
+            } catch(e) {}
         }
-    }
-    Timer {
-        interval: 2000; running: true; repeat: true
-        onTriggered: lyricsPoller.running = true
     }
 
     onActiveLyricIndexChanged: {

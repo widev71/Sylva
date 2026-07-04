@@ -1,0 +1,27 @@
+{
+    "header": "Jadwal Harian",
+    "link": "https://calendar.google.com",
+    "lessons": [
+        {
+            "subject": "Belajar Linux",
+            "time": "08:30-10:00",
+            "room": "Kamar",
+            "desc": "Ngoprek sistem",
+            "is_compact": false
+        },
+        {
+            "subject": "Istirahat",
+            "time": "12:00-13:00",
+            "room": "Ruang Makan",
+            "desc": "Makan siang",
+            "is_compact": true
+        },
+        {
+            "subject": "Kuliah / Kerja",
+            "time": "13:00-15:00",
+            "room": "Kampus / Kantor",
+            "desc": "",
+            "is_compact": false
+        }
+    ]
+}

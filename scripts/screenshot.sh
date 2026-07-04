@@ -170,6 +170,11 @@ if [ -f "$CACHE_DIR/rec_pid" ]; then
 
     # 1. SEND STOP SIGNAL TO GPU-SCREEN-RECORDER
     if [ "$IS_ALIVE" = true ]; then
+        # Visual Fade Out Trick: Draw a black overlay fading in (0.7s) before killing GSR
+        # Since it runs synchronously, GSR will capture the screen fading to black!
+        export FADE_MODE=out
+        quickshell -p ~/.config/hypr/scripts/quickshell/screenshot/RecordingFade.qml 2>/dev/null
+        
         kill -SIGINT $REC_PID 2>/dev/null
 
         # 2. WAIT FOR GSR TO CLOSE GRACEFULLY AND FINALIZE MP4
@@ -308,7 +313,12 @@ if [ "$FULL_MODE" = true ] || [ -n "$GEOMETRY" ]; then
         systemctl --user stop qs-record 2>/dev/null
         systemctl --user reset-failed qs-record.service 2>/dev/null
         systemd-run --user --unit=qs-record gpu-screen-recorder "${GSR_ARGS[@]}" -o "$VID_FILENAME" > /dev/null 2>&1
-        sleep 0.5
+        
+        # Visual Fade In Trick: Give GSR a tiny head start (0.1s) then fade from black to transparent!
+        sleep 0.1
+        (export FADE_MODE=in; quickshell -p ~/.config/hypr/scripts/quickshell/screenshot/RecordingFade.qml 2>/dev/null) &
+        
+        sleep 0.4
         REC_PID=$(systemctl --user show -p MainPID --value qs-record)
 
         echo "$REC_PID" > "$CACHE_DIR/rec_pid"

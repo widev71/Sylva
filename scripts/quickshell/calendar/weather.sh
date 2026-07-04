@@ -223,6 +223,10 @@ elif [[ "$1" == "--temp" ]]; then
     echo "$(cat "$json_file" | jq -r '.forecast[0].max')${UNIT_SYM}"
 elif [[ "$1" == "--hex" ]]; then 
     cat "$json_file" | jq -r '.forecast[0].hex'
+elif [[ "$1" == "--high" ]]; then
+    echo "$(cat "$json_file" | jq -r '.forecast[0].max')${UNIT_SYM}"
+elif [[ "$1" == "--low" ]]; then
+    echo "$(cat "$json_file" | jq -r '.forecast[0].min')${UNIT_SYM}"
 elif [[ "$1" == "--current-icon" ]]; then
     icon=$(cat "$json_file" | jq -r '.current_icon // empty')
     if [[ -z "$icon" ]]; then get_data; icon=$(cat "$json_file" | jq -r '.current_icon'); fi

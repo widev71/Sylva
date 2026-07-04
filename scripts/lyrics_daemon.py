@@ -7,6 +7,7 @@ import time
 import sys
 import re
 import os
+import threading
 
 CACHE_FILE = os.path.expanduser("~/.cache/lyrics_cache.json")
 os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
@@ -94,23 +95,39 @@ def fetch_lyrics(title, artist):
                 text = match.group(3).strip()
                 time_sec = m * 60 + s
                 parsed.append((time_sec, text))
+        parsed.sort(key=lambda x: x[0])
         return parsed
     except Exception as e:
         with open("/tmp/lyrics_fetch_error.log", "w") as f:
             f.write(str(e) + "\n")
         return []
 
-
-import threading
+def write_state(song_key, lines, index):
+    tmp = "/tmp/lyrics_state.json.tmp"
+    payload = {
+        "song": song_key,
+        "lines": [{"time": t, "text": txt} for t, txt in lines],
+        "index": index,
+    }
+    with open(tmp, "w") as f:
+        json.dump(payload, f)
+    os.replace(tmp, "/tmp/lyrics_state.json")
+    
+    # Write to legacy files for other widgets (e.g. topbar)
+    with open("/tmp/lyrics_data.json", "w") as f:
+        json.dump(payload["lines"], f)
+    with open("/tmp/current_lyric_index.txt", "w") as f:
+        f.write(str(index) + "\n")
 
 # Shared state (daemon thread writes, main loop reads)
 _lyrics_lock = threading.Lock()
 _lyrics = []
-_fetching = False
+_current_song_key = ""     # lagu yang _lyrics ini punya
+_fetching_key = None       # lagu yang lagi di-fetch (None kalau nggak ada)
 
-def _fetch_and_save(title, artist, art_url):
+def _fetch_and_save(title, artist, art_url, song_key):
     """Run in a thread: check cache first, then fetch lyrics. Never blocks the main loop."""
-    global _lyrics, _fetching
+    global _lyrics, _fetching_key, _current_song_key
     try:
         if art_url:
             threading.Thread(target=download_album_art, args=(art_url,), daemon=True).start()
@@ -133,26 +150,25 @@ def _fetch_and_save(title, artist, art_url):
                 save_cache(cache)
 
         with _lyrics_lock:
+            # Buang kalau lagu udah ganti selama kita fetch
+            if song_key != _current_song_key:
+                return
             _lyrics = result
-
-        # Write lyrics to file (replaces the 'old lyrics' placeholder)
-        with open("/tmp/lyrics_data.json", "w") as f:
-            json.dump([{"time": t, "text": txt} for t, txt in result], f)
+            write_state(song_key, result, -1)
 
         if not result:
             with open("/tmp/lyrics_debug.log", "w") as f:
                 f.write(f"No synced lyrics for: {title} | {artist}\n")
-            with open("/tmp/current_lyric_index.txt", "w") as f:
-                f.write("-1\n")
     except Exception as e:
         with open("/tmp/lyrics_fetch_error.log", "w") as f:
             f.write(str(e) + "\n")
     finally:
-        _fetching = False
-
+        with _lyrics_lock:
+            if _fetching_key == song_key:
+                _fetching_key = None
 
 def main():
-    global _lyrics, _fetching
+    global _lyrics, _fetching_key, _current_song_key
 
     current_meta_key = ""
     last_printed_index = -2
@@ -165,9 +181,11 @@ def main():
     while True:
         now = time.time()
         
-        # Poll external process at most once per second to prevent massive jitter
-        if now - last_full_poll >= 1.0:
+        # Poll external process at most once per 0.5s to prevent massive jitter
+        if now - last_full_poll >= 0.5:
             last_full_poll = now
+            # Take the timestamp BEFORE calling get_player_meta to compensate for subprocess overhead
+            pre_poll_time = time.time()
             meta = get_player_meta()
             title, artist, art_url = "", "", ""
             if "|" in meta:
@@ -179,7 +197,7 @@ def main():
                     status = parts[3]
                     try:
                         last_pos = float(parts[4]) / 1000000.0  # MPRIS position is in microseconds
-                        last_poll_time = time.time()  # Reset interpolation clock
+                        last_poll_time = pre_poll_time  # Reset interpolation clock to when we STARTED polling
                     except:
                         pass
             
@@ -189,21 +207,28 @@ def main():
                 current_meta_key = meta_key
                 last_printed_index = -2
 
-                with open("/tmp/current_lyric_index.txt", "w") as f:
-                    f.write("-1\n")
+                with _lyrics_lock:
+                    _current_song_key = meta_key
+                    _lyrics = []
 
-                if title and artist and not _fetching:
-                    _fetching = True
-                    threading.Thread(
-                        target=_fetch_and_save,
-                        args=(title, artist, art_url),
-                        daemon=True
-                    ).start()
+                write_state(current_meta_key, [], -1)
+
+                if title and artist:
+                    start_fetch = False
+                    with _lyrics_lock:
+                        if _fetching_key != meta_key:
+                            _fetching_key = meta_key
+                            start_fetch = True
+                    if start_fetch:
+                        threading.Thread(
+                            target=_fetch_and_save,
+                            args=(title, artist, art_url, meta_key),
+                            daemon=True
+                        ).start()
                 elif not title:
                     with _lyrics_lock:
                         _lyrics = []
-                    with open("/tmp/lyrics_data.json", "w") as f:
-                        f.write("[]")
+                    write_state("", [], -1)
 
         # Inner loop: Interpolate position and update UI
         with _lyrics_lock:
@@ -223,8 +248,7 @@ def main():
                     break
 
             if current_index != last_printed_index:
-                with open("/tmp/current_lyric_index.txt", "w") as f:
-                    f.write(str(current_index) + "\n")
+                write_state(current_meta_key, current_lyrics, current_index)
                 last_printed_index = current_index
 
         time.sleep(0.05)

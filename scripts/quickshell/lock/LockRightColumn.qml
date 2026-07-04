@@ -12,8 +12,12 @@ Item {
     required property string weatherIcon
     required property string weatherDesc
     required property string weatherTemp
+    property string weatherHigh: "--°C"
+    property string weatherLow: "--°C"
+    property color weatherHex: "#cdd6f4"
     required property var lyricsList
     required property int currentLyricIndex
+    property real musicProgress: 0.0
 
     // Local state for the clock
     property string ampm: "AM"
@@ -57,11 +61,20 @@ Item {
                 spacing: 16 * root.sc
 
                 Text {
+                    id: clockText
                     text: root.hoursStr + ":" + root.minutesStr
                     color: root.d.cText
                     font.pixelSize: 96 * root.sc
                     font.weight: Font.Light
                     font.family: "Inter"
+                    // For smooth number transition, we can animate opacity.
+                    SequentialAnimation on opacity {
+                        id: clockAnim
+                        running: false
+                        NumberAnimation { to: 0.5; duration: 150 }
+                        NumberAnimation { to: 1.0; duration: 150 }
+                    }
+                    onTextChanged: clockAnim.restart()
                 }
 
                 // Vertical Divider
@@ -104,7 +117,7 @@ Item {
                 // Weather Icon + Temp
                 RowLayout {
                     spacing: 8 * root.sc
-                    Text { text: root.weatherIcon; font.family: "Iosevka Nerd Font"; font.pixelSize: 22 * root.sc; color: root.d.cTextDim }
+                    Text { text: root.weatherIcon; font.family: "Iosevka Nerd Font"; font.pixelSize: 22 * root.sc; color: root.weatherHex }
                     Text {
                         text: root.weatherTemp
                         color: root.d.cText
@@ -123,7 +136,7 @@ Item {
                         font.family: "Inter"
                     }
                     Text {
-                        text: "H: 30° L:23°" // Static placeholder as per mockup
+                        text: "H: " + root.weatherHigh + " L: " + root.weatherLow
                         color: root.d.cText
                         font.pixelSize: 14 * root.sc
                         font.family: "Inter"
@@ -135,23 +148,55 @@ Item {
         Item { Layout.fillHeight: true } // Spacer — pushes lyrics to vertical center
 
         // ---------------- LYRICS ----------------
-        ListView {
-            id: lyricsView
+        Item {
+            id: lyricsWrapper
             Layout.alignment: Qt.AlignLeft
             Layout.preferredWidth: parent.width * 0.95
-            Layout.preferredHeight: 400 * root.sc
-            
-            model: root.lyricsList
-            currentIndex: root.currentLyricIndex >= 0 ? root.currentLyricIndex : 0
-            
+            property real targetHeight: (root.lyricsList && root.lyricsList.length > 0) ? 400 * root.sc : 0
+            Behavior on targetHeight { NumberAnimation { duration: 400; easing.type: Easing.InOutQuad } }
+            Layout.preferredHeight: targetHeight
+            opacity: targetHeight > 0 ? 1.0 : 0.0
+            Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
             clip: true
-            spacing: 16 * root.sc
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: 2 * root.sc
+                color: root.d.cPanelBorder
+                radius: 1 * root.sc
+                
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    // Need to get musicProgress from parent or LockDataPollers. 
+                    // LockRightColumn does not have musicProgress exposed yet. 
+                    // I will expose it above. For now, height binds to root.musicProgress if we add it.
+                    height: parent.height * (typeof root.musicProgress !== "undefined" ? root.musicProgress : 0)
+                    color: root.d.cLime
+                    radius: 1 * root.sc
+                    Behavior on height { NumberAnimation { duration: 500; easing.type: Easing.Linear } }
+                }
+            }
+
+            ListView {
+                id: lyricsView
+                anchors.fill: parent
+                anchors.leftMargin: 16 * root.sc
+                
+                model: root.lyricsList
+                currentIndex: root.currentLyricIndex >= 0 ? root.currentLyricIndex : 0
+                
+                clip: true
+                spacing: 16 * root.sc
             
             // Center the active lyric in the ListView
             preferredHighlightBegin: height / 2 - 80 * root.sc
             preferredHighlightEnd: height / 2 + 80 * root.sc
             highlightRangeMode: ListView.StrictlyEnforceRange
-            highlightMoveDuration: 100
+            highlightMoveDuration: 400
 
             add: Transition {
                 NumberAnimation { property: "opacity"; from: 0.0; duration: 400; easing.type: Easing.OutQuart }
@@ -168,23 +213,36 @@ Item {
                 width: ListView.view.width
                 text: modelData.text || "♪"
                 color: root.d.cText
-                font.pixelSize: (index === ListView.view.currentIndex) ? 48 * root.sc : 28 * root.sc
+                font.pixelSize: ListView.isCurrentItem ? 48 * root.sc : 28 * root.sc
                 font.weight: Font.Light
                 font.family: "Inter"
                 horizontalAlignment: Text.AlignLeft
                 wrapMode: Text.WordWrap
-                opacity: (index === ListView.view.currentIndex) ? 1.0 : 0.35
+                opacity: ListView.isCurrentItem ? 1.0 : 0.35
 
-                // Cinematic Focus & Blur effect
-                property real blurAmount: (index === ListView.view.currentIndex) ? 0.0 : 1.0
+                Behavior on opacity {
+                    NumberAnimation { duration: 400; easing.type: Easing.OutQuart }
+                }
+                Behavior on font.pixelSize {
+                    NumberAnimation { duration: 400; easing.type: Easing.OutQuart }
+                }
+
+                property real blurAmount: ListView.isCurrentItem ? 0.0 : 1.0
+                Behavior on blurAmount {
+                    NumberAnimation { duration: 400; easing.type: Easing.OutQuart }
+                }
+
                 layer.enabled: blurAmount > 0
                 layer.effect: MultiEffect {
                     blurEnabled: true
                     blurMax: 10 * root.sc
                     blur: lyricText.blurAmount
                 }
-                
-                // Visuals update instantly without Behavior delays
+
+                transform: Translate {
+                    y: ListView.isCurrentItem ? 0 : 4 * root.sc
+                    Behavior on y { NumberAnimation { duration: 400; easing.type: Easing.OutQuart } }
+                }
             }
             
             onCountChanged: {
@@ -198,6 +256,7 @@ Item {
                 }
             }
         }
+        } // end lyricsWrapper
 
         Item { Layout.fillHeight: true } // Bottom spacer — balances lyrics to center
     }
