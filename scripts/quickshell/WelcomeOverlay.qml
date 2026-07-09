@@ -13,10 +13,9 @@ Item {
 
     function getGreeting() {
         var hour = new Date().getHours()
-        if (hour < 11) return "Selamat Pagi, " + userName + "!"
-        else if (hour < 15) return "Selamat Siang, " + userName + "!"
-        else if (hour < 18) return "Selamat Sore, " + userName + "!"
-        else return "Selamat Malam, " + userName + "!"
+        if (hour < 12) return "Good Morning, " + userName + "!"
+        else if (hour < 18) return "Good Afternoon, " + userName + "!"
+        else return "Good Evening, " + userName + "!"
     }
 
     property color crustColor: "black"

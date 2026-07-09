@@ -10,42 +10,35 @@ CACHE_FILE="$QS_CACHE_UPDATER/notified_version"
 # State file to tell the topbar to show the update button
 PENDING_FILE="$QS_CACHE_UPDATER/update_pending"
 
+REPO="widev71/Sylva"
+BRANCH="main"
+
 while true; do
-    # Fetch local version
-    LOCAL_VERSION=$(source ~/.local/state/imperative-dots-version 2>/dev/null && echo "$LOCAL_VERSION")
-    LOCAL_VERSION=${LOCAL_VERSION:-"Unknown"}
-    
-    # Fetch remote version
-    REMOTE_VERSION=$(curl -m 5 -s https://raw.githubusercontent.com/ilyamiro/imperative-dots/master/install.sh | grep '^DOTS_VERSION=' | cut -d'"' -f2)
+    # Fetch local last commit SHA (stored when last updated)
+    LOCAL_SHA=$(source ~/.local/state/imperative-dots-version 2>/dev/null && echo "$LAST_COMMIT")
+    LOCAL_SHA=${LOCAL_SHA:-"unknown"}
+
+    # Fetch latest remote commit SHA from Sylva
+    REMOTE_SHA=$(curl -m 5 -s "https://api.github.com/repos/${REPO}/commits/${BRANCH}" | grep '"sha"' | head -1 | cut -d'"' -f4)
 
     # Check if we got valid responses and they don't match
-    if [[ -n "$REMOTE_VERSION" && "$LOCAL_VERSION" != "Unknown" && "$LOCAL_VERSION" != "$REMOTE_VERSION" ]]; then
-        
-        # Determine the newest version using bash semantic sorting
-        NEWEST=$(printf '%s\n' "$LOCAL_VERSION" "$REMOTE_VERSION" | sort -V | tail -n1)
-        
-        if [[ "$NEWEST" == "$REMOTE_VERSION" ]]; then
-            
-            # Signal the topbar to show the update icon
-            touch "$PENDING_FILE"
-            
-            # Only send the notification if we haven't notified about this specific version yet
-            if [[ ! -f "$CACHE_FILE" ]] || [[ "$(cat "$CACHE_FILE")" != "$REMOTE_VERSION" ]]; then
-                
-                # Cache the version so we don't spam the user every 10 minutes
-                echo "$REMOTE_VERSION" > "$CACHE_FILE"
+    if [[ -n "$REMOTE_SHA" && "$LOCAL_SHA" != "unknown" && "$LOCAL_SHA" != "$REMOTE_SHA" ]]; then
 
-                # Send standard notification without the action prompt
-                notify-send -t 15000 -a 'Imperative Dots' -u normal 'Update Available' "A new version ($REMOTE_VERSION) is ready! Click the update icon in the topbar to install."
-                
-            fi
+        # Signal the topbar to show the update icon
+        touch "$PENDING_FILE"
+
+        # Only send the notification if we haven't notified about this specific commit yet
+        if [[ ! -f "$CACHE_FILE" ]] || [[ "$(cat "$CACHE_FILE")" != "$REMOTE_SHA" ]]; then
+
+            # Cache the SHA so we don't spam the user every 10 minutes
+            echo "$REMOTE_SHA" > "$CACHE_FILE"
+
+            notify-send -t 15000 -a 'Sylva' -u normal 'Update Available' "New updates are available! Click the update icon in the topbar to install."
         fi
     else
-        # Self-healing: if versions match or we are offline, clear the pending flag 
-        # so the topbar button disappears if you updated via terminal.
+        # Self-healing: if up to date or offline, clear the pending flag
         rm -f "$PENDING_FILE"
     fi
 
-    # Wait 10 minutes before checking again
     sleep "$INTERVAL"
 done

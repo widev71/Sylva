@@ -192,9 +192,9 @@ Item {
     }
     Timer { interval: 2000; running: true; repeat: true; triggeredOnStart: true; onTriggered: musicPoller.running = true }
 
-    Process { id: musicPlayCmd;  command: ["playerctl", "play-pause"] }
-    Process { id: musicNextCmd;  command: ["playerctl", "next"] }
     Process { id: musicPrevCmd;  command: ["playerctl", "previous"] }
+    Process { id: musicPlayCmd;  command: ["bash", "-c", "python3 ~/.config/hypr/scripts/quickshell/music/fade_play_pause.py"] }
+    Process { id: musicNextCmd;  command: ["playerctl", "next"] }
 
     function playPause() { musicPlayCmd.running = true; }
     function next()      { musicNextCmd.running = true; }

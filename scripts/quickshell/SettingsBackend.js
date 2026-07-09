@@ -85,7 +85,7 @@ function saveAppSettings(config) {
         config.initialWorkspaceCount = config.workspaceCount;
     }
     
-    sh(`bash "${config.qsScriptsDir}/fetch_github_cards.sh" &`);
+    sh(`bash "${config.qsScriptsDir}/../fetch_github_cards.sh" &`);
 }
 
 function saveWeatherConfig(config) {

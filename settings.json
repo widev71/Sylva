@@ -36,102 +36,6 @@
       "isEditing": false
     },
     {
-      "type": "binde",
-      "mods": "$mainMod SHIFT_L",
-      "key": "left",
-      "dispatcher": "resizeactive",
-      "command": "-50 0",
-      "isEditing": false
-    },
-    {
-      "type": "binde",
-      "mods": "$mainMod SHIFT_L",
-      "key": "right",
-      "dispatcher": "resizeactive",
-      "command": "50 0",
-      "isEditing": false
-    },
-    {
-      "type": "binde",
-      "mods": "$mainMod SHIFT_L",
-      "key": "up",
-      "dispatcher": "resizeactive",
-      "command": "0 -50",
-      "isEditing": false
-    },
-    {
-      "type": "binde",
-      "mods": "$mainMod SHIFT_L",
-      "key": "down",
-      "dispatcher": "resizeactive",
-      "command": "0 50",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod CTRL",
-      "key": "left",
-      "dispatcher": "movewindow",
-      "command": "l",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod CTRL",
-      "key": "right",
-      "dispatcher": "movewindow",
-      "command": "r",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod CTRL",
-      "key": "up",
-      "dispatcher": "movewindow",
-      "command": "u",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod CTRL",
-      "key": "down",
-      "dispatcher": "movewindow",
-      "command": "d",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod",
-      "key": "left",
-      "dispatcher": "movefocus",
-      "command": "l",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod",
-      "key": "right",
-      "dispatcher": "movefocus",
-      "command": "r",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod",
-      "key": "up",
-      "dispatcher": "movefocus",
-      "command": "u",
-      "isEditing": false
-    },
-    {
-      "type": "bind",
-      "mods": "$mainMod",
-      "key": "down",
-      "dispatcher": "movefocus",
-      "command": "d",
-      "isEditing": false
-    },
-    {
       "type": "bind",
       "mods": "$mainMod",
       "key": "RETURN",
@@ -546,6 +450,102 @@
       "dispatcher": "exec",
       "command": "~/.config/hypr/scripts/focus_next_monitor.sh",
       "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod",
+      "key": "left",
+      "dispatcher": "movefocus",
+      "command": "l",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod",
+      "key": "right",
+      "dispatcher": "movefocus",
+      "command": "r",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod",
+      "key": "up",
+      "dispatcher": "movefocus",
+      "command": "u",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod",
+      "key": "down",
+      "dispatcher": "movefocus",
+      "command": "d",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod SHIFT_L",
+      "key": "left",
+      "dispatcher": "movewindow",
+      "command": "l",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod SHIFT_L",
+      "key": "right",
+      "dispatcher": "movewindow",
+      "command": "r",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod SHIFT_L",
+      "key": "up",
+      "dispatcher": "movewindow",
+      "command": "u",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod SHIFT_L",
+      "key": "down",
+      "dispatcher": "movewindow",
+      "command": "d",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod CTRL",
+      "key": "left",
+      "dispatcher": "resizeactive",
+      "command": "-50 0",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod CTRL",
+      "key": "right",
+      "dispatcher": "resizeactive",
+      "command": "50 0",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod CTRL",
+      "key": "up",
+      "dispatcher": "resizeactive",
+      "command": "0 -50",
+      "isEditing": false
+    },
+    {
+      "type": "bind",
+      "mods": "$mainMod CTRL",
+      "key": "down",
+      "dispatcher": "resizeactive",
+      "command": "0 50",
+      "isEditing": false
     }
   ],
   "startup": [
@@ -589,7 +589,7 @@
       "command": "~/.config/hypr/scripts/update_notifier.sh"
     }
   ],
-  "profileGithub": "witya",
+  "profileGithub": "widev71",
   "profileDiscord": "widev71",
   "profileInstagram": "widev71",
   "profileTikTok": "widev71",
@@ -598,17 +598,17 @@
   "tpDisableWhileTyping": true,
   "tpSensitivity": 1,
   "tpScrollFactor": 1,
-  "cursorTheme": "macOS",
-  "cursorSize": 20,
+  "cursorTheme": "Adwaita",
+  "cursorSize": 16,
   "showTopBattery": true,
-  "showTopBt": false,
+  "showTopBt": true,
   "showTopWifi": true,
   "showTopKb": false,
   "showTopMenu": true,
   "showTopVolume": true,
-  "showTopSettings": true,
-  "showTopSearch": true,
-  "showTopHelp": true,
-  "showTopTodo": true,
-  "showTopNotif": true
+  "showTopSettings": false,
+  "showTopSearch": false,
+  "showTopHelp": false,
+  "showTopTodo": false,
+  "showTopNotif": false
 }

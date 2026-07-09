@@ -67,6 +67,6 @@ case $command in
         playerctl -p "$player_name" previous ;;
         
     "play-pause")
-        playerctl -p "$player_name" play-pause ;;
+        python3 ~/.config/hypr/scripts/quickshell/music/fade_play_pause.py -p "$player_name" & ;;
         
 esac

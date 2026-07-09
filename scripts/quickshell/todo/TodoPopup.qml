@@ -43,30 +43,42 @@ Item {
             property var todos: []
             property string backendScript: "~/.config/hypr/scripts/quickshell/calendar/todo_backend.py"
 
+            Process {
+                id: getTodosProcess
+                command: ["bash", "-c", "python3 " + backendScript + " get"]
+                stdout: StdioCollector {
+                    onStreamFinished: {
+                        try { todoRect.todos = JSON.parse(this.text); } catch(e) {}
+                    }
+                }
+            }
+
+            Process {
+                id: actionProcess
+                property string actionCmd: ""
+                command: ["bash", "-c", actionCmd]
+                onExited: {
+                    getTodosProcess.running = true;
+                }
+            }
+
             function loadTodos() {
-                Quickshell.exec(["bash", "-c", "python3 " + backendScript + " get"], function(result) {
-                    try {
-                        todoRect.todos = JSON.parse(result.stdout);
-                    } catch(e) {}
-                });
+                getTodosProcess.running = true;
             }
             
             function addTodo(txt) {
-                Quickshell.exec(["bash", "-c", "python3 " + backendScript + " add '" + txt.replace(/'/g, "'\\''") + "'"], function(result) {
-                    loadTodos();
-                });
+                actionProcess.actionCmd = "python3 " + backendScript + " add '" + txt.replace(/'/g, "'\\''") + "'";
+                actionProcess.running = true;
             }
 
             function toggleTodo(idx) {
-                Quickshell.exec(["bash", "-c", "python3 " + backendScript + " toggle " + idx], function(result) {
-                    loadTodos();
-                });
+                actionProcess.actionCmd = "python3 " + backendScript + " toggle " + idx;
+                actionProcess.running = true;
             }
 
             function deleteTodo(idx) {
-                Quickshell.exec(["bash", "-c", "python3 " + backendScript + " delete " + idx], function(result) {
-                    loadTodos();
-                });
+                actionProcess.actionCmd = "python3 " + backendScript + " delete " + idx;
+                actionProcess.running = true;
             }
 
             Component.onCompleted: loadTodos()
@@ -186,10 +198,19 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                         }
                         
-                        Keys.onReturnPressed: {
+                        onAccepted: {
                             if (text.trim() !== "") {
                                 todoRect.addTodo(text.trim());
                                 text = "";
+                            }
+                        }
+                        Keys.onPressed: (event) => {
+                            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                if (text.trim() !== "") {
+                                    todoRect.addTodo(text.trim());
+                                    text = "";
+                                }
+                                event.accepted = true;
                             }
                         }
                     }

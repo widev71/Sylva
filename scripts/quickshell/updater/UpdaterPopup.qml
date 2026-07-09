@@ -113,56 +113,20 @@ Item {
         }
     }
 
-    // --- 2. REMOTE VERSION FETCH ---
+    // --- 2. REMOTE SHA FETCH ---
     Process {
         id: remoteVerProcess
         running: false
-        command: ["bash", "-c", "curl -m 5 -s https://raw.githubusercontent.com/ilyamiro/imperative-dots/master/install.sh | grep '^DOTS_VERSION=' | cut -d'\"' -f2"]
+        command: ["bash", "-c", "curl -m 5 -s https://api.github.com/repos/widev71/Sylva/commits/main | grep '\"sha\"' | head -1 | cut -d'\"' -f4"]
         stdout: StdioCollector {
             onStreamFinished: {
                 let out = this.text ? this.text.trim() : "";
-                if (out !== "") window.remoteVersion = out;
+                if (out !== "") window.remoteVersion = out.substring(0, 7); // show short SHA
             }
         }
     }
 
-    // --- 3. DYNAMIC VIDEO RESOLUTION ---
-    property string videoResolveScript: `
-import urllib.request, json, subprocess, sys
-try:
-    local_str = subprocess.check_output("source ~/.local/state/imperative-dots-version 2>/dev/null && echo $LOCAL_VERSION", shell=True).decode('utf-8').strip()
-    if not local_str: local_str = '0.0.0'
-    
-    # Safe Semantic Version Parsing
-    def parse_v(v):
-        clean = ''.join(c if c.isdigit() or c == '.' else ' ' for c in v).strip().replace(' ', '.')
-        return [int(x) for x in clean.split('.') if x.isdigit()]
-        
-    local_v = parse_v(local_str)
-
-    req = urllib.request.Request('https://raw.githubusercontent.com/ilyamiro/imperative-dots/master/updates.json')
-    res = urllib.request.urlopen(req, timeout=5)
-    data = json.loads(res.read().decode())
-
-    valid_videos = []
-    for item in data.get('videos', []):
-        target_v = parse_v(item['version'])
-        # Only grab videos for versions newer than what the user currently has installed
-        if target_v > local_v:
-            valid_videos.append((target_v, item['url']))
-
-    if valid_videos:
-        valid_videos.sort(key=lambda x: x[0])
-        url = valid_videos[-1][1] # Play the newest feature video they missed
-        
-        # Verify the video URL is actually alive before expanding the UI
-        head = urllib.request.Request(url, method='HEAD')
-        head_res = urllib.request.urlopen(head, timeout=5)
-        if head_res.getcode() in [200, 301, 302]:
-            print(url)
-except Exception:
-    pass
-`
+    property string videoResolveScript: ``
 
     Process {
         id: videoResolveProcess
@@ -199,62 +163,41 @@ except Exception:
     property string fetchScript: `
 import urllib.request, json, subprocess
 
-repo = 'ilyamiro/imperative-dots'
+repo = 'widev71/Sylva'
 
 try:
-    local = subprocess.check_output("source ~/.local/state/imperative-dots-version 2>/dev/null && echo $LOCAL_VERSION", shell=True).decode('utf-8').strip()
+    local = subprocess.check_output("source ~/.local/state/imperative-dots-version 2>/dev/null && echo $LAST_COMMIT", shell=True).decode('utf-8').strip()
 except:
     local = ''
 
 if not local:
-    local = '0.0.0'
+    local = 'unknown'
 
 def get_latest():
     try:
-        req = urllib.request.Request('https://api.github.com/repos/' + repo + '/commits/master', headers={'User-Agent': 'updater'})
+        req = urllib.request.Request('https://api.github.com/repos/' + repo + '/commits/main', headers={'User-Agent': 'sylva-updater'})
         res = urllib.request.urlopen(req, timeout=5)
-        print(json.loads(res.read().decode())['commit']['message'])
+        data = json.loads(res.read().decode())
+        msg = data['commit']['message']
+        print(msg)
     except Exception: print('No changelog available')
 
 try:
-    if local in ['0.0.0', '...', '']: 
+    if local in ['unknown', '']:
         get_latest()
     else:
-        req_commits = urllib.request.Request('https://api.github.com/repos/' + repo + '/commits?path=install.sh&per_page=15', headers={'User-Agent': 'updater'})
-        res_commits = urllib.request.urlopen(req_commits, timeout=5)
-        file_commits = json.loads(res_commits.read().decode())
+        req_compare = urllib.request.Request(
+            'https://api.github.com/repos/' + repo + '/compare/' + local + '...main',
+            headers={'User-Agent': 'sylva-updater'}
+        )
+        res_compare = urllib.request.urlopen(req_compare, timeout=5)
+        data = json.loads(res_compare.read().decode())
+        commits = data.get('commits', [])
         
-        local_sha = None
-        for c in file_commits:
-            sha = c['sha']
-            try:
-                raw_req = urllib.request.Request('https://raw.githubusercontent.com/' + repo + '/' + sha + '/install.sh', headers={'User-Agent': 'updater'})
-                raw_res = urllib.request.urlopen(raw_req, timeout=5)
-                content = raw_res.read().decode('utf-8')
-                
-                for line in content.splitlines():
-                    if line.startswith('DOTS_VERSION='):
-                        ver = line.split('=', 1)[1].strip().strip('"\\'')
-                        if ver == local:
-                            local_sha = sha
-                        break
-            except: pass
-            
-            if local_sha:
-                break
-                
-        if local_sha:
-            compare_req = urllib.request.Request('https://api.github.com/repos/' + repo + '/compare/' + local_sha + '...master', headers={'User-Agent': 'updater'})
-            compare_res = urllib.request.urlopen(compare_req, timeout=5)
-            data = json.loads(compare_res.read().decode())
-            commits = data.get('commits', [])
-            
-            if commits:
-                for c in reversed(commits):
-                    print(c['commit']['message'])
-                    print('---SPLIT---')
-            else:
-                get_latest()
+        if commits:
+            for c in reversed(commits):
+                print(c['commit']['message'])
+                print('---SPLIT---')
         else:
             get_latest()
 except Exception as e:
@@ -678,7 +621,7 @@ except Exception as e:
                     easing.type: Easing.InSine
                     onFinished: {
                         updateBtn.triggered = true;
-                        let cmd = "if command -v kitty >/dev/null 2>&1; then kitty --hold bash -c 'eval \"$(curl -fsSL https://raw.githubusercontent.com/ilyamiro/imperative-dots/master/install.sh)\"'; else ${TERM:-xterm} -hold -e bash -c 'eval \"$(curl -fsSL https://raw.githubusercontent.com/ilyamiro/imperative-dots/master/install.sh)\"'; fi";
+                        let cmd = "kitty --hold bash -c 'cd ~/.config/hypr && git pull origin main && echo LAST_COMMIT=$(git rev-parse HEAD) >> ~/.local/state/imperative-dots-version && echo Done! Restart Hyprland to apply changes.'";
                         Quickshell.execDetached(["bash", "-c", cmd]);
                         Quickshell.execDetached(["bash", Quickshell.env("HOME") + "/.config/hypr/scripts/qs_manager.sh", "close"]);
                     }

@@ -7,7 +7,6 @@ import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Services.Pam
 import "../"
-import "github" as Github
 import "./lock"
 
 ShellRoot {

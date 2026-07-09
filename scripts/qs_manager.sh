@@ -97,17 +97,57 @@ handle_wallpaper_prep() {
         [ ! -f "$MANIFEST" ] && build_manifest
 
         SRC_LIST=$(mktemp)
+        # -------------------------------------------------------------
+        # 1. SCAN STEAM WORKSHOP (Wallpaper Engine)
+        # -------------------------------------------------------------
+        WORKSHOP_DIR="$HOME/.steam/steam/steamapps/workshop/content/431960"
+        if [ -d "$WORKSHOP_DIR" ]; then
+            for item in "$WORKSHOP_DIR"/*; do
+                if [ -f "$item/project.json" ]; then
+                    preview_file=$(jq -r '.preview // empty' "$item/project.json" 2>/dev/null)
+                    item_id=$(basename "$item")
+                    
+                    if [ -n "$preview_file" ] && [ -f "$item/$preview_file" ]; then
+                        thumb="$THUMB_DIR/000_pkg_${item_id}.jpg"
+                        if [ ! -f "$thumb" ]; then
+                            magick "$item/${preview_file}[0]" -resize x420 -quality 70 "$thumb" >/dev/null 2>&1 || true
+                            echo "000_pkg_${item_id}.jpg" >> "$MANIFEST"
+                        fi
+                    fi
+                fi
+            done
+        fi
+
+        # -------------------------------------------------------------
+        # 2. SCAN LOCAL WALLPAPERS
+        # -------------------------------------------------------------
         find "$SRC_DIR" -maxdepth 1 -type f \
             \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \
                -o -iname "*.gif" -o -iname "*.mp4" -o -iname "*.mkv" \
                -o -iname "*.mov" -o -iname "*.webm" \) \
             -printf "%f\n" | sort > "$SRC_LIST"
 
-        comm -23 <(sed 's/^000_//' "$MANIFEST" | sort) "$SRC_LIST" | while read -r orphan; do
+        # -------------------------------------------------------------
+        # 3. CLEANUP ORPHANS
+        # -------------------------------------------------------------
+        # Cleanup local wallpapers
+        comm -23 <(grep -v "^000_pkg_" "$MANIFEST" | sed 's/^000_//' | sort) "$SRC_LIST" | while read -r orphan; do
             rm -f "$THUMB_DIR/$orphan" "$THUMB_DIR/000_$orphan"
             sed -i "/^${orphan}$/d;/^000_${orphan}$/d" "$MANIFEST"
         done
+        
+        # Cleanup Steam Workshop orphans
+        grep "^000_pkg_" "$MANIFEST" 2>/dev/null | while read -r pkg_thumb; do
+            item_id=$(echo "$pkg_thumb" | sed 's/^000_pkg_//;s/\.jpg$//')
+            if [ ! -d "$WORKSHOP_DIR/$item_id" ]; then
+                rm -f "$THUMB_DIR/$pkg_thumb"
+                sed -i "/^${pkg_thumb}$/d" "$MANIFEST"
+            fi
+        done
 
+        # -------------------------------------------------------------
+        # 4. GENERATE MISSING LOCAL THUMBNAILS
+        # -------------------------------------------------------------
         while IFS= read -r filename; do
             img="$SRC_DIR/$filename"
             [ -f "$img" ] || continue

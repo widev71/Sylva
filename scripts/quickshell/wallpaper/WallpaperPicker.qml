@@ -243,11 +243,38 @@ Item {
         const escReload = escapeBash(reloadScript);
 
         let wallpaperCmd = "";
+        const isPkg = safeFileName.startsWith("000_pkg_");
         
-        if (isVideo) {
+        if (isPkg) {
+            const itemId = safeFileName.replace("000_pkg_", "").replace(".jpg", "");
+            const itemPath = Quickshell.env("HOME") + "/.steam/steam/steamapps/workshop/content/431960/" + itemId;
+            
+            wallpaperCmd = `
+                echo "" >> ${logFile}
+                echo "[$(date +'%H:%M:%S.%3N')] APPLYING STEAM WORKSHOP: ${itemPath} TO ${escOutputs}" >> ${logFile}
+                
+                awww clear -f 000000 || true
+                
+                if [ "${escOutputs}" = "all" ]; then
+                    MONS=$(hyprctl monitors -j | jq -r '.[].name')
+                    LWE_ARGS=""
+                    for mon in $MONS; do
+                        LWE_ARGS="$LWE_ARGS --screen-root $mon"
+                    done
+                    linux-wallpaperengine $LWE_ARGS "${itemPath}" >> ${logFile} 2>&1 &
+                else
+                    IFS=',' read -ra MON_ARR <<< "${escOutputs}"
+                    for mon in "\\\${MON_ARR[@]}"; do
+                        linux-wallpaperengine --screen-root "\\$mon" "${itemPath}" >> ${logFile} 2>&1 &
+                    done
+                fi
+            `;
+        } else if (isVideo) {
             wallpaperCmd = `
                 echo "" >> ${logFile}
                 echo "[$(date +'%H:%M:%S.%3N')] APPLYING LOCAL VIDEO: ${escOriginal} TO ${escOutputs}" >> ${logFile}
+                
+                awww clear -f 000000 || true
                 
                 if [ "${escOutputs}" = "all" ]; then
                     mpvpaper -o 'loop --no-audio --hwdec=auto --profile=high-quality --video-sync=display-resample --interpolation --tscale=oversample' '*' "${escOriginal}" >> ${logFile} 2>&1 &
@@ -272,8 +299,10 @@ Item {
         }
 
         const fullScript = `
-            cp "${isVideo ? escThumb : escOriginal}" ${paths.getCacheDir("wallpaper_picker")}/current_wallpaper.png || true
-            pkill mpvpaper || true
+            cp "${(isVideo || isPkg) ? escThumb : escOriginal}" ${paths.getCacheDir("wallpaper_picker")}/current_wallpaper.png || true
+            killall -9 mpvpaper || true
+            killall -9 linux-wallpaperengine || true
+            sleep 0.1
             
             ${wallpaperCmd}
             ( matugen image "${escThumb}" --source-color-index 0 || true; bash "${escReload}" || true ) &

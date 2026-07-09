@@ -103,15 +103,15 @@ def fetch_lyrics(title, artist):
         return []
 
 def write_state(song_key, lines, index):
-    tmp = "/tmp/lyrics_state.json.tmp"
     payload = {
         "song": song_key,
         "lines": [{"time": t, "text": txt} for t, txt in lines],
         "index": index,
     }
-    with open(tmp, "w") as f:
+    # Write directly to the file to preserve the inode for inotify watchers (like QML FileView)
+    with open("/tmp/lyrics_state.json", "w") as f:
         json.dump(payload, f)
-    os.replace(tmp, "/tmp/lyrics_state.json")
+        f.flush()
     
     # Write to legacy files for other widgets (e.g. topbar)
     with open("/tmp/lyrics_data.json", "w") as f:

@@ -3229,6 +3229,7 @@ Item {
                                 if (root.currentTab === 0) Config.saveAppSettings();
                                 else if (root.currentTab === 1) Config.saveWeatherConfig();
                                 else if (root.currentTab === 3) Config.applyMonitors();
+                                else if (root.currentTab === 5) Config.saveAppSettings();
                             }
                         }
                     }

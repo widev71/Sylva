@@ -1138,7 +1138,7 @@ Item {
                                     color: Qt.alpha(root.mantle, 0.5)
                                     border.color: root.surface1
                                     border.width: 1
-                                    Image { anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/profile-details.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
+                                    Image { cache: false; anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/profile-details.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
                                 }
                                 Rectangle {
                                     width: (parent.width - root.s(15)) / 2
@@ -1147,7 +1147,7 @@ Item {
                                     color: Qt.alpha(root.mantle, 0.5)
                                     border.color: root.surface1
                                     border.width: 1
-                                    Image { anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/stats.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
+                                    Image { cache: false; anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/stats.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
                                 }
                                 Rectangle {
                                     width: (parent.width - root.s(15)) / 2
@@ -1156,7 +1156,7 @@ Item {
                                     color: Qt.alpha(root.mantle, 0.5)
                                     border.color: root.surface1
                                     border.width: 1
-                                    Image { anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/most-commit-language.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
+                                    Image { cache: false; anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/most-commit-language.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
                                 }
                                 Rectangle {
                                     width: (parent.width - root.s(15)) / 2
@@ -1165,7 +1165,7 @@ Item {
                                     color: Qt.alpha(root.mantle, 0.5)
                                     border.color: root.surface1
                                     border.width: 1
-                                    Image { anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/repos-per-language.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
+                                    Image { cache: false; anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/repos-per-language.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
                                 }
                                 Rectangle {
                                     width: (parent.width - root.s(15)) / 2
@@ -1174,7 +1174,7 @@ Item {
                                     color: Qt.alpha(root.mantle, 0.5)
                                     border.color: root.surface1
                                     border.width: 1
-                                    Image { anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/productive-time.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
+                                    Image { cache: false; anchors.fill: parent; anchors.margins: root.s(10); source: "file://" + Quickshell.env("HOME") + "/.cache/quickshell/github_cards/productive-time.svg"; fillMode: Image.PreserveAspectFit; asynchronous: true; sourceSize.height: 200 }
                                 }
                             }
                         }

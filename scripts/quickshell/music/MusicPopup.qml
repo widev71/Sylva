@@ -822,7 +822,7 @@ Item {
                                     var temp = Object.assign({}, root.musicData);
                                     temp.status = (temp.status === "Playing" ? "Paused" : "Playing");
                                     root.musicData = temp;
-                                    root.execCmd("playerctl play-pause");
+                                    root.execCmd("python3 ~/.config/hypr/scripts/quickshell/music/fade_play_pause.py");
                                 }
 
                                 // Fluid Ripple Animation Element

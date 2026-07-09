@@ -18,9 +18,11 @@ Rectangle {
     // Called by control buttons to trigger a music refresh after playerctl commands
     signal refreshMusic
 
+    property bool showLyrics: !isHovered && currentLyricText !== ""
+
     color: Qt.rgba(mocha.base.r, mocha.base.g, mocha.base.b, 0.40)
     radius: s(14)
-    border.width: 1
+    border.width: showLyrics ? 0 : 1
     border.color: Qt.rgba(mocha.mauve.r, mocha.mauve.g, mocha.mauve.b, 0.5)
     height: s(48)
     clip: true
@@ -57,10 +59,8 @@ Rectangle {
             if (txt === "") return;
             try {
                 let obj = JSON.parse(txt);
-                if (root.currentSongKey !== obj.song) {
-                    root.currentSongKey = obj.song || "";
-                    root.lyrics = obj.lines || [];
-                }
+                root.currentSongKey = obj.song || "";
+                root.lyrics = obj.lines || [];
                 
                 let idx = obj.index ?? -1;
                 if (idx !== activeLyricIndex) activeLyricIndex = idx;
@@ -126,8 +126,6 @@ Rectangle {
                 id: dynamicArea
                 height: parent.height
                 
-                property bool showLyrics: !root.isHovered && root.currentLyricText !== ""
-                
                 Text {
                     id: measureText
                     text: root.currentLyricText
@@ -137,14 +135,14 @@ Rectangle {
                     visible: false
                 }
                 
-                width: showLyrics ? Math.min(measureText.implicitWidth, s(280)) : infoControlsRow.implicitWidth
+                width: root.showLyrics ? Math.min(measureText.implicitWidth, s(280)) : infoControlsRow.implicitWidth
                 Behavior on width { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } }
 
                 // Lyrics mode
                 Item {
                     anchors.fill: parent
-                    opacity: dynamicArea.showLyrics ? 1.0 : 0.0
-                    transform: Translate { y: dynamicArea.showLyrics ? 0 : s(15) }
+                    opacity: root.showLyrics ? 1.0 : 0.0
+                    transform: Translate { y: root.showLyrics ? 0 : s(15) }
                     Behavior on opacity { NumberAnimation { duration: 250 } }
                     Behavior on transform { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
                     clip: true
@@ -166,25 +164,48 @@ Rectangle {
                             width: ListView.view.width
                             height: ListView.view.height
                             
-                            Text {
-                                id: lyricsText
-                                text: modelData.text || "♪"
-                                color: mocha.text
-                                font.family: "Inter"
-                                font.pixelSize: s(13)
-                                font.weight: Font.Bold
+                            readonly property int lineIndex: index
+                            readonly property bool isActive: lineIndex === ListView.view.currentIndex
+                            
+                            Row {
+                                id: lyricsRow
                                 anchors.verticalCenter: parent.verticalCenter
                                 
-                                opacity: index === ListView.view.currentIndex ? 1.0 : 0.0
-                                Behavior on opacity { NumberAnimation { duration: 200 } }
+                                opacity: isActive ? 1.0 : 0.0
+                                Behavior on opacity { NumberAnimation { duration: 300 } }
                                 
                                 // Marquee scrolling if text is too long (only for active item)
-                                x: (index === ListView.view.currentIndex && implicitWidth > lyricsList.width) ? -(implicitWidth - lyricsList.width) : 0
+                                x: (isActive && implicitWidth > lyricsList.width) ? -(implicitWidth - lyricsList.width) : 0
                                 Behavior on x { 
                                     NumberAnimation { 
-                                        duration: lyricsText.implicitWidth > lyricsList.width ? 3000 : 0
+                                        duration: lyricsRow.implicitWidth > lyricsList.width ? 3000 : 0
                                         easing.type: Easing.InOutSine 
                                     } 
+                                }
+
+                                Repeater {
+                                    model: Array.from(modelData.text || "♪")
+                                    delegate: Text {
+                                        text: modelData
+                                        color: mocha.text
+                                        font.family: "Inter"
+                                        font.pixelSize: s(13)
+                                        font.weight: Font.Bold
+                                        
+                                        transform: Translate {
+                                            y: isActive ? 0 : (lineIndex > ListView.view.currentIndex ? s(15) : s(-15))
+                                            Behavior on y {
+                                                SequentialAnimation {
+                                                    PauseAnimation { duration: index * 10 }
+                                                    NumberAnimation { 
+                                                        duration: 400
+                                                        easing.type: Easing.OutBack
+                                                        easing.overshoot: 1.5
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -195,8 +216,8 @@ Rectangle {
                 Row {
                     id: infoControlsRow
                     anchors.verticalCenter: parent.verticalCenter
-                    opacity: !dynamicArea.showLyrics ? 1.0 : 0.0
-                    transform: Translate { y: !dynamicArea.showLyrics ? 0 : s(-15) }
+                    opacity: !root.showLyrics ? 1.0 : 0.0
+                    transform: Translate { y: !root.showLyrics ? 0 : s(-15) }
                     Behavior on opacity { NumberAnimation { duration: 250 } }
                     Behavior on transform { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
                     spacing: s(16)
@@ -257,7 +278,7 @@ Rectangle {
                             }
                             MouseArea {
                                 id: playMouse; hoverEnabled: true; anchors.fill: parent
-                                onClicked: { Quickshell.execDetached(["playerctl", "play-pause"]); root.refreshMusic(); mouse.accepted = true; }
+                                onClicked: { Quickshell.execDetached(["bash", "-c", "python3 ~/.config/hypr/scripts/quickshell/music/fade_play_pause.py"]); root.refreshMusic(); mouse.accepted = true; }
                             }
                         }
 
@@ -284,7 +305,7 @@ Rectangle {
         
         // MouseArea for opening music menu (only covers album art and text area, not controls)
         MouseArea {
-            width: albumArt.width + s(10) + (dynamicArea.showLyrics ? dynamicArea.width : infoCol.width)
+            width: albumArt.width + s(10) + (root.showLyrics ? dynamicArea.width : infoCol.width)
             height: parent.height
             onClicked: Quickshell.execDetached(["bash", "-c", "~/.config/hypr/scripts/qs_manager.sh toggle music"])
         }
